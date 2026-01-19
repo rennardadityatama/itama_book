@@ -23,7 +23,7 @@ require_once $controllerFile;
 
 $controllerObject = new $controllerName;
 
-if (!method_exists($controller, $method)) {
+if (!method_exists($controllerObject, $method)) {
   die("Method $method tidak ditemukan");
 }
 

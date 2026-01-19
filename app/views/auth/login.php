@@ -56,12 +56,12 @@ ini_set('display_errors', 1);
           <div>
             <div><a class="logo" href="login.php"><img class="img-fluid for-light" src="<?= BASE_URL ?>/assets/img/logo.png" alt="looginpage"></a></div>
             <div class="login-main">
-              <form class="theme-form">
+              <form class="theme-form" method="POST">
                 <h4 class="text-center">Sign in to account</h4>
                 <p class="text-center">Enter your email & password to login</p>
                 <div class="form-group">
                   <label class="col-form-label">Email Address</label>
-                  <input class="form-control" type="email" required="" placeholder="Test@gmail.com">
+                  <input class="form-control" type="email" name="email" required="" placeholder="Test@gmail.com">
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">Password</label>
@@ -71,7 +71,10 @@ ini_set('display_errors', 1);
                   </div>
                 </div>
                 <div class="form-group mb-0">
-                  <a class="link" href="<?= BASE_URL ?>index.php?c=auth&m=forgot">Forgot password?</a>
+                  <div class="checkbox p-0">
+                    <input id="checkbox1" type="checkbox">
+                    <label class="text-muted" for="checkbox1">Remember password</label>
+                  </div><a class="link" href="<?= BASE_URL ?>index.php?c=auth&m=forgot">Forgot password?</a>
                   <div class="text-end mt-3">
                     <button class="btn btn-primary btn-block w-100" type="submit">Sign in </button>
                   </div>
