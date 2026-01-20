@@ -32,12 +32,11 @@ class AuthController
   ========================= */
   public function login()
   {
-    // ===== GET → tampilkan halaman =====
-    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-      require_once '../app/views/auth/login.php';
-      return;
-    }
+    require_once BASE_PATH . '/app/views/auth/login.php';
+  }
 
+  public function loginProcess()
+  {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
       $this->json(false, 'Invalid request');
     }
@@ -51,18 +50,19 @@ class AuthController
       $this->json(false, 'Email atau password salah');
     }
 
+    session_regenerate_id(true);
+
     $_SESSION['user'] = [
-      'id'   => $user['id'],
-      'name' => $user['name'],
-      'role' => $user['role']
+      'id'    => $user['id'],
+      'name'  => $user['name'],
+      'email' => $user['email'],
+      'role'  => $user['role']
     ];
 
     $this->user->setStatus($user['id'], 'online');
     Csrf::destroy();
 
-    $this->json(true, 'Login berhasil', [
-      'redirect' => BASE_URL . 'index.php?c=dashboard'
-    ]);
+    $this->json(true, 'Login berhasil');
   }
 
   /* =========================

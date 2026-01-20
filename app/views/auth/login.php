@@ -95,7 +95,7 @@ ini_set('display_errors', 1);
           <div>
             <div><a class="logo" href="login.php"><img class="img-fluid for-light" src="<?= BASE_URL ?>/assets/img/logo.png" alt="looginpage"></a></div>
             <div class="login-main">
-              <form class="theme-form" method="POST" action="<?= BASE_URL ?>index.php?c=auth&m=login" id="loginForm">
+              <form class="theme-form" method="POST" action="<?= BASE_URL ?>index.php?c=auth&m=loginProcess" id="loginForm">
                 <input type="hidden" name="csrf_token" value="<?= Csrf::token(); ?>">
                 <h4 class="text-center">Sign in to account</h4>
                 <p class="text-center">Enter your email & password to login</p>
@@ -164,13 +164,38 @@ ini_set('display_errors', 1);
         }, 500); // delay biar spinner kelihatan
       }
 
+      function showToast(message, type = 'success') {
+        const toastEl = document.getElementById('appToast');
+        const toastMsg = document.getElementById('toastMessage');
+        const icon = toastEl.querySelector('i');
+
+        toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning');
+        icon.className = 'fa';
+
+        if (type === 'success') {
+          toastEl.classList.add('bg-success');
+          icon.classList.add('fa-check-circle');
+        } else {
+          toastEl.classList.add('bg-danger');
+          icon.classList.add('fa-times-circle');
+        }
+
+        toastMsg.textContent = message;
+
+        const toast = new bootstrap.Toast(toastEl, {
+          delay: 3000
+        });
+
+        toast.show();
+      }
+
       document.getElementById('loginForm').addEventListener('submit', async e => {
         e.preventDefault();
 
         showLoader();
 
         try {
-          const res = await fetch('?c=auth&m=login', {
+          const res = await fetch('?c=auth&m=loginProcess', {
             method: 'POST',
             body: new FormData(e.target)
           });
