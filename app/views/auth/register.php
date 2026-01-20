@@ -30,6 +30,45 @@
   <link id="color" rel="stylesheet" href="<?= BASE_URL ?>/assets/css/color-1.css" media="screen">
   <!-- Responsive css-->
   <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/responsive.css">
+
+  <style>
+    /* Overlay fullscreen */
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    /* Dual color spinner (ungu + kuning) */
+    .dual-spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid transparent;
+      border-top: 6px solid #6f42c1;
+      /* ungu */
+      border-right: 6px solid #ffc107;
+      /* kuning */
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loader-wrapper {
+      display: none !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -51,53 +90,139 @@
           <div>
             <div><a class="logo text-center" href="login.php"><img class="img-fluid for-light" src="<?= BASE_URL ?>/assets/img/logo.png" alt="looginpage"></a></div>
             <div class="login-main">
-              <form class="theme-form">
+              <form class="theme-form" id="registerForm" method="POST" action="<?= BASE_URL ?>index.php?c=auth&m=register">
+                <input type="hidden" name="csrf_token" value="<?= Csrf::token(); ?>">
                 <h4>Create your account</h4>
                 <p>Enter your personal details to create account</p>
                 <div class="form-group">
                   <label class="col-form-label">Your Name</label>
-                  <input class="form-control" type="text" required="" placeholder="Your Name">
+                  <input class="form-control" name="name" type="text" required="" placeholder="Your Name">
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">Email Address</label>
-                  <input class="form-control" type="email" required="" placeholder="Test@gmail.com">
+                  <input class="form-control" name="email" type="email" required="" placeholder="Test@gmail.com">
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">Password</label>
                   <div class="form-input position-relative">
-                    <input class="form-control" type="password" name="login[password]" required="" placeholder="*********">
+                    <input class="form-control" type="password" name="password" required="" placeholder="*********">
                     <div class="show-hide"><span class="show"></span></div>
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-form-label"> Confirm Password</label>
                   <div class="form-input position-relative">
-                    <input class="form-control" type="password" name="login[password]" required="" placeholder="*********">
+                    <input class="form-control" type="password" name="confirm_password" required="" placeholder="*********">
                     <div class="show-hide"><span class="show"></span></div>
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">Your Address</label>
-                  <input class="form-control" type="text" required="" placeholder="Your Address">
+                  <input class="form-control" name="address" type="text" required="" placeholder="Your Address">
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="validationCustom04">Role</label>
-                  <select class="form-select" id="validationCustom04" required="">
+                  <select class="form-select" id="validationCustom04" name="role" required="">
                     <option selected="" disabled="" value="">Choose Your Role...</option>
-                    <option>...</option>
+                    <option value="2">Seller</option>
+                    <option value="3">Customer</option>
                   </select>
                   <div class="invalid-feedback">Please select a valid state.</div>
                 </div>
                 <div class="form-group mb-0">
                   <button class="btn btn-primary btn-block w-100 mt-3" type="submit">Create</button>
                 </div>
-                <p class="mt-4 mb-0 text-center">Already have an account?<a class="ms-2" href="<?= BASE_URL ?>index.php?c=auth&m=login">Sign in</a></p>
+                <p class="mt-4 mb-0 text-center">Already have an account?<a class="ms-2" href="#" onclick="goLogin(event)">Sign in</a></p>
               </form>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Global Loading Spinner -->
+    <div id="globalLoader" class="loader-overlay d-none">
+      <div class="dual-spinner"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+      <div id="appToast" class="toast align-items-center text-white border-0" role="alert">
+        <div class="d-flex">
+          <div class="toast-body d-flex align-items-center gap-2">
+            <i class="fa fa-check-circle"></i>
+            <span id="toastMessage"></span>
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showLoader() {
+        document.getElementById('globalLoader').classList.remove('d-none');
+      }
+
+      function hideLoader() {
+        document.getElementById('globalLoader').classList.add('d-none');
+      }
+
+      function showToast(message, type = 'success') {
+        const toastEl = document.getElementById('appToast');
+        const toastMsg = document.getElementById('toastMessage');
+
+        toastEl.classList.remove('bg-success', 'bg-danger');
+        toastEl.classList.add(type === 'success' ? 'bg-success' : 'bg-danger');
+
+        toastMsg.innerText = message;
+        new bootstrap.Toast(toastEl, {
+          delay: 2500
+        }).show();
+      }
+
+      function goLogin(e) {
+        e.preventDefault();
+        showLoader();
+
+        setTimeout(() => {
+          window.location.href = "<?= BASE_URL ?>index.php?c=auth&m=login";
+        }, 500); // delay biar spinner keliatan
+      }
+
+      document.getElementById('registerForm').addEventListener('submit', async e => {
+        e.preventDefault();
+
+        showLoader();
+
+        try {
+          const res = await fetch('?c=auth&m=register', {
+            method: 'POST',
+            body: new FormData(e.target)
+          });
+
+          const json = await res.json();
+
+          hideLoader();
+          showToast(json.message, json.status ? 'success' : 'danger');
+
+          if (json.status && json.data?.redirect) {
+            // 🔹 TUNGGU TOAST → SPINNER → REDIRECT
+            setTimeout(() => {
+              showLoader();
+              setTimeout(() => {
+                window.location.href = json.data.redirect;
+              }, 1200);
+            }, 2500);
+          }
+
+        } catch (err) {
+          hideLoader();
+          showToast('Terjadi kesalahan server', 'danger');
+        }
+      });
+    </script>
+
+
     <!-- latest jquery-->
     <script src="<?= BASE_URL ?>/assets/js/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap js-->

@@ -8,8 +8,8 @@
   <meta name="description" content="tivo admin is super flexible, powerful, clean &amp; modern responsive bootstrap 5 admin template with unlimited possibilities.">
   <meta name="keywords" content="admin template, Tivo admin template, dashboard template, flat admin template, responsive admin template, web app">
   <meta name="author" content="pixelstrap">
-  <link rel="icon" href="<?= BASE_URL ?>/assets/images/favicon/logo.png type="image/x-icon">
-  <link rel="shortcut icon" href="<?= BASE_URL ?>/assets/images/favicon/logo.png type="image/x-icon">
+  <link rel="icon" href="<?= BASE_URL ?>/assets/images/favicon/logo.png">
+  <link rel="shortcut icon" href="<?= BASE_URL ?>/assets/images/favicon/logo.png" type="image/x-icon">
   <title>Reset | iTama Book</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,25 +51,26 @@
           <div>
             <div><a class="logo" href="login.php"><img class="img-fluid for-light" src="<?= BASE_URL ?>/assets/img/logo.png" alt="looginpage"></a></div>
             <div class="login-main">
-              <form class="theme-form">
+              <form class="theme-form" id="resetForm" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= Csrf::token() ?>">
                 <h4 class="text-center">Reset Your Password</h4>
                 <div class="form-group">
                   <label class="col-form-label">Password</label>
                   <div class="form-input position-relative">
-                    <input class="form-control" type="password" name="login[password]" required="" placeholder="*********">
+                    <input class="form-control" type="password" name="password" required="" placeholder="*********">
                     <div class="show-hide"><span class="show"> </span></div>
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">Confirm Password</label>
                   <div class="form-input position-relative">
-                    <input class="form-control" type="password" name="login[password]" required="" placeholder="*********">
+                    <input class="form-control" type="password" name="confirm_password" required="" placeholder="*********">
                     <div class="show-hide"><span class="show"> </span></div>
                   </div>
                 </div>
                 <div class="form-group mb-0">
                   <div class="text-end mt-3">
-                    <button class="btn btn-primary btn-block w-100" type="submit">Sign in </button>
+                    <button class="btn btn-primary btn-block w-100" type="submit">Update</button>
                   </div>
                 </div>
                 <p class="mt-4 mb-0 text-center">Don't have account?<a class="ms-2" href="<?= BASE_URL ?>index.php?c=auth&m=register">Create Account</a></p>
@@ -79,6 +80,83 @@
         </div>
       </div>
     </div>
+
+    <!-- Global Loading Spinner -->
+    <div id="globalLoader" class="loader-overlay d-none">
+      <div class="dual-spinner"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+      <div id="appToast" class="toast align-items-center text-white border-0" role="alert">
+        <div class="d-flex">
+          <div class="toast-body d-flex align-items-center gap-2">
+            <i class="fa fa-check-circle"></i>
+            <span id="toastMessage"></span>
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showLoader() {
+        document.getElementById('globalLoader').classList.remove('d-none');
+      }
+
+      function hideLoader() {
+        document.getElementById('globalLoader').classList.add('d-none');
+      }
+
+      function showToast(message, type = 'success') {
+        const toastEl = document.getElementById('appToast');
+        const toastMsg = document.getElementById('toastMessage');
+
+        toastEl.classList.remove('bg-success', 'bg-danger');
+        toastEl.classList.add(type === 'success' ? 'bg-success' : 'bg-danger');
+
+        toastMsg.textContent = message;
+        new bootstrap.Toast(toastEl, {
+          delay: 2500
+        }).show();
+      }
+
+      document.getElementById('resetForm').addEventListener('submit', async e => {
+        e.preventDefault();
+
+        // 🔹 Spinner saat submit
+        showLoader();
+
+        try {
+          const res = await fetch(window.location.href, {
+            method: 'POST',
+            body: new FormData(e.target)
+          });
+
+          const json = await res.json();
+
+          hideLoader();
+          showToast(json.message, json.status ? 'success' : 'danger');
+
+          if (json.status) {
+            // 🔹 TUNGGU TOAST → TAMPILKAN SPINNER LAGI
+            setTimeout(() => {
+              showLoader();
+
+              setTimeout(() => {
+                window.location.href = "<?= BASE_URL ?>index.php?c=auth&m=login";
+              }, 1200);
+
+            }, 2500);
+          }
+
+        } catch (err) {
+          hideLoader();
+          showToast('Terjadi kesalahan server', 'danger');
+        }
+      });
+    </script>
+
     <!-- latest jquery-->
     <script src="<?= BASE_URL ?>/assets/js/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap js-->

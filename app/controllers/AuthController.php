@@ -1,6 +1,8 @@
 <?php
 
-require_once '../app/models/UserModels.php';
+require_once BASE_PATH . '/app/models/UserModels.php';
+require_once BASE_PATH . '/app/helpers/Csrf.php';
+
 
 class AuthController
 {
@@ -8,122 +10,179 @@ class AuthController
 
   public function __construct()
   {
-    session_start();
     $this->user = new User();
   }
 
-  // ================= LOGIN =================
+  /* =========================
+      RESPONSE JSON
+  ========================= */
+  private function json($status, $message, $data = [])
+  {
+    header('Content-Type: application/json');
+    echo json_encode([
+      'status'  => $status,
+      'message' => $message,
+      'data'    => $data
+    ]);
+    exit;
+  }
+
+  /* =========================
+      LOGIN
+  ========================= */
   public function login()
   {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $user = $this->user->findByEmail($_POST['email']);
-
-      if (!$user || !password_verify($_POST['password'], $user['password'])) {
-        $_SESSION['error'] = 'Email atau password salah';
-        header('Location: ' . BASE_URL . 'index.php?c=auth&m=login');
-        exit;
-      }
-
-      $_SESSION['user'] = [
-        'id' => $user['id'],
-        'name' => $user['name'],
-        'role' => $user['role']
-      ];
-
-      header('Location: ' . BASE_URL . 'index.php?c=dashboard&m=index');
-      exit;
+    // ===== GET → tampilkan halaman =====
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+      require_once '../app/views/auth/login.php';
+      return;
     }
 
-    require_once '../app/views/auth/login.php';
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+      $this->json(false, 'Invalid request');
+    }
+
+    if (!Csrf::check($_POST['csrf_token'] ?? '')) {
+      $this->json(false, 'CSRF token tidak valid');
+    }
+
+    $user = $this->user->login($_POST['email'], $_POST['password']);
+    if (!$user) {
+      $this->json(false, 'Email atau password salah');
+    }
+
+    $_SESSION['user'] = [
+      'id'   => $user['id'],
+      'name' => $user['name'],
+      'role' => $user['role']
+    ];
+
+    $this->user->setStatus($user['id'], 'online');
+    Csrf::destroy();
+
+    $this->json(true, 'Login berhasil', [
+      'redirect' => BASE_URL . 'index.php?c=dashboard'
+    ]);
   }
 
-  // ================= REGISTER =================
+  /* =========================
+      REGISTER
+  ========================= */
   public function register()
   {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      if ($this->user->findByEmail($_POST['email'])) {
-        $_SESSION['error'] = 'Email sudah terdaftar';
-        header('Location: ' . BASE_URL . 'index.php?c=auth&m=register');
-        exit;
-      }
-
-      $this->user->register($_POST);
-      header('Location: ' . BASE_URL . 'index.php?c=auth&m=login');
-      exit;
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+      require_once '../app/views/auth/register.php';
+      return;
     }
 
-    require_once '../app/views/auth/register.php';
+    if (!Csrf::check($_POST['csrf_token'] ?? '')) {
+      $this->json(false, 'CSRF token tidak valid');
+    }
+
+    if ($_POST['password'] !== $_POST['confirm_password']) {
+      $this->json(false, 'Password tidak sama');
+    }
+
+    if ($this->user->findByEmail($_POST['email'])) {
+      $this->json(false, 'Email sudah terdaftar');
+    }
+
+    $this->user->register([
+      'name'     => $_POST['name'],
+      'email'    => $_POST['email'],
+      'password' => $_POST['password'],
+      'address'  => $_POST['address'],
+      'role'     => $_POST['role'],
+      'status'   => 'offline'
+    ]);
+
+    $this->json(true, 'Registrasi berhasil', [
+      'redirect' => BASE_URL . 'index.php?c=auth&m=login'
+    ]);
   }
 
-  // ================= FORGOT =================
+  /* =========================
+      FORGOT PASSWORD
+  ========================= */
   public function forgot()
   {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $user = $this->user->findByEmail($_POST['email']);
-
-      if (!$user) {
-        die('Email tidak terdaftar');
-      }
-
-      $token  = bin2hex(random_bytes(32));
-      $expiry = date('Y-m-d H:i:s', strtotime('+15 minutes'));
-
-      $this->user->saveResetToken($_POST['email'], $token, $expiry);
-
-      $this->sendResetEmail($_POST['email'], $token);
-
-      echo "Link reset password telah dikirim ke email";
-      exit;
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+      require_once '../app/views/auth/forgot.php';
+      return;
     }
 
-    require_once '../app/views/auth/forgot.php';
+    if (!Csrf::check($_POST['csrf_token'] ?? '')) {
+      $this->json(false, 'CSRF token tidak valid');
+    }
+
+    $user = $this->user->findByEmail($_POST['email']);
+    if (!$user) {
+      $this->json(false, 'Email tidak terdaftar');
+    }
+
+    $token  = bin2hex(random_bytes(32));
+    $expiry = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+
+    $this->user->saveResetToken($user['email'], $token, $expiry);
+
+    $link = BASE_URL . "index.php?c=auth&m=reset&token=$token";
+
+    $body = "
+    <p>Klik link berikut untuk reset password:</p>
+    <a href='$link'>$link</a>
+    <p>Link berlaku 15 menit</p>
+  ";
+
+    if (!sendMail($user['email'], 'Reset Password', $body)) {
+      $this->json(false, 'Gagal mengirim email');
+    }
+
+    $this->json(true, 'Link reset password berhasil dikirim ke email');
   }
 
-  // ================= RESET =================
+  /* =========================
+      RESET PASSWORD
+  ========================= */
   public function reset()
   {
     $token = $_GET['token'] ?? null;
-    $user = $this->user->findByToken($token);
+    $user  = $this->user->findByToken($token);
 
     if (!$user) {
       die('Token tidak valid atau kadaluarsa');
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+      if (!Csrf::check($_POST['csrf_token'] ?? '')) {
+        $this->json(false, 'CSRF token tidak valid');
+      }
+
+      if ($_POST['password'] !== $_POST['confirm_password']) {
+        $this->json(false, 'Password tidak sama');
+      }
+
       $this->user->updatePassword($user['id'], $_POST['password']);
-      header('Location: ' . BASE_URL . 'index.php?c=auth&m=login');
+      Csrf::destroy();
+
+      $this->json(true, 'Password berhasil diubah');
       exit;
     }
 
     require_once '../app/views/auth/reset.php';
   }
 
-  // ================= EMAIL =================
-  private function sendResetEmail($email, $token)
+  /* =========================
+      LOGOUT
+  ========================= */
+  public function logout()
   {
-    require_once '../vendor/phpmailer/PHPMailer.php';
-    require_once '../vendor/phpmailer/SMTP.php';
-    require_once '../vendor/phpmailer/Exception.php';
+    if (isset($_SESSION['user'])) {
+      $this->user->setStatus($_SESSION['user']['id'], 'offline');
+    }
 
-    // $mail = new PHPMailer\PHPMailer\PHPMailer(true);
-
-    $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
-    $mail->SMTPAuth = true;
-    $mail->Username = 'EMAIL_KAMU@gmail.com';
-    $mail->Password = 'APP_PASSWORD_GMAIL';
-    $mail->SMTPSecure = 'tls';
-    $mail->Port = 587;
-
-    $mail->setFrom('EMAIL_KAMU@gmail.com', 'iTAMA Book');
-    $mail->addAddress($email);
-
-    $link = BASE_URL . "index.php?c=auth&m=reset&token=$token";
-
-    $mail->isHTML(true);
-    $mail->Subject = 'Reset Password';
-    $mail->Body = "Klik link berikut untuk reset password:<br><a href='$link'>$link</a>";
-
-    $mail->send();
+    session_destroy();
+    header('Location: ' . BASE_URL . 'index.php?c=auth&m=login');
+    exit;
   }
 }

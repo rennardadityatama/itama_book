@@ -35,6 +35,45 @@ ini_set('display_errors', 1);
   <link id="color" rel="stylesheet" href="<?= BASE_URL ?>/assets/css/color-1.css" media="screen">
   <!-- Responsive css-->
   <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/responsive.css">
+
+  <style>
+    /* Overlay fullscreen */
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    /* Dual color spinner (ungu + kuning) */
+    .dual-spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid transparent;
+      border-top: 6px solid #6f42c1;
+      /* ungu */
+      border-right: 6px solid #ffc107;
+      /* kuning */
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loader-wrapper {
+      display: none !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -56,7 +95,8 @@ ini_set('display_errors', 1);
           <div>
             <div><a class="logo" href="login.php"><img class="img-fluid for-light" src="<?= BASE_URL ?>/assets/img/logo.png" alt="looginpage"></a></div>
             <div class="login-main">
-              <form class="theme-form" method="POST">
+              <form class="theme-form" method="POST" action="<?= BASE_URL ?>index.php?c=auth&m=login" id="loginForm">
+                <input type="hidden" name="csrf_token" value="<?= Csrf::token(); ?>">
                 <h4 class="text-center">Sign in to account</h4>
                 <p class="text-center">Enter your email & password to login</p>
                 <div class="form-group">
@@ -66,7 +106,7 @@ ini_set('display_errors', 1);
                 <div class="form-group">
                   <label class="col-form-label">Password</label>
                   <div class="form-input position-relative">
-                    <input class="form-control" type="password" name="login[password]" required="" placeholder="*********">
+                    <input class="form-control" type="password" name="password" required="" placeholder="*********">
                     <div class="show-hide"><span class="show"> </span></div>
                   </div>
                 </div>
@@ -74,7 +114,7 @@ ini_set('display_errors', 1);
                   <div class="checkbox p-0">
                     <input id="checkbox1" type="checkbox">
                     <label class="text-muted" for="checkbox1">Remember password</label>
-                  </div><a class="link" href="<?= BASE_URL ?>index.php?c=auth&m=forgot">Forgot password?</a>
+                  </div><a class="link" onclick="goForgot(event)">Forgot password?</a>
                   <div class="text-end mt-3">
                     <button class="btn btn-primary btn-block w-100" type="submit">Sign in </button>
                   </div>
@@ -86,6 +126,76 @@ ini_set('display_errors', 1);
         </div>
       </div>
     </div>
+
+    <!-- Global Loading Spinner -->
+    <div id="globalLoader" class="loader-overlay d-none">
+      <div class="dual-spinner"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+      <div id="appToast" class="toast align-items-center text-white border-0" role="alert">
+        <div class="d-flex">
+          <div class="toast-body d-flex align-items-center gap-2">
+            <i class="fa fa-check-circle"></i>
+            <span id="toastMessage"></span>
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showLoader() {
+        document.getElementById('globalLoader').classList.remove('d-none');
+      }
+
+      function hideLoader() {
+        document.getElementById('globalLoader').classList.add('d-none');
+      }
+
+      function goForgot(e) {
+        e.preventDefault();
+
+        showLoader();
+
+        setTimeout(() => {
+          window.location.href = "<?= BASE_URL ?>index.php?c=auth&m=forgot";
+        }, 500); // delay biar spinner kelihatan
+      }
+
+      document.getElementById('loginForm').addEventListener('submit', async e => {
+        e.preventDefault();
+
+        showLoader();
+
+        try {
+          const res = await fetch('?c=auth&m=login', {
+            method: 'POST',
+            body: new FormData(e.target)
+          });
+
+          const json = await res.json();
+
+          hideLoader();
+          showToast(json.message, json.status ? 'success' : 'danger');
+
+          if (json.status && json.data.redirect) {
+            setTimeout(() => {
+              showLoader();
+              setTimeout(() => {
+                window.location.href = json.data.redirect;
+              }, 1000);
+            }, 2000);
+          }
+
+        } catch (err) {
+          hideLoader();
+          showToast('Terjadi kesalahan server', 'danger');
+        }
+      });
+    </script>
+
     <!-- latest jquery-->
     <script src="<?= BASE_URL ?>/assets/js/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap js-->
