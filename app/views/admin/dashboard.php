@@ -7,32 +7,32 @@
     <meta name="description" content="tivo admin is super flexible, powerful, clean &amp; modern responsive bootstrap 5 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, Tivo admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="pixelstrap">
-    <link rel="icon" href="../../../public/assets/images/favicon/logo.png" type="image/x-icon">
-    <link rel="shortcut icon" href="../../../public/assets/images/favicon/logo.png" type="image/x-icon">
+    <link rel="icon" href="<?= BASE_URL ?>/assets/images/favicon/logo.png" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= BASE_URL ?>/assets/images/favicon/logo.png" type="image/x-icon">
     <title>Dashboard | iTama Book</title><link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/vendors/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/vendors/font-awesome.css">
     <!-- ico-font-->
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/vendors/icofont.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/vendors/icofont.css">
     <!-- Themify icon-->
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/vendors/themify.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/vendors/themify.css">
     <!-- Flag icon-->
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/vendors/flag-icon.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/vendors/flag-icon.css">
     <!-- Feather icon-->
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/vendors/feather-icon.css">
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/vendors/scrollbar.css">
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/vendors/animate.css">
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/vendors/chartist.css">
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/vendors/prism.css">
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/vendors/vector-map.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/vendors/feather-icon.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/vendors/scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/vendors/animate.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/vendors/chartist.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/vendors/prism.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/vendors/vector-map.css">
     <!-- Bootstrap css-->
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/vendors/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/vendors/bootstrap.css">
     <!-- App css-->
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/style.css">
-    <link id="color" rel="stylesheet" href="../../../public/assets/css/color-1.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/style.css">
+    <link id="color" rel="stylesheet" href="<?= BASE_URL ?>/assets/css/color-1.css" media="screen">
     <!-- Responsive css-->
-    <link rel="stylesheet" type="text/css" href="../../../public/assets/css/responsive.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/responsive.css">
   </head>
   <body onload="startTime()">
     <!-- tap on top starts-->
@@ -54,7 +54,7 @@
         <div class="header-wrapper row m-0">
           <div class="header-logo-wrapper col-auto p-0">
             <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
-            <div class="logo-header-main"><a href="index.html"><img class="img-fluid for-light img-100" src="../../../public/assets/images/logo/logo2.png" alt=""><img class="img-fluid for-dark" src="../../../public/assets/images/logo/logo.png" alt=""></a></div>
+            <div class="logo-header-main"><a href="index.html"><img class="img-fluid for-light img-100" src="<?= BASE_URL ?>/assets/images/logo/logo2.png" alt=""><img class="img-fluid for-dark" src="<?= BASE_URL ?>/assets/images/logo/logo.png" alt=""></a></div>
           </div>
           <div class="left-header col horizontal-wrapper ps-0">
             <div class="left-menu-header">
@@ -98,7 +98,7 @@
                   </li>
                   <li>
                     <div class="d-flex align-items-start">
-                      <div class="message-img bg-light-primary"><img src="../../../public/assets/images/user/10.jpg" alt=""></div>
+                      <div class="message-img bg-light-primary"><img src="<?= BASE_URL ?>/assets/images/user/10.jpg" alt=""></div>
                       <div class="flex-grow-1">
                         <h5 class="mb-1"><a href="email_inbox.html">Sarah Loren</a></h5>
                         <p>What`s the project report update?</p>
@@ -136,7 +136,7 @@
         <!-- Page Sidebar Start-->
         <div class="sidebar-wrapper">
           <div>
-            <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="../../../public/assets/img/logo.png" alt=""></a>
+            <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="<?= BASE_URL ?>/assets/img/logo.png" alt=""></a>
               <div class="back-btn"><i data-feather="grid"></i></div>
               <div class="toggle-sidebar icon-box-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
             </div>
@@ -209,14 +209,14 @@
                           <li class="dot-small bg-primary dot-7"></li>
                           <li class="semi-medium bg-primary dot-8"></li>
                           <li class="dot-big bg-info dot-9"></li>
-                        </ul><img class="img-fluid" src="../../../public/assets/images/dashboard/default/profile.png" alt="">
+                        </ul><img class="img-fluid" src="<?= BASE_URL ?>/assets/images/dashboard/default/profile.png" alt="">
                         <ul class="vector-image"> 
-                          <li> <img src="../../../public/assets/images/dashboard/default/ribbon1.png" alt=""></li>
-                          <li> <img src="../../../public/assets/images/dashboard/default/ribbon3.png" alt=""></li>
-                          <li> <img src="../../../public/assets/images/dashboard/default/ribbon4.png" alt=""></li>
-                          <li> <img src="../../../public/assets/images/dashboard/default/ribbon5.png" alt=""></li>
-                          <li> <img src="../../../public/assets/images/dashboard/default/ribbon6.png" alt=""></li>
-                          <li> <img src="../../../public/assets/images/dashboard/default/ribbon7.png" alt=""></li>
+                          <li> <img src="<?= BASE_URL ?>/assets/images/dashboard/default/ribbon1.png" alt=""></li>
+                          <li> <img src="<?= BASE_URL ?>/assets/images/dashboard/default/ribbon3.png" alt=""></li>
+                          <li> <img src="<?= BASE_URL ?>/assets/images/dashboard/default/ribbon4.png" alt=""></li>
+                          <li> <img src="<?= BASE_URL ?>/assets/images/dashboard/default/ribbon5.png" alt=""></li>
+                          <li> <img src="<?= BASE_URL ?>/assets/images/dashboard/default/ribbon6.png" alt=""></li>
+                          <li> <img src="<?= BASE_URL ?>/assets/images/dashboard/default/ribbon7.png" alt=""></li>
                         </ul>
                       </div>
                       <h4><a href="user-profile.html"><span>Welcome Back</span> John  </a><span class="right-circle"><i class="fa fa-check-circle font-primary f-14 middle"></i></span></h4>
@@ -304,44 +304,44 @@
       </div>
     </div>
     <!-- latest jquery-->
-    <script src="../../../public/assets/js/jquery-3.6.0.min.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap js-->
-    <script src="../../../public/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
     <!-- feather icon js-->
-    <script src="../../../public/assets/js/icons/feather-icon/feather.min.js"></script>
-    <script src="../../../public/assets/js/icons/feather-icon/feather-icon.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/icons/feather-icon/feather.min.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/icons/feather-icon/feather-icon.js"></script>
     <!-- scrollbar js-->
-    <script src="../../../public/assets/js/scrollbar/simplebar.js"></script>
-    <script src="../../../public/assets/js/scrollbar/custom.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/scrollbar/simplebar.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/scrollbar/custom.js"></script>
     <!-- Sidebar jquery-->
-    <script src="../../../public/assets/js/config.js"></script>
-    <script src="../../../public/assets/js/sidebar-menu.js"></script>
-    <script src="../../../public/assets/js/chart/chartist/chartist.js"></script>
-    <script src="../../../public/assets/js/chart/chartist/chartist-plugin-tooltip.js"></script>
-    <script src="../../../public/assets/js/chart/apex-chart/apex-chart.js"></script>
-    <script src="../../../public/assets/js/chart/apex-chart/stock-prices.js"></script>
-    <script src="../../../public/assets/js/prism/prism.min.js"></script>
-    <script src="../../../public/assets/js/clipboard/clipboard.min.js"></script>
-    <script src="../../../public/assets/js/custom-card/custom-card.js"></script>
-    <script src="../../../public/assets/js/notify/bootstrap-notify.min.js"></script>
-    <script src="../../../public/assets/js/vector-map/jquery-jvectormap-2.0.2.min.js"></script>
-    <script src="../../../public/assets/js/vector-map/map/jquery-jvectormap-world-mill-en.js"></script>
-    <script src="../../../public/assets/js/vector-map/map/jquery-jvectormap-us-aea-en.js"></script>
-    <script src="../../../public/assets/js/vector-map/map/jquery-jvectormap-uk-mill-en.js"></script>
-    <script src="../../../public/assets/js/vector-map/map/jquery-jvectormap-au-mill.js"></script>
-    <script src="../../../public/assets/js/vector-map/map/jquery-jvectormap-chicago-mill-en.js"></script>
-    <script src="../../../public/assets/js/vector-map/map/jquery-jvectormap-in-mill.js"></script>
-    <script src="../../../public/assets/js/vector-map/map/jquery-jvectormap-asia-mill.js"></script>
-    <script src="../../../public/assets/js/dashboard/default.js"></script>
-    <script src="../../../public/assets/js/notify/index.js"></script>
-    <script src="../../../public/assets/js/typeahead/handlebars.js"></script>
-    <script src="../../../public/assets/js/typeahead/typeahead.bundle.js"></script>
-    <script src="../../../public/assets/js/typeahead/typeahead.custom.js"></script>
-    <script src="../../../public/assets/js/typeahead-search/handlebars.js"></script>
-    <script src="../../../public/assets/js/typeahead-search/typeahead-custom.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/config.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/sidebar-menu.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/chart/chartist/chartist.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/chart/chartist/chartist-plugin-tooltip.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/chart/apex-chart/apex-chart.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/chart/apex-chart/stock-prices.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/prism/prism.min.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/clipboard/clipboard.min.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/custom-card/custom-card.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/notify/bootstrap-notify.min.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/vector-map/jquery-jvectormap-2.0.2.min.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/vector-map/map/jquery-jvectormap-world-mill-en.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/vector-map/map/jquery-jvectormap-us-aea-en.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/vector-map/map/jquery-jvectormap-uk-mill-en.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/vector-map/map/jquery-jvectormap-au-mill.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/vector-map/map/jquery-jvectormap-chicago-mill-en.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/vector-map/map/jquery-jvectormap-in-mill.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/vector-map/map/jquery-jvectormap-asia-mill.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/dashboard/default.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/notify/index.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/typeahead/handlebars.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/typeahead/typeahead.bundle.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/typeahead/typeahead.custom.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/typeahead-search/handlebars.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/typeahead-search/typeahead-custom.js"></script>
     <!-- Template js-->
-    <script src="../../../public/assets/js/script.js"></script>
-    <script src="../../../public/assets/js/theme-customizer/customizer.js">  </script>
+    <script src="<?= BASE_URL ?>/assets/js/script.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/theme-customizer/customizer.js">  </script>
     <!-- login js-->
   </body>
 </html>

@@ -11,24 +11,15 @@ class Middleware
   }
 
   public static function role(array $roles)
-  {
-    self::check();
+    {
+        self::check();
 
-    if (!in_array((int)$_SESSION['user']['role'], $roles, true)) {
-      http_response_code(403);
-      echo "Akses ditolak";
-      exit;
+        if (!in_array((int)$_SESSION['user']['role'], $roles, true)) {
+            http_response_code(403);
+            echo "Akses ditolak";
+            exit;
+        }
     }
-  }
-
-  public static function redirectByRole()
-  {
-    self::check();
-
-    $url = self::getUrlByRole((int)$_SESSION['user']['role']);
-    header('Location: ' . $url);
-    exit;
-  }
 
   public static function getUrlByRole($role)
   {
@@ -43,4 +34,13 @@ class Middleware
         return BASE_URL . 'index.php?c=auth&m=login';
     }
   }
+  public static function getCurrentRole(): ?int
+    {
+        return $_SESSION['user']['role'] ?? null;
+    }
+
+    public static function isRole(int $role): bool
+    {
+        return isset($_SESSION['user']['role']) && (int)$_SESSION['user']['role'] === $role;
+    }
 }

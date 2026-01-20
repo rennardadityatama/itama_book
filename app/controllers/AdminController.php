@@ -7,6 +7,12 @@ class AdminController
   public function dashboard()
   {
     Middleware::check();
-    Middleware::redirectByRole();
+    if (!Middleware::isRole(1)) {
+            echo "Hanya admin yang bisa mengakses halaman ini";
+            exit;
+        }
+
+
+    require_once BASE_PATH . '/app/views/admin/dashboard.php';
   }
 }
