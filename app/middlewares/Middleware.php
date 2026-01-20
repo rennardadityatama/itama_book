@@ -25,23 +25,22 @@ class Middleware
   {
     self::check();
 
-    switch ((int)$_SESSION['user']['role']) {
-      case 1:
-        header('Location: ' . BASE_URL . 'index.php?c=admin&m=dashboard');
-        break;
-
-      case 2:
-        header('Location: ' . BASE_URL . 'index.php?c=seller&m=dashboard');
-        break;
-
-      case 3:
-        header('Location: ' . BASE_URL . 'index.php?c=customer&m=dashboard');
-        break;
-
-      default:
-        session_destroy();
-        header('Location: ' . BASE_URL . 'index.php?c=auth&m=login');
-    }
+    $url = self::getUrlByRole((int)$_SESSION['user']['role']);
+    header('Location: ' . $url);
     exit;
+  }
+
+  public static function getUrlByRole($role)
+  {
+    switch ($role) {
+      case 1:
+        return BASE_URL . 'index.php?c=admin&m=dashboard';
+      case 2:
+        return BASE_URL . 'index.php?c=seller&m=dashboard';
+      case 3:
+        return BASE_URL . 'index.php?c=customer&m=dashboard';
+      default:
+        return BASE_URL . 'index.php?c=auth&m=login';
+    }
   }
 }

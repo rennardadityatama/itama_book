@@ -1,11 +1,12 @@
 <?php
-require_once '../app/middlewares/auth.php';
+require_once BASE_PATH . '/app/models/UserModels.php';
+require_once BASE_PATH . '/app/middlewares/Middleware.php';
 
 class AdminController
 {
   public function dashboard()
   {
-    Middleware::role([1]);
-    require_once BASE_PATH . '/app/views/admin/dashboard.php';
+    Middleware::check();
+    Middleware::redirectByRole();
   }
 }

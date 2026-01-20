@@ -191,32 +191,25 @@ ini_set('display_errors', 1);
 
       document.getElementById('loginForm').addEventListener('submit', async e => {
         e.preventDefault();
-
         showLoader();
 
+        const res = await fetch('<?= BASE_URL ?>index.php?c=auth&m=loginProcess', {
+          method: 'POST',
+          body: new FormData(e.target)
+        });
+
+        const text = await res.text();
+        console.log('Server response:', text);
+
         try {
-          const res = await fetch('?c=auth&m=loginProcess', {
-            method: 'POST',
-            body: new FormData(e.target)
-          });
-
-          const json = await res.json();
-
-          hideLoader();
+          const json = JSON.parse(text);
           showToast(json.message, json.status ? 'success' : 'danger');
-
           if (json.status && json.data.redirect) {
-            setTimeout(() => {
-              showLoader();
-              setTimeout(() => {
-                window.location.href = json.data.redirect;
-              }, 1000);
-            }, 2000);
+            window.location.href = json.data.redirect;
           }
-
         } catch (err) {
-          hideLoader();
-          showToast('Terjadi kesalahan server', 'danger');
+          showToast('Response bukan JSON, lihat console', 'danger');
+          console.log('Parse error:', err);
         }
       });
     </script>

@@ -2,6 +2,7 @@
 
 require_once BASE_PATH . '/app/models/UserModels.php';
 require_once BASE_PATH . '/app/helpers/Csrf.php';
+require_once BASE_PATH . '/app/middlewares/Middleware.php';
 
 
 class AuthController
@@ -37,32 +38,53 @@ class AuthController
 
   public function loginProcess()
   {
+    // Pastikan request POST
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
       $this->json(false, 'Invalid request');
     }
 
-    if (!Csrf::check($_POST['csrf_token'] ?? '')) {
-      $this->json(false, 'CSRF token tidak valid');
+     if (!Csrf::check($_POST['csrf_token'] ?? '')) {
+        $this->json(false, 'CSRF token tidak valid');
     }
 
-    $user = $this->user->login($_POST['email'], $_POST['password']);
+    // Ambil input email & password
+    $email = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+
+    if (!$email || !$password) {
+      $this->json(false, 'Email dan password wajib diisi');
+    }
+
+    // Cek login melalui User model
+    $user = $this->user->login($email, $password);
+
     if (!$user) {
       $this->json(false, 'Email atau password salah');
     }
 
+    // Regenerate session ID untuk keamanan
     session_regenerate_id(true);
 
+    // Simpan data user di session
     $_SESSION['user'] = [
       'id'    => $user['id'],
       'name'  => $user['name'],
       'email' => $user['email'],
-      'role'  => $user['role']
+      'role'  => (int)$user['role'], // pastikan integer
     ];
 
+    // Update status user jadi online
     $this->user->setStatus($user['id'], 'online');
+
+    // Hapus token CSRF lama
     Csrf::destroy();
 
-    $this->json(true, 'Login berhasil');
+    // Tentukan URL redirect berdasarkan role
+    $redirectUrl = Middleware::getUrlByRole((int)$user['role']);
+
+    $this->json(true, 'Login berhasil', [
+      'redirect' => $redirectUrl
+    ]);
   }
 
   /* =========================
