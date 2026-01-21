@@ -33,6 +33,16 @@ class AuthController
   ========================= */
   public function login()
   {
+    // JIKA SUDAH LOGIN
+    if (isset($_SESSION['user'])) {
+      $role = (int) $_SESSION['user']['role'];
+
+      // Redirect sesuai role
+      $redirectUrl = Middleware::getUrlByRole($role);
+      header('Location: ' . $redirectUrl);
+      exit;
+    }
+
     require_once BASE_PATH . '/app/views/auth/login.php';
   }
 
@@ -43,8 +53,8 @@ class AuthController
       $this->json(false, 'Invalid request');
     }
 
-     if (!Csrf::check($_POST['csrf_token'] ?? '')) {
-        $this->json(false, 'CSRF token tidak valid');
+    if (!Csrf::check($_POST['csrf_token'] ?? '')) {
+      $this->json(false, 'CSRF token tidak valid');
     }
 
     // Ambil input email & password
@@ -199,11 +209,22 @@ class AuthController
   ========================= */
   public function logout()
   {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+      http_response_code(405);
+      exit('Method Not Allowed');
+    }
+
+    if (!Csrf::check($_POST['csrf_token'] ?? '')) {
+      http_response_code(403);
+      exit('CSRF token tidak valid');
+    }
+
     if (isset($_SESSION['user'])) {
       $this->user->setStatus($_SESSION['user']['id'], 'offline');
     }
 
     session_destroy();
+
     header('Location: ' . BASE_URL . 'index.php?c=auth&m=login');
     exit;
   }
