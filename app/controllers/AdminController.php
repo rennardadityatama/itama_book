@@ -1,5 +1,7 @@
 <?php
 require_once BASE_PATH . '/app/controllers/BaseAdminController.php';
+require_once BASE_PATH . '/app/models/CategoryModels.php';
+require_once BASE_PATH . '/app/models/Database.php';
 
 class AdminController extends BaseAdminController
 {
@@ -9,15 +11,6 @@ class AdminController extends BaseAdminController
             'title' => 'Dashboard | iTama Book',
             'menu'  => 'dashboard',
             'js'    => ['dashboard/default.js']
-        ]);
-    }
-
-    public function category()
-    {
-        $this->render('category_list', [
-            'title' => 'List Category | iTama Book',
-            'menu'  => 'category',
-            'js'    => []
         ]);
     }
 
@@ -33,6 +26,14 @@ class AdminController extends BaseAdminController
         $this->render('seller_list', [
             'title' => 'List Seller | iTama Book',
             'menu'  => 'seller'
+        ]);
+    }
+
+    public function profile()
+    {
+        $this->render('profile', [
+            'title' => 'Profile User | iTama Book',
+            'menu'  => 'profile'
         ]);
     }
 

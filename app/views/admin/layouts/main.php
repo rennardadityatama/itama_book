@@ -43,7 +43,7 @@
 
         <div class="page-body-wrapper">
             <?php require_once BASE_PATH . '/app/views/admin/layouts/sidebar.php' ?>
-            
+
             <?php require_once $content ?>
 
             <?php require_once BASE_PATH . '/app/views/admin/layouts/footer.php' ?>
@@ -51,8 +51,12 @@
 
     </div>
 
+    
     <!-- latest jquery-->
     <script src="<?= BASE_URL ?>/assets/js/jquery-3.6.0.min.js"></script>
+    <?php foreach ($js as $script): ?>
+        <script src="<?= BASE_URL ?>/assets/js/<?= $script ?>"></script>
+    <?php endforeach; ?>
     <!-- Bootstrap js-->
     <script src="<?= BASE_URL ?>/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
     <!-- feather icon js-->

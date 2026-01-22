@@ -63,7 +63,7 @@
             <li class="profile-nav onhover-dropdown">
               <div class="account-user"><i data-feather="user"></i></div>
               <ul class="profile-dropdown onhover-show-div">
-                <li><a href="user-profile.html"><i data-feather="user"></i><span>Account</span></a></li>
+                <li><a href="<?= BASE_URL ?>/index.php?c=admin&m=profile"><i data-feather="user"></i><span>Account</span></a></li>
                 <li><a href=""><i data-feather="log-in"> </i><span>Log out</span></a></li>
               </ul>
             </li>

@@ -30,4 +30,11 @@ if (!method_exists($controllerObject, $method)) {
   die("Method $method tidak ditemukan");
 }
 
-$controllerObject->$method();
+// ambil parameter selain c & m
+$params = $_GET;
+unset($params['c'], $params['m']);
+
+call_user_func_array(
+    [$controllerObject, $method],
+    array_values($params)
+);

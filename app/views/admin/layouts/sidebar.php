@@ -27,7 +27,7 @@
                 </li>
                 <li class="sidebar-list">
                     <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=admin&m=category">
+                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=adminCategories&m=index">
                     <i data-feather="list"> </i>
                     <span>List Category</span></a>
                 </li>
