@@ -44,18 +44,9 @@
               </div>
               <div class="user-designation">
                 <div class="title"><a target="_blank" href="">
-                    <h4>Emay Walter</h4>
-                    <h6 class="f-w-500">designer</h6>
+                    <h4><?= htmlspecialchars($_SESSION['user']['name'] ?? '-') ?></h4>
+                    <h6 class="f-w-500"><?= htmlspecialchars($_SESSION['user']['email'] ?? '-') ?></h6>
                   </a></div>
-                <div class="social-media">
-                  <ul class="user-list-social">
-                    <li><a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a></li>
-                    <li><a href="https://accounts.google.com/"><i class="fa fa-google-plus"></i></a></li>
-                    <li><a href="https://twitter.com/"><i class="fa fa-twitter"></i></a></li>
-                    <li><a href="https://www.instagram.com/"><i class="fa fa-instagram"></i></a></li>
-                    <li><a href="https://dashboard.rss.com/auth/sign-in/"><i class="fa fa-rss"></i></a></li>
-                  </ul>
-                </div>
                 <div class="follow">
                   <ul class="follow-list">
                     <li>

@@ -11,6 +11,15 @@ class CategoryModel
         $this->db = Database::getInstance();
     }
 
+    public function findByName($nik)
+  {
+    $stmt = $this->db->prepare(
+      "SELECT * FROM categories WHERE name = ? LIMIT 1"
+    );
+    $stmt->execute([$nik]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
     // READ ALL
     public function getAll()
     {

@@ -20,6 +20,16 @@ class User
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
+  public function findByNik($nik)
+  {
+    $stmt = $this->db->prepare(
+      "SELECT * FROM users WHERE nik = ? LIMIT 1"
+    );
+    $stmt->execute([$nik]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+
   /* =========================
      AUTH / LOGIN
   ========================= */
@@ -54,12 +64,13 @@ class User
   public function register($data)
   {
     $stmt = $this->db->prepare("
-      INSERT INTO users (name, email, password, address, role, status)
-      VALUES (:name, :email, :password, :address, :role, :status)
+      INSERT INTO users (name, nik, email, password, address, role, status)
+      VALUES (:name, :nik, :email, :password, :address, :role, :status)
     ");
 
     return $stmt->execute([
       ':name'     => $data['name'],
+      ':nik'      => $data['nik'],
       ':email'    => $data['email'],
       ':password' => password_hash($data['password'], PASSWORD_DEFAULT),
       ':address'  => $data['address'],

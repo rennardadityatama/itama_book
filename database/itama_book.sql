@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 20, 2026 at 07:38 AM
+-- Generation Time: Jan 23, 2026 at 05:07 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,26 @@ SET time_zone = "+00:00";
 --
 -- Database: `itama_book`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categories`
+--
+
+CREATE TABLE `categories` (
+  `id` int(12) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`) VALUES
+(2, 'Book'),
+(8, 'Pencil'),
+(12, 'Kids');
 
 -- --------------------------------------------------------
 
@@ -50,6 +70,7 @@ INSERT INTO `roles` (`id`, `name`) VALUES
 CREATE TABLE `users` (
   `id` int(12) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `nik` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `reset_token` varchar(255) DEFAULT NULL,
@@ -63,14 +84,19 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `reset_token`, `reset_expiry`, `status`, `address`, `role`) VALUES
-(3, 'rere', 'rennard95@gmai.com', '$2y$10$VPZEnjlW9r6vyGJLZ0Z5b../Af8EbOmid0fhR.IkVHi3HjMlylX9m', NULL, NULL, 'offline', 'Jl.Pondok Kelapa', 3),
-(4, 'Cella', 'rennardadit@gmail.com', '$2y$10$0d8K/EwTzot5IdZ.MaRLBejZEEFodzjalfyVKAEKziI6lsMRVSGcG', NULL, NULL, 'online', 'Jl.Anggrek 1', 1),
-(5, 'Batokk', 'rennard95@gmail.com', '$2y$10$QvFmY4aTz4acO0GFAp2IY.H9OZlcfuEViiVRF/La1LI9jMN59sY..', NULL, NULL, 'online', 'Jl.Pondok Kelapa', 2);
+INSERT INTO `users` (`id`, `name`, `nik`, `email`, `password`, `reset_token`, `reset_expiry`, `status`, `address`, `role`) VALUES
+(4, 'Cella', '3175070508081001', 'rennardadit@gmail.com', '$2y$10$UijUV9ClSdIwSZxyb7Ounu/UdVBnO0.qHkH1s8oer6PHeQIXcsb4S', NULL, NULL, 'online', 'Jl.Anggrek 1', 1),
+(6, 'Rennard', '317504170908', 'rennard95@gmail.com', '$2y$10$z5hKgHeSj94uW74Khj6k9uSrBmBIHGE/un9nNRkwN011dFRkCXftq', NULL, NULL, 'offline', 'Jl.Pulo Jahe', 2);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `roles`
@@ -90,6 +116,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
@@ -99,7 +131,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables

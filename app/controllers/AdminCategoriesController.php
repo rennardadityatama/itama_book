@@ -12,6 +12,17 @@ class AdminCategoriesController extends BaseAdminController
         $this->categoryModel = new CategoryModel();
     }
 
+    private function json($status, $message, $data = [])
+    {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'status'  => $status,
+            'message' => $message,
+            'data'    => $data
+        ]);
+        exit;
+    }
+
     // READ - Tampilkan list kategori
     public function index()
     {
@@ -39,6 +50,10 @@ class AdminCategoriesController extends BaseAdminController
 
             if (empty($name)) {
                 throw new Exception('Nama kategori harus diisi');
+            }
+
+            if ($this->categoryModel->findByName($_POST['name'])) {
+                $this->json(false, 'Category name has been already');
             }
 
             $newId = $this->categoryModel->create($name);

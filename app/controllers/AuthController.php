@@ -54,7 +54,7 @@ class AuthController
     }
 
     if (!Csrf::check($_POST['csrf_token'] ?? '')) {
-      $this->json(false, 'CSRF token tidak valid');
+      $this->json(false, 'Invalid CSRF token');
     }
 
     // Ambil input email & password
@@ -62,14 +62,14 @@ class AuthController
     $password = trim($_POST['password'] ?? '');
 
     if (!$email || !$password) {
-      $this->json(false, 'Email dan password wajib diisi');
+      $this->json(false, 'Email and password is required');
     }
 
     // Cek login melalui User model
     $user = $this->user->login($email, $password);
 
     if (!$user) {
-      $this->json(false, 'Email atau password salah');
+      $this->json(false, 'Invalid email or password');
     }
 
     // Regenerate session ID untuk keamanan
@@ -92,7 +92,7 @@ class AuthController
     // Tentukan URL redirect berdasarkan role
     $redirectUrl = Middleware::getUrlByRole((int)$user['role']);
 
-    $this->json(true, 'Login berhasil', [
+    $this->json(true, 'Successfull to Login', [
       'redirect' => $redirectUrl
     ]);
   }
@@ -108,19 +108,24 @@ class AuthController
     }
 
     if (!Csrf::check($_POST['csrf_token'] ?? '')) {
-      $this->json(false, 'CSRF token tidak valid');
+      $this->json(false, 'Invalid CSRF token');
     }
 
     if ($_POST['password'] !== $_POST['confirm_password']) {
-      $this->json(false, 'Password tidak sama');
+      $this->json(false, 'Incorect confirm password');
     }
 
     if ($this->user->findByEmail($_POST['email'])) {
-      $this->json(false, 'Email sudah terdaftar');
+      $this->json(false, 'Email has been already');
+    }
+
+    if ($this->user->findByNik($_POST['nik'])) {
+      $this->json(false, 'NIK has been already');
     }
 
     $this->user->register([
       'name'     => $_POST['name'],
+      'nik'     => $_POST['nik'],
       'email'    => $_POST['email'],
       'password' => $_POST['password'],
       'address'  => $_POST['address'],
@@ -128,7 +133,7 @@ class AuthController
       'status'   => 'offline'
     ]);
 
-    $this->json(true, 'Registrasi berhasil', [
+    $this->json(true, 'Account Created Successfully', [
       'redirect' => BASE_URL . 'index.php?c=auth&m=login'
     ]);
   }
@@ -144,16 +149,16 @@ class AuthController
     }
 
     if (!Csrf::check($_POST['csrf_token'] ?? '')) {
-      $this->json(false, 'CSRF token tidak valid');
+      $this->json(false, 'Invalid CSRF token');
     }
 
     $user = $this->user->findByEmail($_POST['email']);
     if (!$user) {
-      $this->json(false, 'Email tidak terdaftar');
+      $this->json(false, 'Email not registered');
     }
 
     $token  = bin2hex(random_bytes(32));
-    $expiry = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+    $expiry = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
     $this->user->saveResetToken($user['email'], $token, $expiry);
 
@@ -162,14 +167,14 @@ class AuthController
     $body = "
     <p>Klik link berikut untuk reset password:</p>
     <a href='$link'>$link</a>
-    <p>Link berlaku 15 menit</p>
+    <p>Link berlaku 10 menit</p>
   ";
 
     if (!sendMail($user['email'], 'Reset Password', $body)) {
-      $this->json(false, 'Gagal mengirim email');
+      $this->json(false, 'Failed to send email');
     }
 
-    $this->json(true, 'Link reset password berhasil dikirim ke email');
+    $this->json(true, 'Password reset link successfully sent to email');
   }
 
   /* =========================
@@ -181,23 +186,23 @@ class AuthController
     $user  = $this->user->findByToken($token);
 
     if (!$user) {
-      die('Token tidak valid atau kadaluarsa');
+      die('Invalid Token');
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       if (!Csrf::check($_POST['csrf_token'] ?? '')) {
-        $this->json(false, 'CSRF token tidak valid');
+        $this->json(false, 'Invalid CSRF Token');
       }
 
       if ($_POST['password'] !== $_POST['confirm_password']) {
-        $this->json(false, 'Password tidak sama');
+        $this->json(false, 'Incorect Confirm Password');
       }
 
       $this->user->updatePassword($user['id'], $_POST['password']);
       Csrf::destroy();
 
-      $this->json(true, 'Password berhasil diubah');
+      $this->json(true, 'Password has been changed');
       exit;
     }
 

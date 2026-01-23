@@ -99,6 +99,10 @@
                   <input class="form-control" name="name" type="text" required="" placeholder="Your Name">
                 </div>
                 <div class="form-group">
+                  <label class="col-form-label">NIK</label>
+                  <input class="form-control" name="nik" type="text" required="" placeholder="12345...">
+                </div>
+                <div class="form-group">
                   <label class="col-form-label">Email Address</label>
                   <input class="form-control" name="email" type="email" required="" placeholder="Test@gmail.com">
                 </div>

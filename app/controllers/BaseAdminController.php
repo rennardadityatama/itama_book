@@ -15,6 +15,7 @@ class BaseAdminController
 
     protected function render($view, $data = [])
     {
+        $data['js'] = $data['js'] ?? [];
         $data['content'] = BASE_PATH . '/app/views/admin/' . $view . '.php';
         extract($data);
         require_once BASE_PATH . '/app/views/admin/layouts/main.php';
