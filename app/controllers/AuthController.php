@@ -79,8 +79,12 @@ class AuthController
     $_SESSION['user'] = [
       'id'    => $user['id'],
       'name'  => $user['name'],
+      'nik'  => $user['nik'],
+      'address'  => $user['address'],
       'email' => $user['email'],
-      'role'  => (int)$user['role'], // pastikan integer
+      'role'  => (int)$user['role'],
+      'role_name' => $user['role_name'], 
+      'status' => $user['status'], 
     ];
 
     // Update status user jadi online

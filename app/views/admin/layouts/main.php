@@ -37,7 +37,7 @@
     <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/responsive.css">
 </head>
 
-<body onload="startTime()">
+<body>
     <div class="page-wrapper compact-wrapper" id="pageWrapper">
         <?php require_once BASE_PATH . '/app/views/admin/layouts/header.php' ?>
 
@@ -51,17 +51,20 @@
 
     </div>
 
-    
+
     <!-- latest jquery-->
     <script src="<?= BASE_URL ?>/assets/js/jquery-3.6.0.min.js"></script>
-    <?php foreach ($js as $script): ?>
-        <script src="<?= BASE_URL ?>/assets/js/<?= $script ?>"></script>
-    <?php endforeach; ?>
     <!-- Bootstrap js-->
     <script src="<?= BASE_URL ?>/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
     <!-- feather icon js-->
     <script src="<?= BASE_URL ?>/assets/js/icons/feather-icon/feather.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/icons/feather-icon/feather-icon.js"></script>
+    <?php foreach ($js as $script): ?>
+        <script src="<?= BASE_URL ?>/assets/js/<?= $script ?>"></script>
+    <?php endforeach; ?>
+    <!-- Template js-->
+    <script src="<?= BASE_URL ?>/assets/js/script.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/theme-customizer/customizer.js"> </script>
     <!-- scrollbar js-->
     <script src="<?= BASE_URL ?>/assets/js/scrollbar/simplebar.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/scrollbar/custom.js"></script>
@@ -75,7 +78,7 @@
     <script src="<?= BASE_URL ?>/assets/js/prism/prism.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/clipboard/clipboard.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/custom-card/custom-card.js"></script>
-    <script src="<?= BASE_URL ?>/assets/js/notify/bootstrap-notify.min.js"></script>
+    <!-- <script src="<?= BASE_URL ?>/assets/js/notify/bootstrap-notify.min.js"></script> -->
     <script src="<?= BASE_URL ?>/assets/js/vector-map/jquery-jvectormap-2.0.2.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/vector-map/map/jquery-jvectormap-world-mill-en.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/vector-map/map/jquery-jvectormap-us-aea-en.js"></script>
@@ -91,10 +94,6 @@
     <script src="<?= BASE_URL ?>/assets/js/typeahead/typeahead.custom.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/typeahead-search/handlebars.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/typeahead-search/typeahead-custom.js"></script>
-    <!-- Template js-->
-    <script src="<?= BASE_URL ?>/assets/js/script.js"></script>
-    <script src="<?= BASE_URL ?>/assets/js/theme-customizer/customizer.js"> </script>
-    <!-- login js-->
 </body>
 
 </html>

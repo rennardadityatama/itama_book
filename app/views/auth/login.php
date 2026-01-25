@@ -35,45 +35,6 @@ ini_set('display_errors', 1);
   <link id="color" rel="stylesheet" href="<?= BASE_URL ?>/assets/css/color-1.css" media="screen">
   <!-- Responsive css-->
   <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/responsive.css">
-
-  <style>
-    /* Overlay fullscreen */
-    .loader-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.75);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-
-    /* Dual color spinner (ungu + kuning) */
-    .dual-spinner {
-      width: 60px;
-      height: 60px;
-      border: 6px solid transparent;
-      border-top: 6px solid #6f42c1;
-      /* ungu */
-      border-right: 6px solid #ffc107;
-      /* kuning */
-      border-radius: 50%;
-      animation: spin 0.9s linear infinite;
-    }
-
-    @keyframes spin {
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    .loader-wrapper {
-      display: none !important;
-    }
-  </style>
 </head>
 
 <body>
@@ -95,7 +56,7 @@ ini_set('display_errors', 1);
           <div>
             <div><a class="logo" href="login.php"><img class="img-fluid for-light" src="<?= BASE_URL ?>/assets/img/logo.png" alt="looginpage"></a></div>
             <div class="login-main">
-              <form class="theme-form" method="POST" action="<?= BASE_URL ?>index.php?c=auth&m=loginProcess" id="loginForm">
+              <form class="theme-form" method="POST" id="loginForm">
                 <input type="hidden" name="csrf_token" value="<?= Csrf::token(); ?>">
                 <h4 class="text-center">Sign in to account</h4>
                 <p class="text-center">Enter your email & password to login</p>
@@ -116,7 +77,10 @@ ini_set('display_errors', 1);
                     <label class="text-muted" for="checkbox1">Remember password</label>
                   </div><a class="link" onclick="goForgot(event)">Forgot password?</a>
                   <div class="text-end mt-3">
-                    <button class="btn btn-primary btn-block w-100" type="submit">Sign in </button>
+                    <button class="btn btn-primary btn-block w-100" type="submit" id="loginBtn">
+                      <span class="btn-text">Sign in</span>
+                      <span class="spinner-border spinner-border-sm d-none" id="loginSpinner"></span>
+                    </button>
                   </div>
                 </div>
                 <p class="mt-4 mb-0 text-center">Don't have account?<a class="ms-2" href="<?= BASE_URL ?>index.php?c=auth&m=register">Create Account</a></p>
@@ -125,11 +89,6 @@ ini_set('display_errors', 1);
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Global Loading Spinner -->
-    <div id="globalLoader" class="loader-overlay d-none">
-      <div class="dual-spinner"></div>
     </div>
 
     <!-- Toast Container -->
@@ -146,14 +105,6 @@ ini_set('display_errors', 1);
     </div>
 
     <script>
-      function showLoader() {
-        document.getElementById('globalLoader').classList.remove('d-none');
-      }
-
-      function hideLoader() {
-        document.getElementById('globalLoader').classList.add('d-none');
-      }
-
       function goForgot(e) {
         e.preventDefault();
 
@@ -191,25 +142,45 @@ ini_set('display_errors', 1);
 
       document.getElementById('loginForm').addEventListener('submit', async e => {
         e.preventDefault();
-        showLoader();
 
-        const res = await fetch('<?= BASE_URL ?>index.php?c=auth&m=loginProcess', {
-          method: 'POST',
-          body: new FormData(e.target)
-        });
+        const btn = document.getElementById('loginBtn');
+        const spinner = document.getElementById('loginSpinner');
+        const btnText = btn.querySelector('.btn-text');
 
-        const text = await res.text();
-        console.log('Server response:', text);
+        btn.disabled = true;
+        btnText.classList.add('d-none');
+        spinner.classList.remove('d-none');
 
         try {
-          const json = JSON.parse(text);
+          const res = await fetch('<?= BASE_URL ?>index.php?c=auth&m=loginProcess', {
+            method: 'POST',
+            body: new FormData(e.currentTarget),
+            credentials: 'same-origin'
+          });
+
+          const json = await res.json();
+
+          // toast (opsional, tapi tetap bagus)
           showToast(json.message, json.status ? 'success' : 'danger');
+
           if (json.status && json.data.redirect) {
-            window.location.href = json.data.redirect;
+            // langsung redirect (tanpa delay panjang)
+            setTimeout(() => {
+              window.location.href = json.data.redirect;
+            }, 600);
+          } else {
+            // gagal → balikin tombol
+            btn.disabled = false;
+            spinner.classList.add('d-none');
+            btnText.classList.remove('d-none');
           }
+
         } catch (err) {
-          showToast('Response bukan JSON, lihat console', 'danger');
-          console.log('Parse error:', err);
+          console.error(err);
+          showToast('Login gagal, coba lagi', 'danger');
+          btn.disabled = false;
+          spinner.classList.add('d-none');
+          btnText.classList.remove('d-none');
         }
       });
     </script>

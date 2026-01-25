@@ -49,7 +49,7 @@ class AdminCategoriesController extends BaseAdminController
             $name = trim($_POST['name'] ?? '');
 
             if (empty($name)) {
-                throw new Exception('Nama kategori harus diisi');
+                throw new Exception('Category name is required');
             }
 
             if ($this->categoryModel->findByName($_POST['name'])) {
@@ -61,11 +61,11 @@ class AdminCategoriesController extends BaseAdminController
             if ($newId) {
                 echo json_encode([
                     'success' => true,
-                    'message' => 'Kategori berhasil ditambahkan',
+                    'message' => 'Category added successfully',
                     'id'      => $newId
                 ]);
             } else {
-                throw new Exception('Gagal menambahkan kategori');
+                throw new Exception('Failed to add category');
             }
         } catch (Exception $e) {
             http_response_code(400);
@@ -91,7 +91,7 @@ class AdminCategoriesController extends BaseAdminController
                     'data' => $category
                 ]);
             } else {
-                throw new Exception('Kategori tidak ditemukan');
+                throw new Exception('Category not found');
             }
         } catch (Exception $e) {
             http_response_code(404);
@@ -116,7 +116,11 @@ class AdminCategoriesController extends BaseAdminController
             $name = trim($_POST['name'] ?? '');
 
             if (empty($name)) {
-                throw new Exception('Nama kategori harus diisi');
+                throw new Exception('Category name is required');
+            }
+
+            if ($this->categoryModel->findByName($_POST['name'])) {
+                $this->json(false, 'Category name has been already');
             }
 
             $result = $this->categoryModel->update($id, $name);
@@ -124,10 +128,10 @@ class AdminCategoriesController extends BaseAdminController
             if ($result) {
                 echo json_encode([
                     'success' => true,
-                    'message' => 'Kategori berhasil diupdate'
+                    'message' => 'Category successfully update'
                 ]);
             } else {
-                throw new Exception('Gagal mengupdate kategori');
+                throw new Exception('Failed update category');
             }
         } catch (Exception $e) {
             http_response_code(400);
@@ -154,10 +158,10 @@ class AdminCategoriesController extends BaseAdminController
             if ($result) {
                 echo json_encode([
                     'success' => true,
-                    'message' => 'Kategori berhasil dihapus'
+                    'message' => 'Category has been added'
                 ]);
             } else {
-                throw new Exception('Gagal menghapus kategori');
+                throw new Exception('Failed deleting category');
             }
         } catch (Exception $e) {
             http_response_code(400);

@@ -11,6 +11,22 @@ class User
     $this->db = Database::getInstance();
   }
 
+  public function findById($id)
+  {
+    $stmt = $this->db->prepare("
+        SELECT 
+            u.*, 
+            r.name AS role_name
+        FROM users u
+        LEFT JOIN roles r ON u.role = r.id
+        WHERE u.id = ?
+        LIMIT 1
+    ");
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+
   public function findByEmail($email)
   {
     $stmt = $this->db->prepare(
@@ -29,6 +45,28 @@ class User
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
+  public function updateProfile($id, $data)
+  {
+    if (empty($data)) {
+        return false; // tidak ada yang diupdate
+    }
+    
+    $fields = [];
+    $params = [];
+
+    foreach ($data as $key => $value) {
+      $fields[] = "$key = :$key";
+      $params[":$key"] = $value;
+    }
+
+    $params[':id'] = $id;
+
+    $sql = "UPDATE users SET " . implode(', ', $fields) . " WHERE id = :id";
+
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute($params);
+  }
+
 
   /* =========================
      AUTH / LOGIN
@@ -36,7 +74,18 @@ class User
 
   public function login($email, $password)
   {
-    $user = $this->findByEmail($email);
+    $stmt = $this->db->prepare("
+    SELECT 
+      u.*, 
+      r.name AS role_name
+    FROM users u
+    LEFT JOIN roles r ON u.role = r.id
+    WHERE u.email = ?
+    LIMIT 1
+  ");
+
+    $stmt->execute([$email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$user) {
       return false; // email tidak ditemukan

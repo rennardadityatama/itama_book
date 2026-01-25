@@ -1,7 +1,7 @@
 <?php
 
 // Base URL
-define('BASE_URL', 'http://localhost/itama_book/public/');
+define('BASE_URL', 'https://localhost/itama_book/public/');
 
 // App Name
 define('APP_NAME', 'iTAMA Book');
