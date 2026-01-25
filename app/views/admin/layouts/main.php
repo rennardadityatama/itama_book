@@ -78,7 +78,7 @@
     <script src="<?= BASE_URL ?>/assets/js/prism/prism.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/clipboard/clipboard.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/custom-card/custom-card.js"></script>
-    <!-- <script src="<?= BASE_URL ?>/assets/js/notify/bootstrap-notify.min.js"></script> -->
+    <script src="<?= BASE_URL ?>/assets/js/notify/bootstrap-notify.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/vector-map/jquery-jvectormap-2.0.2.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/vector-map/map/jquery-jvectormap-world-mill-en.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/vector-map/map/jquery-jvectormap-us-aea-en.js"></script>

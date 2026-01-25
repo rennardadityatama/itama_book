@@ -33,7 +33,7 @@
                 </li>
                 <li class="sidebar-list">
                     <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=admin&m=seller">
+                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=adminSeller&m=index">
                     <i data-feather="users"> </i>
                     <span>List Seller</span></a>
                     </li>

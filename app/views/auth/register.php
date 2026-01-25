@@ -100,7 +100,7 @@
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">NIK</label>
-                  <input class="form-control" name="nik" type="text" required="" placeholder="12345...">
+                  <input class="form-control" name="nik" type="text" required="" placeholder="3175...">
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">Email Address</label>
@@ -125,13 +125,20 @@
                   <input class="form-control" name="address" type="text" required="" placeholder="Your Address">
                 </div>
                 <div class="form-group">
-                  <label class="form-label" for="validationCustom04">Role</label>
-                  <select class="form-select" id="validationCustom04" name="role" required="">
+                  <label class="form-label" for="roleSelect">Role</label>
+                  <select class="form-select" id="roleSelect" name="role" required="">
                     <option selected="" disabled="" value="">Choose Your Role...</option>
                     <option value="2">Seller</option>
                     <option value="3">Customer</option>
                   </select>
-                  <div class="invalid-feedback">Please select a valid state.</div>
+                </div>
+                <!-- Kolom tambahan khusus Seller -->
+                <div class="form-group" id="sellerFields" style="display: none;">
+                  <label class="form-label">Account Number</label>
+                  <input class="form-control" name="account_number" type="text" placeholder="Your Account Number">
+
+                  <label class="form-label mt-3">Qris's Photo</label>
+                  <input class="form-control" name="qris_photo" type="file" placeholder="Your Qris Photo">
                 </div>
                 <div class="form-group mb-0">
                   <button class="btn btn-primary btn-block w-100 mt-3" type="submit">Create</button>
@@ -163,6 +170,27 @@
     </div>
 
     <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const roleSelect = document.getElementById('roleSelect');
+        const sellerFields = document.getElementById('sellerFields');
+        const accountInput = sellerFields.querySelector('input[name="account_number"]');
+        const qrisInput = sellerFields.querySelector('input[name="qris_photo"]');
+
+        roleSelect.addEventListener('change', function() {
+          if (this.value === '2') { // Seller
+            sellerFields.style.display = 'block';
+            accountInput.required = true;
+            qrisInput.required = true;
+          } else { // Customer atau lain
+            sellerFields.style.display = 'none';
+            accountInput.required = false;
+            qrisInput.required = false;
+            accountInput.value = '';
+            qrisInput.value = '';
+          }
+        });
+      });
+
       function showLoader() {
         document.getElementById('globalLoader').classList.remove('d-none');
       }

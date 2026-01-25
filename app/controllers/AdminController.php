@@ -37,13 +37,6 @@ class AdminController extends BaseAdminController
             'menu'  => 'customer'
         ]);
     }
-    public function seller()
-    {
-        $this->render('seller_list', [
-            'title' => 'List Seller | iTama Book',
-            'menu'  => 'seller'
-        ]);
-    }
 
     public function profile()
     {

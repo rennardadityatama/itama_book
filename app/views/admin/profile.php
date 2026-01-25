@@ -15,7 +15,7 @@
     <div class="page-title">
       <div class="row">
         <div class="col-sm-6">
-          <h3>User Profile</h3>
+          <h3>Account Profile </h3>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb">
@@ -46,7 +46,9 @@
                     <div class="ratio ratio-1x1 mx-auto mb-2" style="width:90px">
                       <img
                         class="img-fluid rounded-circle object-fit-cover"
-                        id="avatarPreview">
+                        id="avatarPreview"
+                        src="<?= !empty($user['avatar']) ? BASE_URL . '/uploads/avatars/' . htmlspecialchars($user['avatar']) : BASE_URL . '/assets/images/default-avatar.png' ?>"
+                        alt="Avatar">
                     </div>
                     <div class="flex-grow-1 ms-3">
                       <h4 class="mb-1 f-20 txt-primary">

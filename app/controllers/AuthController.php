@@ -83,8 +83,9 @@ class AuthController
       'address'  => $user['address'],
       'email' => $user['email'],
       'role'  => (int)$user['role'],
-      'role_name' => $user['role_name'], 
-      'status' => $user['status'], 
+      'role_name' => $user['role_name'],
+      'status' => $user['status'],
+      'avatar' => $user['avatar'],
     ];
 
     // Update status user jadi online
@@ -127,6 +128,47 @@ class AuthController
       $this->json(false, 'NIK has been already');
     }
 
+    $role = $_POST['role'];
+
+    // Default values for optional seller fields
+    $account_number = null;
+    $qris_photo = null;
+
+    if ($role == '2') { // Seller
+      $account_number = trim($_POST['account_number'] ?? '');
+      if (empty($account_number)) {
+        $this->json(false, 'Account Number is required for Seller');
+      }
+
+      if (empty($_FILES['qris_photo']['name'])) {
+        $this->json(false, 'QRIS Photo is required for Seller');
+      } else {
+        $file = $_FILES['qris_photo'];
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+        if (!in_array($file['type'], $allowedTypes)) {
+          $this->json(false, 'QRIS photo must be jpg, jpeg, or png');
+        }
+
+        if ($file['size'] > 2 * 1024 * 1024) {
+          $this->json(false, 'QRIS photo size must be under 2MB');
+        }
+
+        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $random = substr(bin2hex(random_bytes(3)), 0, 5);
+        $filename = "qris_{$random}.{$ext}";
+        $uploadDir  = BASE_PATH . '/public/uploads/qris/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+        $uploadPath = $uploadDir . $filename;
+
+        if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
+          $this->json(false, 'Failed to upload QRIS photo');
+        }
+
+        $qris_photo = $filename;
+      }
+    }
+
     $this->user->register([
       'name'     => $_POST['name'],
       'nik'     => $_POST['nik'],
@@ -134,6 +176,8 @@ class AuthController
       'password' => $_POST['password'],
       'address'  => $_POST['address'],
       'role'     => $_POST['role'],
+      'account_number' => $account_number,
+      'qris_photo'     => $qris_photo,
       'status'   => 'offline'
     ]);
 

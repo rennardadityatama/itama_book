@@ -48,9 +48,9 @@ class User
   public function updateProfile($id, $data)
   {
     if (empty($data)) {
-        return false; // tidak ada yang diupdate
+      return false; // tidak ada yang diupdate
     }
-    
+
     $fields = [];
     $params = [];
 
@@ -113,8 +113,8 @@ class User
   public function register($data)
   {
     $stmt = $this->db->prepare("
-      INSERT INTO users (name, nik, email, password, address, role, status)
-      VALUES (:name, :nik, :email, :password, :address, :role, :status)
+      INSERT INTO users (name, nik, email, password, address, role, status, account_number, qris_photo  )
+      VALUES (:name, :nik, :email, :password, :address, :role, :status, :account_number, :qris_photo)
     ");
 
     return $stmt->execute([
@@ -124,6 +124,8 @@ class User
       ':password' => password_hash($data['password'], PASSWORD_DEFAULT),
       ':address'  => $data['address'],
       ':role'     => $data['role'],
+      ':account_number' => $data['account_number'] ?? null,
+      ':qris_photo'     => $data['qris_photo'] ?? null,
       ':status'   => $data['status']
     ]);
   }
