@@ -107,6 +107,10 @@
                   <input class="form-control" name="email" type="email" required="" placeholder="Test@gmail.com">
                 </div>
                 <div class="form-group">
+                  <label class="col-form-label">Phone Number</label>
+                  <input class="form-control" name="phone" type="text" required="" placeholder="0822....">
+                </div>
+                <div class="form-group">
                   <label class="col-form-label">Password</label>
                   <div class="form-input position-relative">
                     <input class="form-control" type="password" name="password" required="" placeholder="*********">

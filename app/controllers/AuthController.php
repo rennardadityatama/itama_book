@@ -117,7 +117,7 @@ class AuthController
     }
 
     if ($_POST['password'] !== $_POST['confirm_password']) {
-      $this->json(false, 'Incorect confirm password');
+      $this->json(false, 'Incorrect confirm password');
     }
 
     if ($this->user->findByEmail($_POST['email'])) {
@@ -128,10 +128,13 @@ class AuthController
       $this->json(false, 'NIK has been already');
     }
 
+    if ($this->user->findByPhone($_POST['phone'])) {
+      $this->json(false, 'Phone Number has been already');
+    }
+
     $role = $_POST['role'];
 
-    // Default values for optional seller fields
-    $account_number = null;
+    $account_number = '';
     $qris_photo = null;
 
     if ($role == '2') { // Seller
@@ -170,15 +173,16 @@ class AuthController
     }
 
     $this->user->register([
-      'name'     => $_POST['name'],
-      'nik'     => $_POST['nik'],
-      'email'    => $_POST['email'],
-      'password' => $_POST['password'],
-      'address'  => $_POST['address'],
-      'role'     => $_POST['role'],
+      'name'           => $_POST['name'],
+      'nik'            => $_POST['nik'],
+      'email'          => $_POST['email'],
+      'password'       => $_POST['password'],
+      'phone'          => $_POST['phone'],
+      'address'        => $_POST['address'],
+      'role'           => $role,
       'account_number' => $account_number,
       'qris_photo'     => $qris_photo,
-      'status'   => 'offline'
+      'status'         => 'offline'
     ]);
 
     $this->json(true, 'Account Created Successfully', [
@@ -262,23 +266,68 @@ class AuthController
   ========================= */
   public function logout()
   {
+    // Validasi metode request
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-      http_response_code(405);
-      exit('Method Not Allowed');
+      $_SESSION['toast'] = [
+        'type' => 'error',
+        'message' => 'Method tidak diizinkan'
+      ];
+      header('Location: ' . BASE_URL . 'index.php?c=auth&m=login');
+      exit;
     }
 
+    // Validasi CSRF token
     if (!Csrf::check($_POST['csrf_token'] ?? '')) {
-      http_response_code(403);
-      exit('CSRF token tidak valid');
+      $_SESSION['toast'] = [
+        'type' => 'error',
+        'message' => 'Token keamanan tidak valid'
+      ];
+      header('Location: ' . BASE_URL);
+      exit;
     }
 
-    if (isset($_SESSION['user'])) {
-      $this->user->setStatus($_SESSION['user']['id'], 'offline');
+    try {
+      // Update status user menjadi offline jika ada
+      if (isset($_SESSION['user'])) {
+        $this->user->setStatus($_SESSION['user']['id'], 'offline');
+      }
+
+      // Hapus semua session data
+      $_SESSION = array();
+
+      // Hapus session cookie
+      if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(
+          session_name(),
+          '',
+          time() - 42000,
+          $params["path"],
+          $params["domain"],
+          $params["secure"],
+          $params["httponly"]
+        );
+      }
+
+      // Hancurkan session
+      session_destroy();
+
+      // Redirect ke halaman login dengan pesan sukses
+      $_SESSION['toast'] = [
+        'type' => 'success',
+        'message' => 'Berhasil logout'
+      ];
+
+      header('Location: ' . BASE_URL . 'index.php?c=auth&m=login');
+      exit;
+    } catch (Exception $e) {
+      // Jika error, tetap redirect ke login
+      $_SESSION['toast'] = [
+        'type' => 'error',
+        'message' => 'Terjadi kesalahan saat logout'
+      ];
+      header('Location: ' . BASE_URL . 'index.php?c=auth&m=login');
+      exit;
     }
-
-    session_destroy();
-
-    header('Location: ' . BASE_URL . 'index.php?c=auth&m=login');
-    exit;
   }
 }

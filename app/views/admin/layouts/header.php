@@ -59,12 +59,27 @@
               </ul>
             </li>
             <li class="maximize"><a href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize-2"></i></a></li>
-            <?php use Csrf; ?>
+            <?php
+
+            use Csrf; ?>
             <li class="profile-nav onhover-dropdown">
               <div class="account-user"><i data-feather="user"></i></div>
               <ul class="profile-dropdown onhover-show-div">
                 <li><a href="<?= BASE_URL ?>/index.php?c=admin&m=profile"><i data-feather="user"></i><span>Account</span></a></li>
-                <li><a href=""><i data-feather="log-in"> </i><span>Log out</span></a></li>
+                <li>
+                  <form action="<?= BASE_URL ?>index.php?c=auth&m=logout" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?= Csrf::token(); ?>">
+
+                    <button type="submit"
+                      class="btn btn-link text-dark p-0 w-100 text-start"
+                      style="text-decoration: none; border: none; background: none;">
+                      <div class="d-flex align-items-center">
+                        <i data-feather="log-out" class="me-2"></i>
+                        <span>Log out</span>
+                      </div>
+                    </button>
+                  </form>
+                </li>
               </ul>
             </li>
           </ul>

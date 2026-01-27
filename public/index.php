@@ -8,6 +8,7 @@ session_start();
 require_once '../config/config.php';
 require_once '../app/helpers/mailer.php';
 require_once '../app/helpers/role.php';
+require_once BASE_PATH . '/vendor/autoload.php';
 
 // Controller & method
 $controller = $_GET['c'] ?? 'auth';

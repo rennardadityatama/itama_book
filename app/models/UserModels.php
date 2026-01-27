@@ -45,6 +45,15 @@ class User
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
+  public function findByPhone($phone)
+  {
+    $stmt = $this->db->prepare(
+      "SELECT * FROM users WHERE phone = ? LIMIT 1"
+    );
+    $stmt->execute([$phone]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
   public function updateProfile($id, $data)
   {
     if (empty($data)) {
@@ -113,20 +122,21 @@ class User
   public function register($data)
   {
     $stmt = $this->db->prepare("
-      INSERT INTO users (name, nik, email, password, address, role, status, account_number, qris_photo  )
-      VALUES (:name, :nik, :email, :password, :address, :role, :status, :account_number, :qris_photo)
+      INSERT INTO users (name, nik, email, password, phone, address, role, status, account_number, qris_photo  )
+      VALUES (:name, :nik, :email, :password, :phone, :address, :role, :status, :account_number, :qris_photo)
     ");
 
     return $stmt->execute([
-      ':name'     => $data['name'],
-      ':nik'      => $data['nik'],
-      ':email'    => $data['email'],
-      ':password' => password_hash($data['password'], PASSWORD_DEFAULT),
-      ':address'  => $data['address'],
-      ':role'     => $data['role'],
-      ':account_number' => $data['account_number'] ?? null,
+      ':name'           => $data['name'],
+      ':nik'            => $data['nik'],
+      ':email'          => $data['email'],
+      ':password'       => password_hash($data['password'], PASSWORD_DEFAULT),
+      ':phone'          => $data['phone'],
+      ':address'        => $data['address'],
+      ':role'           => $data['role'],
+      ':account_number' => !empty($data['account_number']) ? $data['account_number'] : '',
       ':qris_photo'     => $data['qris_photo'] ?? null,
-      ':status'   => $data['status']
+      ':status'         => $data['status']
     ]);
   }
 

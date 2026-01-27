@@ -1,10 +1,10 @@
 <?php
-require_once BASE_PATH . '/app/controllers/BaseAdminController.php';
+require_once BASE_PATH . '/app/controllers/BaseSellerController.php';
 require_once BASE_PATH . '/app/models/CategoryModels.php';
 require_once BASE_PATH . '/app/models/Database.php';
 
 
-class SellerController extends BaseAdminController
+class SellerController extends BaseSellerController
 {
   public function __construct()
   {

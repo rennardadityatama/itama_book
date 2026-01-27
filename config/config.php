@@ -8,6 +8,10 @@ define('APP_NAME', 'iTAMA Book');
 
 define('BASE_PATH', dirname(__DIR__));
 
+define('PUBLIC_PATH', BASE_PATH . '/public');
+
+define('UPLOAD_PATH', PUBLIC_PATH . '/uploads');
+
 // Database
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'itama_book');
