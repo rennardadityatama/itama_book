@@ -74,8 +74,8 @@ ini_set('display_errors', 1);
                 <div class="form-group mb-0">
                   <div class="checkbox p-0">
                     <input id="checkbox1" type="checkbox">
-                    <label class="text-muted" for="checkbox1">Remember password</label>
-                  </div><a class="link" onclick="goForgot(event)">Forgot password?</a>
+                    <a class="link" href="<?= BASE_URL ?>index.php?c=auth&m=forgot">Forgot password?</a>
+                  </div>
                   <div class="text-end mt-3">
                     <button class="btn btn-primary btn-block w-100" type="submit" id="loginBtn">
                       <span class="btn-text">Sign in</span>
@@ -105,16 +105,6 @@ ini_set('display_errors', 1);
     </div>
 
     <script>
-      function goForgot(e) {
-        e.preventDefault();
-
-        showLoader();
-
-        setTimeout(() => {
-          window.location.href = "<?= BASE_URL ?>index.php?c=auth&m=forgot";
-        }, 500); // delay biar spinner kelihatan
-      }
-
       function showToast(message, type = 'success') {
         const toastEl = document.getElementById('appToast');
         const toastMsg = document.getElementById('toastMessage');
@@ -139,6 +129,22 @@ ini_set('display_errors', 1);
 
         toast.show();
       }
+
+      document.addEventListener('click', function(e) {
+        const toggle = e.target.closest('.show-hide');
+        if (!toggle) return;
+
+        const input = toggle.previousElementSibling;
+        if (!input || input.tagName !== 'INPUT') return;
+
+        if (input.type === 'password') {
+          input.type = 'text';
+          toggle.classList.add('show');
+        } else {
+          input.type = 'password';
+          toggle.classList.remove('show');
+        }
+      });
 
       document.getElementById('loginForm').addEventListener('submit', async e => {
         e.preventDefault();
