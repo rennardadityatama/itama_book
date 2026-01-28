@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 23, 2026 at 05:07 AM
+-- Generation Time: Jan 28, 2026 at 03:19 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -37,8 +37,7 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`) VALUES
-(2, 'Book'),
-(8, 'Pencil'),
+(2, 'Pencil'),
 (12, 'Kids');
 
 -- --------------------------------------------------------
@@ -73,20 +72,27 @@ CREATE TABLE `users` (
   `nik` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
   `reset_token` varchar(255) DEFAULT NULL,
   `reset_expiry` datetime DEFAULT NULL,
   `status` enum('online','offline') NOT NULL DEFAULT 'offline',
   `address` varchar(255) NOT NULL,
-  `role` int(11) NOT NULL
+  `role` int(11) NOT NULL,
+  `avatar` varchar(255) NOT NULL,
+  `account_number` varchar(255) NOT NULL DEFAULT '',
+  `qris_photo` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `nik`, `email`, `password`, `reset_token`, `reset_expiry`, `status`, `address`, `role`) VALUES
-(4, 'Cella', '3175070508081001', 'rennardadit@gmail.com', '$2y$10$UijUV9ClSdIwSZxyb7Ounu/UdVBnO0.qHkH1s8oer6PHeQIXcsb4S', NULL, NULL, 'online', 'Jl.Anggrek 1', 1),
-(6, 'Rennard', '317504170908', 'rennard95@gmail.com', '$2y$10$z5hKgHeSj94uW74Khj6k9uSrBmBIHGE/un9nNRkwN011dFRkCXftq', NULL, NULL, 'offline', 'Jl.Pulo Jahe', 2);
+INSERT INTO `users` (`id`, `name`, `nik`, `email`, `password`, `phone`, `reset_token`, `reset_expiry`, `status`, `address`, `role`, `avatar`, `account_number`, `qris_photo`) VALUES
+(4, 'cella', '3175070508081001', 'rennardadit@gmail.com', '$2y$10$P53Ry9F6mc7fMHLhUpVUk.VJUIiXSgx6m6YepB8ctAhkfF1a6BomS', '', NULL, NULL, 'online', 'Jl. Kav Kuningan', 1, '4_ce857.jpg', '', ''),
+(13, 'reganre', '12432435', 'reganre23@gmail.com', '$2y$10$AYWgG/lwVYUWGZ.yDOWse..qZmt.D.o8rOsxG5DgbVTmcRkd6mhjq', '', NULL, NULL, 'offline', 'Jl.Pulo Jahe', 2, 'avatar_1769350264_786.jpg', '1120365478', 'qris_1769351427_939.jpg'),
+(14, 'calistar', '15435484332', 'rennard95@gmail.com', '$2y$10$Ez3aIYoNyCV6tCAJC17tzOkiJPa77pQg7AqmN9ozYnVYEiGkk3PAm', '', NULL, NULL, 'offline', 'JL.Nusa Indah', 2, 'avatar_1769351908_706.jpg', '3545675643256', 'qris_1769351908_120.jpg'),
+(15, 'Goyun', '1231463242422', 'jungie@gmail.com', '$2y$10$1UFBuZSLlyPZFhTyrSN5u.4SxbaiLk6Kh2AsWkNe9mEfUBp4gpMC.', '082213521461', NULL, NULL, 'offline', 'Jl.Kanada Jepang', 3, 'avatar_1769596866_600.jpg', '', NULL),
+(16, 'tama', '1687423942', 'tama@gmail.com', '$2y$10$IkDvU.p.BPof3V6woQo2Xe7kalXGZ63MDJaboGQ0qZKiPbJ78D1f6', '081384421151', NULL, NULL, 'offline', 'Jl.Kanada Jepang', 3, 'avatar_1769596850_540.jpg', '', NULL);
 
 --
 -- Indexes for dumped tables
@@ -119,7 +125,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -131,7 +137,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables
