@@ -1,5 +1,7 @@
 <?php
 require_once BASE_PATH . '/app/controllers/BaseAdminController.php';
+require_once BASE_PATH . '/app/models/ProductModels.php';
+require_once BASE_PATH . '/app/models/OrderModels.php';
 require_once BASE_PATH . '/app/models/CategoryModels.php';
 require_once BASE_PATH . '/app/models/Database.php';
 
@@ -23,18 +25,18 @@ class AdminController extends BaseAdminController
 
     public function dashboard()
     {
+        $productModel  = new ProductModel();
+        $orderModel    = new OrderModel();
+        $categoryModel = new CategoryModel();
+
         $this->render('dashboard', [
             'title' => 'Dashboard | iTama Book',
             'menu'  => 'dashboard',
-            'js'    => ['dashboard/default.js']
-        ]);
-    }
-
-    public function customer()
-    {
-        $this->render('customer_list', [
-            'title' => 'List Customer | iTama Book',
-            'menu'  => 'customer'
+            'js'    => ['dashboard/default.js'],
+            'summary'        => $orderModel->getDashboardSummary(),
+            'best_products' => $productModel->getBestSellingProducts(),
+            'low_stock'     => $productModel->getLowStockProducts(),
+            'top_categories' => $categoryModel->getTopCategories()
         ]);
     }
 
@@ -139,5 +141,16 @@ class AdminController extends BaseAdminController
         }
 
         $this->json(true, 'Profile updated successfully');
+    }
+
+    public function faq()
+    {
+        $user = $this->user->findById($_SESSION['user']['id']);
+
+        $this->render('faq', [
+            'title' => 'FAQ | iTama Book',
+            'menu'  => 'faq',
+            'user'  => $user,
+        ]);
     }
 }

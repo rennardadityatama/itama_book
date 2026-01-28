@@ -40,6 +40,15 @@ class SellerModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function findByACNumber($account_number)
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM users WHERE account_number = :account_number AND role = 2 LIMIT 1"
+        );
+        $stmt->execute([':account_number' => $account_number]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function findByEmailExceptId($email, $id)
     {
         $stmt = $this->db->prepare(
@@ -63,6 +72,20 @@ class SellerModel
         );
         $stmt->execute([
             ':nik' => $nik,
+            ':id'  => $id
+        ]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function findByACNumberExceptId($account_number, $id)
+    {
+        $stmt = $this->db->prepare(
+            "SELECT id FROM users 
+         WHERE account_number = :account_number AND role = 2 AND id != :id 
+         LIMIT 1"
+        );
+        $stmt->execute([
+            ':account_number' => $account_number,
             ':id'  => $id
         ]);
         return $stmt->fetch(PDO::FETCH_ASSOC);

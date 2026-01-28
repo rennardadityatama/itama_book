@@ -12,13 +12,34 @@ class CategoryModel
     }
 
     public function findByName($nik)
-  {
-    $stmt = $this->db->prepare(
-      "SELECT * FROM categories WHERE name = ? LIMIT 1"
-    );
-    $stmt->execute([$nik]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-  }
+    {
+        $stmt = $this->db->prepare(
+            "SELECT * FROM categories WHERE name = ? LIMIT 1"
+        );
+        $stmt->execute([$nik]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getTopCategories($limit = 5)
+    {
+        $sql = "
+        SELECT 
+            c.name AS category,
+            SUM(oi.qty) AS total_sold
+        FROM order_items oi
+        JOIN products p ON p.id = oi.product_id
+        JOIN categories c ON c.id = p.category_id
+        GROUP BY c.id
+        ORDER BY total_sold DESC
+        LIMIT :limit
+    ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     // READ ALL
     public function getAll()

@@ -137,6 +137,10 @@ class AdminSellerController extends BaseAdminController
                 $this->json(false, 'NIK already exists');
             }
 
+            if ($this->sellerModel->findByACNumber($account)) {
+                $this->json(false, 'Account Number already exists');
+            }
+
             $qrisPhoto = null;
             if (!empty($_FILES['qris_photo']['name'])) {
                 $qrisPhoto = $this->uploadQris($_FILES['qris_photo']);
@@ -207,10 +211,15 @@ class AdminSellerController extends BaseAdminController
                 }
             }
 
-            // cek nik duplikat (kecuali dirinya sendiri)
             if (!empty($_POST['nik'])) {
                 if ($this->sellerModel->findByNikExceptId($_POST['nik'], $id)) {
                     $this->json(false, 'NIK already used by another seller');
+                }
+            }
+
+            if (!empty($_POST['account_number'])) {
+                if ($this->sellerModel->findByACNumberExceptId($_POST['account_number'], $id)) {
+                    $this->json(false, 'Account Number already used by another seller');
                 }
             }
 

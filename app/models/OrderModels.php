@@ -268,4 +268,17 @@ class OrderModel
 
         return $order;
     }
+
+    public function getDashboardSummary()
+    {
+        $stmt = $this->db->query("
+        SELECT 
+            (SELECT COUNT(*) FROM orders) AS total_orders,
+            (SELECT SUM(total_amount) FROM orders) AS total_revenue,
+            (SELECT COUNT(*) FROM users WHERE role = 3) AS total_customers,
+            (SELECT COUNT(*) FROM products) AS total_products
+    ");
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

@@ -67,18 +67,16 @@
               <ul class="profile-dropdown onhover-show-div">
                 <li><a href="<?= BASE_URL ?>/index.php?c=admin&m=profile"><i data-feather="user"></i><span>Account</span></a></li>
                 <li>
-                  <form action="<?= BASE_URL ?>index.php?c=auth&m=logout" method="POST">
-                    <input type="hidden" name="csrf_token" value="<?= Csrf::token(); ?>">
-
-                    <button type="submit"
-                      class="btn btn-link text-dark p-0 w-100 text-start"
-                      style="text-decoration: none; border: none; background: none;">
-                      <div class="d-flex align-items-center">
-                        <i data-feather="log-out" class="me-2"></i>
-                        <span>Log out</span>
-                      </div>
-                    </button>
-                  </form>
+                  <button type="button"
+                    class="btn btn-link text-dark p-0 w-100 text-start"
+                    style="text-decoration: none; border: none; background: none;"
+                    data-bs-toggle="modal"
+                    data-bs-target="#logoutModal">
+                    <div class="d-flex align-items-center">
+                      <i data-feather="log-out" class="me-2"></i>
+                      <span>Log out</span>
+                    </div>
+                  </button>
                 </li>
               </ul>
             </li>
@@ -96,3 +94,37 @@
       </div>
     </div>
     <!-- Page Header Ends-->
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirm Logout</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body text-center">
+            <i data-feather="log-out" class="txt-warning mb-2"></i>
+            <p class="mb-0">Apakah kamu yakin ingin logout?</p>
+          </div>
+
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+              Cancel
+            </button>
+
+            <form action="<?= BASE_URL ?>index.php?c=auth&m=logout" method="POST">
+              <input type="hidden" name="csrf_token" value="<?= Csrf::token(); ?>">
+              <button type="submit" class="btn btn-danger">
+                Logout
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      feather.replace()
+    </script>

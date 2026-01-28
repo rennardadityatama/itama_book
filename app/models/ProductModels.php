@@ -68,6 +68,40 @@ class ProductModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getBestSellingProducts($limit = 5)
+    {
+        $sql = "
+        SELECT 
+            p.id,
+            p.name,
+            SUM(oi.qty) AS total_sold
+        FROM order_items oi
+        JOIN products p ON p.id = oi.product_id
+        GROUP BY oi.product_id
+        ORDER BY total_sold DESC
+        LIMIT :limit
+    ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getLowStockProducts($threshold = 5)
+    {
+        $stmt = $this->db->prepare("
+        SELECT id, name, stock 
+        FROM products 
+        WHERE stock <= :threshold
+        ORDER BY stock ASC
+    ");
+        $stmt->execute(['threshold' => $threshold]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // CREATE products
     public function create($data)
     {
