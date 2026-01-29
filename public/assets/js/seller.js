@@ -24,6 +24,31 @@ function showToast(message, type = 'success') {
 }
 
 /* =====================================================
+   LOADER FUNCTIONS
+===================================================== */
+function showLoader() {
+    const loader = document.querySelector('.loader-wrapper');
+    if (loader) {
+        loader.classList.add('loderhide');
+        loader.style.display = 'block';
+    }
+}
+
+function hideLoader() {
+    const loader = document.querySelector('.loader-wrapper');
+    if (loader) {
+        setTimeout(() => {
+            loader.classList.remove('loderhide');
+        }, 500);
+    }
+}
+
+// Hide loader saat halaman selesai dimuat
+window.addEventListener('load', function() {
+    hideLoader();
+});
+
+/* =====================================================
    GLOBAL STATE
 ===================================================== */
 let editSellerId = null;
@@ -38,9 +63,13 @@ function openAddSellerModal() {
 }
 
 function openEditSeller(id) {
+    showLoader(); // Tampilkan loader
+    
     fetch(SELLER_BASE_URL + '&m=show&id=' + id)
         .then(r => r.json())
         .then(res => {
+            hideLoader(); // Sembunyikan loader
+            
             if (!res.success) {
                 showToast(res.message, 'danger');
                 return;
@@ -58,7 +87,10 @@ function openEditSeller(id) {
 
             new bootstrap.Modal(document.getElementById('editModal')).show();
         })
-        .catch(() => showToast('Gagal mengambil data seller', 'danger'));
+        .catch(() => {
+            hideLoader(); // Sembunyikan loader
+            showToast('Gagal mengambil data seller', 'danger');
+        });
 }
 
 function openDeleteSeller(id, name) {
@@ -74,12 +106,17 @@ function openDeleteSeller(id, name) {
 ===================================================== */
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Hide loader saat DOM ready
+    hideLoader();
+
     /* ADD SELLER */
     const addForm = document.getElementById('addForm');
     addForm?.addEventListener('submit', e => {
         e.preventDefault();
 
         const data = new FormData(addForm);
+        
+        showLoader(); // Tampilkan loader
 
         fetch(SELLER_BASE_URL + '&m=store', {
             method: 'POST',
@@ -87,6 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(r => r.json())
         .then(res => {
+            hideLoader(); // Sembunyikan loader
+            
             if (!res.success) {
                 showToast(res.message, 'danger');
                 return;
@@ -97,9 +136,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('addModal')
             ).hide();
 
+            // Tampilkan loader sebelum reload
+            showLoader();
             setTimeout(() => location.reload(), 1200);
         })
-        .catch(() => showToast('Gagal menambah seller', 'danger'));
+        .catch(() => {
+            hideLoader(); // Sembunyikan loader
+            showToast('Gagal menambah seller', 'danger');
+        });
     });
 
     /* EDIT SELLER */
@@ -113,6 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const data = new FormData(editForm);
+        
+        showLoader(); // Tampilkan loader
 
         fetch(SELLER_BASE_URL + '&m=update&id=' + editSellerId, {
             method: 'POST',
@@ -120,6 +166,8 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(r => r.json())
         .then(res => {
+            hideLoader(); // Sembunyikan loader
+            
             if (!res.success) {
                 showToast(res.message, 'danger');
                 return;
@@ -130,9 +178,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('editModal')
             ).hide();
 
+            // Tampilkan loader sebelum reload
+            showLoader();
             setTimeout(() => location.reload(), 1200);
         })
-        .catch(() => showToast('Gagal update seller', 'danger'));
+        .catch(() => {
+            hideLoader(); // Sembunyikan loader
+            showToast('Gagal update seller', 'danger');
+        });
     });
 
     /* DELETE SELLER */
@@ -141,11 +194,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!deleteSellerId) return;
 
+        showLoader(); // Tampilkan loader
+
         fetch(SELLER_BASE_URL + '&m=destroy&id=' + deleteSellerId, {
             method: 'POST'
         })
         .then(r => r.json())
         .then(res => {
+            hideLoader(); // Sembunyikan loader
+            
             if (!res.success) {
                 showToast(res.message, 'danger');
                 return;
@@ -156,9 +213,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('deleteModal')
             ).hide();
 
+            // Tampilkan loader sebelum reload
+            showLoader();
             setTimeout(() => location.reload(), 1200);
         })
-        .catch(() => showToast('Gagal menghapus seller', 'danger'));
+        .catch(() => {
+            hideLoader(); // Sembunyikan loader
+            showToast('Gagal menghapus seller', 'danger');
+        });
     });
 
     /* BUTTON & CARD CLICK */

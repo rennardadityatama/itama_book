@@ -19,6 +19,34 @@
     let deleteCustomerId = null;
 
     /* =====================================================
+       LOADER FUNCTIONS
+    ===================================================== */
+    function showLoader() {
+        const loader = document.getElementById('globalSpinner') || document.querySelector('.loader-wrapper');
+        if (loader) {
+            loader.classList.remove('d-none');
+            loader.classList.add('loderhide');
+            loader.style.display = 'block';
+        }
+    }
+
+    function hideLoader() {
+        const loader = document.getElementById('globalSpinner') || document.querySelector('.loader-wrapper');
+        if (loader) {
+            setTimeout(() => {
+                loader.classList.remove('loderhide');
+                loader.classList.add('d-none');
+                loader.style.display = '';
+            }, 500);
+        }
+    }
+
+    // Hide loader saat halaman selesai dimuat
+    window.addEventListener('load', function() {
+        hideLoader();
+    });
+
+    /* =====================================================
        TOAST
     ===================================================== */
     function showToast(message, type = 'success') {
@@ -57,9 +85,13 @@
     }
 
     function openEditCustomer(id) {
+        showLoader(); // Tampilkan loader
+        
         fetch(`${CUSTOMER_BASE_URL}&m=show&id=${id}`)
             .then(r => r.json())
             .then(res => {
+                hideLoader(); // Sembunyikan loader
+                
                 if (!res.success) {
                     showToast(res.message, 'danger');
                     return;
@@ -77,9 +109,10 @@
 
                 new bootstrap.Modal(document.getElementById('editModal')).show();
             })
-            .catch(() =>
-                showToast('Failed to retrieve customer data', 'danger')
-            );
+            .catch(() => {
+                hideLoader(); // Sembunyikan loader
+                showToast('Failed to retrieve customer data', 'danger');
+            });
     }
 
     function openDeleteCustomer(id, name) {
@@ -97,10 +130,15 @@
     ===================================================== */
     function bindEvents() {
 
+        // Hide loader saat DOM ready
+        hideLoader();
+
         /* ADD */
         const addForm = document.getElementById('addForm');
         addForm?.addEventListener('submit', e => {
             e.preventDefault();
+
+            showLoader(); // Tampilkan loader
 
             fetch(`${CUSTOMER_BASE_URL}&m=store`, {
                 method: 'POST',
@@ -108,6 +146,8 @@
             })
                 .then(r => r.json())
                 .then(res => {
+                    hideLoader(); // Sembunyikan loader
+                    
                     if (!res.success) {
                         showToast(res.message, 'danger');
                         return;
@@ -118,9 +158,14 @@
                         document.getElementById('addModal')
                     )?.hide();
 
+                    // Tampilkan loader sebelum reload
+                    showLoader();
                     setTimeout(() => location.reload(), 1200);
                 })
-                .catch(() => showToast('Error add customer', 'danger'));
+                .catch(() => {
+                    hideLoader(); // Sembunyikan loader
+                    showToast('Error add customer', 'danger');
+                });
         });
 
         /* EDIT */
@@ -133,12 +178,16 @@
                 return;
             }
 
+            showLoader(); // Tampilkan loader
+
             fetch(`${CUSTOMER_BASE_URL}&m=update&id=${editCustomerId}`, {
                 method: 'POST',
                 body: new FormData(editForm)
             })
                 .then(r => r.json())
                 .then(res => {
+                    hideLoader(); // Sembunyikan loader
+                    
                     if (!res.success) {
                         showToast(res.message, 'danger');
                         return;
@@ -149,9 +198,14 @@
                         document.getElementById('editModal')
                     )?.hide();
 
+                    // Tampilkan loader sebelum reload
+                    showLoader();
                     setTimeout(() => location.reload(), 1200);
                 })
-                .catch(() => showToast('Error updating customer', 'danger'));
+                .catch(() => {
+                    hideLoader(); // Sembunyikan loader
+                    showToast('Error updating customer', 'danger');
+                });
         });
 
         /* DELETE */
@@ -159,11 +213,15 @@
         confirmDeleteBtn?.addEventListener('click', () => {
             if (!deleteCustomerId) return;
 
+            showLoader(); // Tampilkan loader
+
             fetch(`${CUSTOMER_BASE_URL}&m=destroy&id=${deleteCustomerId}`, {
                 method: 'POST'
             })
                 .then(r => r.json())
                 .then(res => {
+                    hideLoader(); // Sembunyikan loader
+                    
                     if (!res.success) {
                         showToast(res.message, 'danger');
                         return;
@@ -174,9 +232,14 @@
                         document.getElementById('deleteModal')
                     )?.hide();
 
+                    // Tampilkan loader sebelum reload
+                    showLoader();
                     setTimeout(() => location.reload(), 1200);
                 })
-                .catch(() => showToast('Error deleting customer', 'danger'));
+                .catch(() => {
+                    hideLoader(); // Sembunyikan loader
+                    showToast('Error deleting customer', 'danger');
+                });
         });
 
         /* BUTTONS & CARDS (DELEGATION) */

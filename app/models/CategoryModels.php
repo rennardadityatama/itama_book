@@ -40,6 +40,18 @@ class CategoryModel
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    public function isUsedInCart($categoryId)
+    {
+        $stmt = $this->db->prepare("
+        SELECT COUNT(*)
+        FROM carts c
+        JOIN products p ON c.product_id = p.id
+        WHERE p.category_id = :category_id
+    ");
+        $stmt->execute([':category_id' => $categoryId]);
+        return $stmt->fetchColumn() > 0;
+    }
 
     // READ ALL
     public function getAll()

@@ -153,6 +153,12 @@ class AdminCategoriesController extends BaseAdminController
                 throw new Exception('Method not allowed');
             }
 
+            if ($this->categoryModel->isUsedInCart($id)) {
+                throw new Exception(
+                    'Category cannot be removed because the product is still in the shopping cart.'
+                );
+            }
+
             $result = $this->categoryModel->delete($id);
 
             if ($result) {

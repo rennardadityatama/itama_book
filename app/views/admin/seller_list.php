@@ -1,17 +1,15 @@
 <!-- tap on top starts-->
 <div class="tap-top"><i data-feather="chevrons-up"></i></div>
 <!-- tap on tap ends-->
-
 <!-- Loader starts-->
-<div class="loader-wrapper d-none" id="globalSpinner">
+<div class="loader-wrapper">
   <div class="dot"></div>
   <div class="dot"></div>
   <div class="dot"></div>
-  <div class="dot"></div>
+  <div class="dot"> </div>
   <div class="dot"></div>
 </div>
 <!-- Loader ends-->
-
 <div class="page-body">
   <div class="container-fluid">
     <div class="page-title">

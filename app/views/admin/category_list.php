@@ -1,3 +1,15 @@
+<!-- tap on top starts-->
+<div class="tap-top"><i data-feather="chevrons-up"></i></div>
+<!-- tap on tap ends-->
+<!-- Loader starts-->
+<div class="loader-wrapper">
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"> </div>
+  <div class="dot"></div>
+</div>
+<!-- Loader ends-->
 <div class="page-body">
   <div class="container-fluid">
     <div class="page-title">
@@ -116,6 +128,6 @@
 </div>
 
 <script>
-const CATEGORY_BASE_URL = '<?= BASE_URL ?>/index.php?c=adminCategories';
+  const CATEGORY_BASE_URL = '<?= BASE_URL ?>/index.php?c=adminCategories';
 </script>
 <script src="<?= BASE_URL ?>/assets/js/category.js"></script>

@@ -291,6 +291,12 @@ class AdminSellerController extends BaseAdminController
                 throw new Exception('Seller not found');
             }
 
+            if ($this->sellerModel->hasCart($id)) {
+                throw new Exception(
+                    'Seller cannot be removed because the product is still in the shopping cart.'
+                );
+            }
+
             // Delete QRIS image if exists
             if (!empty($seller['qris_photo'])) {
                 $path = BASE_PATH . '/public/uploads/qris/' . $seller['qris_photo'];

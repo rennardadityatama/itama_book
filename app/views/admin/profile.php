@@ -2,7 +2,7 @@
 <div class="tap-top"><i data-feather="chevrons-up"></i></div>
 <!-- tap on tap ends-->
 <!-- Loader starts-->
-<div class="loader-wrapper d-none" id="globalSpinner">
+<div class="loader-wrapper">
   <div class="dot"></div>
   <div class="dot"></div>
   <div class="dot"></div>
@@ -148,24 +148,39 @@
 <script>
   const editBtn = document.getElementById('btn-edit-profile');
   const form = document.getElementById('editProfileForm');
-  const spinner = document.getElementById('globalSpinner');
+  // UBAH INI - gunakan class sebagai fallback
+  const spinner = document.getElementById('globalSpinner') || document.querySelector('.loader-wrapper');
   const avatarInput = document.getElementById('avatarInput');
   const avatarPreview = document.getElementById('avatarPreview');
   const inputs = form.querySelectorAll('input:not([type=hidden])');
 
   function showSpinner() {
-    spinner.classList.remove('d-none');
+    if (spinner) {
+      spinner.classList.remove('d-none');
+      spinner.classList.add('loderhide');
+      spinner.style.display = 'block';
+    }
   }
 
   function hideSpinner() {
-    spinner.classList.add('d-none');
+    if (spinner) {
+      setTimeout(() => {
+        spinner.classList.remove('loderhide');
+        spinner.classList.add('d-none');
+        spinner.style.display = '';
+      }, 500);
+    }
   }
+
+  // Hide spinner saat halaman dimuat
+  window.addEventListener('load', function() {
+    hideSpinner();
+  });
 
   function showAlert(message, status = true) {
     const container = document.getElementById('alertContainer');
-    if (!container) return alert(message); // fallback
+    if (!container) return alert(message);
 
-    // Hapus alert lama
     container.innerHTML = '';
 
     const alertDiv = document.createElement('div');
@@ -180,7 +195,6 @@
 
     container.appendChild(alertDiv);
 
-    // Auto dismiss setelah 3 detik
     setTimeout(() => {
       bootstrap.Alert.getOrCreateInstance(alertDiv).close();
     }, 3000);
@@ -207,7 +221,10 @@
       const json = await res.json();
       hideSpinner();
       showAlert(json.message, json.status);
-      if (json.status) setTimeout(() => location.reload(), 2000);
+      if (json.status) {
+        showSpinner(); // Tampilkan loader sebelum reload
+        setTimeout(() => location.reload(), 2000);
+      }
     } catch (err) {
       hideSpinner();
       showAlert('There is an error', false);
@@ -250,5 +267,10 @@
       avatarPreview.src = e.target.result;
     };
     reader.readAsDataURL(file);
+  });
+
+  // Hide spinner saat DOM ready
+  document.addEventListener('DOMContentLoaded', function() {
+    hideSpinner();
   });
 </script>

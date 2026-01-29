@@ -58,6 +58,7 @@
     <!-- feather icon js-->
     <script src="<?= BASE_URL ?>/assets/js/icons/feather-icon/feather.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/icons/feather-icon/feather-icon.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/timeline/timeline-v-1/main.js"></script>
     <?php foreach ($js as $script): ?>
         <script src="<?= BASE_URL ?>/assets/js/<?= $script ?>"></script>
     <?php endforeach; ?>
