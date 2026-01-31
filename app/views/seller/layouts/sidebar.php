@@ -33,7 +33,7 @@
                 </li>
                 <li class="sidebar-list">
                     <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=adminSeller&m=index">
+                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=sellerPublicList&m=index">
                     <i data-feather="users"> </i>
                     <span>Seller List</span></a>
                     </li>
@@ -51,7 +51,7 @@
                 </li>
                 <li class="sidebar-list">
                     <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=admin&m=customer">
+                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=sellerChat&m=index">
                     <i data-feather="message-circle"> </i>
                     <span>Chat</span></a>
                 </li>

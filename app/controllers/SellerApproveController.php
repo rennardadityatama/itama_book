@@ -27,6 +27,8 @@ class SellerApproveController extends BaseSellerController
 
         // Render view
         $this->render('approve', [
+            'title' => 'Approve | iTama Book',
+            'menu'  => 'approve',
             'orders' => $orders
         ]);
     }
@@ -100,7 +102,7 @@ class SellerApproveController extends BaseSellerController
         }
 
         // Update status order jadi 'refund'
-        $this->orderModel->updateOrderStatus($orderId, 'refund');
+        $this->orderModel->rejectOrder($orderId);
 
         $_SESSION['toast'] = ['type' => 'warning', 'message' => 'Order rejected'];
         header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
@@ -179,6 +181,54 @@ class SellerApproveController extends BaseSellerController
         // Redirect ke gambar payment proof
         $paymentProofUrl = BASE_URL . 'uploads/payments/' . $order['payment_proof'];
         header('Location: ' . $paymentProofUrl);
+        exit;
+    }
+
+    public function deleteExpiredRefund()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit;
+        }
+
+        $this->orderModel->autoDeleteExpiredRefundOrders();
+        echo json_encode(['status' => 'ok']);
+    }
+
+    public function deleteRefundOrder()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
+            exit;
+        }
+
+        $orderId = $_POST['order_id'] ?? null;
+        $sellerId = $_SESSION['user']['id'];
+
+        if (!$orderId) {
+            $_SESSION['toast'] = ['type' => 'danger', 'message' => 'Order not found'];
+            header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
+            exit;
+        }
+
+        $order = $this->orderModel->getOrderByIdForSeller($orderId, $sellerId);
+
+        if (!$order || $order['status'] !== 'refund') {
+            $_SESSION['toast'] = ['type' => 'danger', 'message' => 'Invalid action'];
+            header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
+            exit;
+        }
+
+        if (strtotime($order['refunded_at']) > time() - 60) {
+            $_SESSION['toast'] = ['type' => 'warning', 'message' => 'Please wait 1 minute before deleting'];
+            header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
+            exit;
+        }
+
+        $this->orderModel->deleteOrderById($orderId);
+
+        $_SESSION['toast'] = ['type' => 'success', 'message' => 'Refunded order deleted'];
+        header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
         exit;
     }
 }

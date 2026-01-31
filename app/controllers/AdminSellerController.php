@@ -100,6 +100,8 @@ class AdminSellerController extends BaseAdminController
      */
     public function index()
     {
+        $sellers = $this->user->getUsersWithStatus([2]);
+
         $this->render('seller_list', [
             'title'   => 'List Seller | iTama Book',
             'menu'    => 'seller',

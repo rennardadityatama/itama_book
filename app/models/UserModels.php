@@ -107,12 +107,34 @@ class User
     return $user; // login valid
   }
 
-  public function setStatus($id, $status)
+  public function getUsersWithStatus($roles = [])
+  {
+    $in  = implode(',', array_fill(0, count($roles), '?'));
+
+    $stmt = $this->db->prepare("
+        SELECT 
+            *,
+            CASE 
+                WHEN last_activity IS NOT NULL 
+                     AND last_activity >= (NOW() - INTERVAL 4 MINUTE)
+                THEN 'online'
+                ELSE 'offline'
+            END AS online_status
+        FROM users
+        WHERE role IN ($in)
+        ORDER BY id DESC
+    ");
+
+    $stmt->execute($roles);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function updateLastActivity($id)
   {
     $stmt = $this->db->prepare(
-      "UPDATE users SET status = ? WHERE id = ?"
+      "UPDATE users SET last_activity = NOW() WHERE id = ?"
     );
-    return $stmt->execute([$status, $id]);
+    return $stmt->execute([$id]);
   }
 
   /* =========================

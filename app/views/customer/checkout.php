@@ -74,7 +74,6 @@
                       <div class="col">
                         <h6 class="mb-3">Payment Method</h6>
 
-                        <!-- ✅ BANK TRANSFER ONLY -->
                         <label class="d-block mb-2" for="payment-transfer">
                           <input class="radio_animated payment-method-radio"
                             id="payment-transfer"
@@ -85,7 +84,6 @@
                           Bank Transfer
                         </label>
 
-                        <!-- ✅ QRIS ONLY -->
                         <label class="d-block mb-2" for="payment-qris">
                           <input class="radio_animated payment-method-radio"
                             id="payment-qris"

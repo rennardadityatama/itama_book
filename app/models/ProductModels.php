@@ -13,31 +13,41 @@ class ProductModel
     // READ ONE by ID
     public function getById($id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM products WHERE id = :id");
+        $stmt = $this->db->prepare("
+        SELECT * FROM products 
+        WHERE id = :id AND is_active = 1
+        ");
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function updateStock($productId, $qty)
+    public function updateStock(int $productId, int $qty): int
     {
         $stmt = $this->db->prepare("
-            UPDATE products 
-            SET stock = stock - :qty 
-            WHERE id = :id
-        ");
+        UPDATE products
+        SET stock = stock - :qty
+        WHERE id = :id
+          AND stock >= :qty
+    ");
+
         $stmt->execute([
             ':qty' => $qty,
             ':id'  => $productId
         ]);
+
+        return $stmt->rowCount();
     }
 
     // READ ALL produk seller
     public function getBySeller($sellerId)
     {
         $sql = "SELECT p.*, c.name as category_name
-            FROM products p
-            LEFT JOIN categories c ON p.category_id = c.id
-            WHERE p.seller_id = :sellerId";
+        FROM products p
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE p.seller_id = :sellerId
+          AND p.is_active = 1
+    ";
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['sellerId' => $sellerId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -50,7 +60,7 @@ class ProductModel
             FROM products p
             LEFT JOIN categories c ON p.category_id = c.id
             LEFT JOIN users u ON p.seller_id = u.id
-            WHERE p.stock > 0"; // optional: hanya produk tersedia
+            WHERE p.stock > 0 AND p.is_active = 1"; // optional: hanya produk tersedia
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -62,7 +72,8 @@ class ProductModel
             FROM products p
             LEFT JOIN categories c ON p.category_id = c.id
             LEFT JOIN users u ON p.seller_id = u.id
-            WHERE p.stock > 0 AND p.category_id = :category_id";
+            WHERE p.stock > 0 AND p.category_id = :category_id 
+             AND p.is_active = 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['category_id' => $category_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -142,15 +153,20 @@ class ProductModel
     }
 
     // DELETE products
-    public function delete($id)
+    public function softDelete($id)
     {
-        $stmt = $this->db->prepare("DELETE FROM products WHERE id = :id");
+        $stmt = $this->db->prepare("
+        UPDATE products 
+        SET is_active = 0,
+            deleted_at = NOW()
+        WHERE id = :id
+    ");
         return $stmt->execute([':id' => $id]);
     }
 
     public function findByNameSeller($name, $seller_id, $excludeId = null)
     {
-        $sql = "SELECT * FROM products WHERE name = :name AND seller_id = :seller_id";
+        $sql = "SELECT * FROM products WHERE name = :name AND seller_id = :seller_id AND is_active = 1";
         $params = ['name' => $name, 'seller_id' => $seller_id];
 
         if ($excludeId) {
@@ -161,5 +177,32 @@ class ProductModel
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getBestSellingProductsBySeller($sellerId, $limit = 5)
+    {
+        $sql = "
+        SELECT 
+            p.id,
+            p.name,
+            p.price,
+            p.image,
+            COALESCE(SUM(oi.qty), 0) AS total_sold
+        FROM products p
+        LEFT JOIN order_items oi ON p.id = oi.product_id
+        LEFT JOIN orders o ON o.id = oi.order_id AND o.payment_status = 'paid'
+        WHERE p.seller_id = :seller_id
+        AND p.is_active = 1
+        GROUP BY p.id
+        ORDER BY total_sold DESC
+        LIMIT :limit
+    ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':seller_id', $sellerId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

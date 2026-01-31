@@ -207,10 +207,15 @@ class SellerProductController extends BaseSellerController
                 throw new Exception('Product not found or forbidden');
             }
 
-            $result = $this->productModel->delete($id);
+            // OPTIONAL: hanya boleh hapus jika stok = 0
+            if ((int)$product['stock'] > 0) {
+                throw new Exception('Product with stock cannot be deleted');
+            }
+
+            $result = $this->productModel->softDelete($id);
 
             if ($result) {
-                $this->json(true, 'Product deleted successfully');
+                $this->json(true, 'Product deleted (soft delete)');
             } else {
                 throw new Exception('Failed deleting product');
             }

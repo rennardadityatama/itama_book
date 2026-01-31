@@ -84,12 +84,11 @@ class AuthController
       'email' => $user['email'],
       'role'  => (int)$user['role'],
       'role_name' => $user['role_name'],
-      'status' => $user['status'],
       'avatar' => $user['avatar'],
     ];
 
     // Update status user jadi online
-    $this->user->setStatus($user['id'], 'online');
+    $this->user->updateLastActivity($user['id']);
 
     // Hapus token CSRF lama
     Csrf::destroy();
@@ -287,9 +286,9 @@ class AuthController
     }
 
     try {
-      // Update status user menjadi offline jika ada
+
       if (isset($_SESSION['user'])) {
-        $this->user->setStatus($_SESSION['user']['id'], 'offline');
+        $this->user->updateLastActivity($_SESSION['user']['id']);
       }
 
       // Hapus semua session data

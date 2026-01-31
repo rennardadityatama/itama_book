@@ -35,16 +35,31 @@
             <!-- BODY -->
             <div class="card-body">
 
-              <div class="d-flex align-items-center mb-3">
-                <img
-                  src="<?= BASE_URL ?>/uploads/avatars/<?= $seller['avatar'] ?? 'default.png' ?>"
-                  class="rounded-circle me-3"
-                  style="width:64px;height:64px;object-fit:cover;">
+              <div class="d-flex align-items-start justify-content-between mb-3">
+                <div class="d-flex align-items-center">
+                  <img
+                    src="<?= BASE_URL ?>/uploads/avatars/<?= $seller['avatar'] ?? 'default.png' ?>"
+                    class="rounded-circle me-3"
+                    style="width:64px;height:64px;object-fit:cover;">
 
-                <div>
-                  <h6 class="mb-0 fw-semibold"><?= htmlspecialchars($seller['name']) ?></h6>
-                  <small class="text-muted">Seller</small>
+                  <div>
+                    <h6 class="mb-0 fw-semibold"><?= htmlspecialchars($seller['name']) ?></h6>
+                    <small class="text-muted">Seller</small>
+                  </div>
                 </div>
+
+                <!-- STATUS BADGE -->
+                <?php if ($seller['online_status'] === 'online'): ?>
+                  <span class="badge bg-success d-flex align-items-center gap-1">
+                    <span class="rounded-circle bg-light" style="width:8px;height:8px;"></span>
+                    Online
+                  </span>
+                <?php else: ?>
+                  <span class="badge bg-danger d-flex align-items-center gap-1">
+                    <span class="rounded-circle bg-light" style="width:8px;height:8px;"></span>
+                    Offline
+                  </span>
+                <?php endif; ?>
               </div>
 
               <ul class="list-unstyled mb-0 small">

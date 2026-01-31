@@ -64,6 +64,8 @@ class AdminCustomerController extends BaseAdminController
      */
     public function index()
     {
+        $customers = $this->user->getUsersWithStatus([3]);
+
         $this->render('customer_list', [
             'title'   => 'List customer | iTama Book',
             'menu'    => 'customer',
@@ -244,9 +246,21 @@ class AdminCustomerController extends BaseAdminController
                 throw new Exception('Customer not found');
             }
 
+            if ($this->customerModel->hasTransaction($id)) {
+                throw new Exception(
+                    'Customer cannot be deleted because they have transaction history.'
+                );
+            }
+
             if ($this->customerModel->hasActiveCart($id)) {
                 throw new Exception(
                     'This customer cannot be deleted because there are still items in the cart.'
+                );
+            }
+
+            if ($customer['online_status'] !== 'online') {
+                throw new Exception(
+                    'Only offline customers can be deleted.'
                 );
             }
 
@@ -257,7 +271,6 @@ class AdminCustomerController extends BaseAdminController
             $this->json(true, 'Customer deleted successfully');
         } catch (PDOException $e) {
 
-            // ✅ FK SAFETY NET
             if ($e->getCode() == 23000) {
                 $this->json(
                     false,

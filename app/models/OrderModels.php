@@ -17,7 +17,7 @@ class OrderModel
             INSERT INTO orders 
                 (customer_id, seller_id, total_amount, payment_method, payment_proof, shipping_resi, tracking_link, shipping_status, status, payment_status)
             VALUES
-                (:customer_id, :seller_id, :total_amount, :payment_method, :payment_proof, :shipping_resi, :tracking_link, 'pending', 'pending', 'completed')
+                (:customer_id, :seller_id, :total_amount, :payment_method, :payment_proof, :shipping_resi, :tracking_link, 'pending', 'pending', 'unpaid')
         ");
 
         $stmt->execute([
@@ -188,6 +188,44 @@ class OrderModel
             ':order_id' => $orderId
         ]);
     }
+
+    public function rejectOrder($orderId)
+    {
+        $stmt = $this->db->prepare("
+        UPDATE orders 
+        SET status = 'refund',
+            refunded_at = NOW()
+        WHERE id = :order_id
+    ");
+
+        return $stmt->execute([
+            ':order_id' => $orderId
+        ]);
+    }
+
+    public function autoDeleteExpiredRefundOrders()
+    {
+        $stmt = $this->db->prepare("
+        DELETE FROM orders
+        WHERE status = 'refund'
+          AND refunded_at IS NOT NULL
+          AND refunded_at <= DATE_SUB(NOW(), INTERVAL 1 MINUTE)
+    ");
+
+        $stmt->execute();
+    }
+
+    public function deleteOrderById($orderId)
+    {
+        // Hapus items dulu
+        $stmt = $this->db->prepare("DELETE FROM order_items WHERE order_id = :id");
+        $stmt->execute([':id' => $orderId]);
+
+        // Hapus order
+        $stmt = $this->db->prepare("DELETE FROM orders WHERE id = :id");
+        return $stmt->execute([':id' => $orderId]);
+    }
+
 
     public function getOrderByIdForSeller($orderId, $sellerId)
     {

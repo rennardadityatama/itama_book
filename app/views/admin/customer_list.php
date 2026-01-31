@@ -17,9 +17,9 @@
         <div class="col-sm-6">
           <h3>List Customer</h3>
         </div>
-        <div class="col-sm-6 text-end">
+        <!-- <div class="col-sm-6 text-end">
           <button class="btn btn-primary" id="btnAddCustomer">Add Customer</button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -35,16 +35,31 @@
             <!-- BODY -->
             <div class="card-body">
 
-              <div class="d-flex align-items-center mb-3">
-                <img
-                  src="<?= BASE_URL ?>/uploads/avatars/<?= $customer['avatar'] ?? 'default.png' ?>"
-                  class="rounded-circle me-3"
-                  style="width:64px;height:64px;object-fit:cover;">
+              <div class="d-flex align-items-start justify-content-between mb-3">
+                <div class="d-flex align-items-center">
+                  <img
+                    src="<?= BASE_URL ?>/uploads/avatars/<?= $customer['avatar'] ?? 'default.png' ?>"
+                    class="rounded-circle me-3"
+                    style="width:64px;height:64px;object-fit:cover;">
 
-                <div>
-                  <h6 class="mb-0 fw-semibold"><?= htmlspecialchars($customer['name']) ?></h6>
-                  <small class="text-muted">Customer</small>
+                  <div>
+                    <h6 class="mb-0 fw-semibold"><?= htmlspecialchars($customer['name']) ?></h6>
+                    <small class="text-muted">Customer</small>
+                  </div>
                 </div>
+
+                <!-- STATUS BADGE -->
+                <?php if ($customer['online_status'] === 'online'): ?>
+                  <span class="badge bg-success d-flex align-items-center gap-1">
+                    <span class="rounded-circle bg-light" style="width:8px;height:8px;"></span>
+                    Online
+                  </span>
+                <?php else: ?>
+                  <span class="badge bg-danger d-flex align-items-center gap-1">
+                    <span class="rounded-circle bg-light" style="width:8px;height:8px;"></span>
+                    Offline
+                  </span>
+                <?php endif; ?>
               </div>
 
               <ul class="list-unstyled mb-0 small">
@@ -79,7 +94,7 @@
   <div id="toastContainer"></div>
 </div>
 
-<!-- Add Modal -->
+<!-- Add Modal
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <form class="modal-content" id="addForm" enctype="multipart/form-data">
@@ -123,7 +138,7 @@
       </div>
     </form>
   </div>
-</div>
+</div> -->
 
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">

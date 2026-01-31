@@ -100,12 +100,32 @@ class CustomerModel
         return $stmt->fetch() !== false;
     }
 
+    public function hasTransaction($customerId)
+    {
+        $stmt = $this->db->prepare(
+            "SELECT 1 FROM orders WHERE customer_id = ? LIMIT 1"
+            // ganti orders sesuai tabel kamu
+        );
+        $stmt->execute([$customerId]);
+        return $stmt->fetch() !== false;
+    }
+
     // READ ALL
     public function getAll()
     {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM users WHERE role = 3 ORDER BY id DESC"
-        );
+        $stmt = $this->db->prepare("
+        SELECT 
+            *,
+            CASE 
+                WHEN last_activity IS NOT NULL 
+                     AND last_activity >= (NOW() - INTERVAL 4 MINUTE)
+                THEN 'online'
+                ELSE 'offline'
+            END AS online_status
+        FROM users
+        WHERE role = 3
+        ORDER BY id DESC
+    ");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

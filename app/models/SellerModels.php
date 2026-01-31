@@ -104,10 +104,44 @@ class SellerModel
     // READ ALL
     public function getAll()
     {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM users WHERE role = 2 ORDER BY id DESC"
-        );
+        $stmt = $this->db->prepare("
+        SELECT 
+            *,
+            CASE 
+                WHEN last_activity IS NOT NULL 
+                     AND last_activity >= (NOW() - INTERVAL 4 MINUTE)
+                THEN 'online'
+                ELSE 'offline'
+            END AS online_status
+        FROM users
+        WHERE role = 2
+        ORDER BY id DESC
+    ");
         $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllExcept($excludeId)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            *,
+            CASE 
+                WHEN last_activity IS NOT NULL 
+                     AND last_activity >= (NOW() - INTERVAL 4 MINUTE)
+                THEN 'online'
+                ELSE 'offline'
+            END AS online_status
+        FROM users
+        WHERE role = 2
+          AND id != :exclude_id
+        ORDER BY id DESC
+    ");
+
+        $stmt->execute([
+            ':exclude_id' => $excludeId
+        ]);
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

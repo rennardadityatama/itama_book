@@ -1,5 +1,7 @@
 <?php
 
+require_once BASE_PATH . '/app/models/UserModels.php';
+
 class Middleware
 {
   public static function check()
@@ -8,18 +10,22 @@ class Middleware
       header('Location: ' . BASE_URL . 'index.php?c=auth&m=login');
       exit;
     }
+
+    // UPDATE LAST ACTIVITY
+    $userModel = new User();
+    $userModel->updateLastActivity($_SESSION['user']['id']);
   }
 
   public static function role(array $roles)
-    {
-        self::check();
+  {
+    self::check();
 
-        if (!in_array((int)$_SESSION['user']['role'], $roles, true)) {
-            http_response_code(403);
-            echo "Akses ditolak";
-            exit;
-        }
+    if (!in_array((int)$_SESSION['user']['role'], $roles, true)) {
+      http_response_code(403);
+      echo "Akses ditolak";
+      exit;
     }
+  }
 
   public static function getUrlByRole($role)
   {
@@ -35,12 +41,12 @@ class Middleware
     }
   }
   public static function getCurrentRole(): ?int
-    {
-        return $_SESSION['user']['role'] ?? null;
-    }
+  {
+    return $_SESSION['user']['role'] ?? null;
+  }
 
-    public static function isRole(int $role): bool
-    {
-        return isset($_SESSION['user']['role']) && (int)$_SESSION['user']['role'] === $role;
-    }
+  public static function isRole(int $role): bool
+  {
+    return isset($_SESSION['user']['role']) && (int)$_SESSION['user']['role'] === $role;
+  }
 }

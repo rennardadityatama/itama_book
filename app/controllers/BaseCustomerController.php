@@ -18,8 +18,6 @@ class BaseCustomerController
         $this->user = new User();
     }
 
-    
-
     protected function render($view, $data = [])
     {
         $data['js'] = $data['js'] ?? [];

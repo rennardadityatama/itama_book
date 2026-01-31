@@ -141,7 +141,7 @@
         </div>
         <div class="mb-3">
           <label for="addProductMargin" class="form-label">Margin</label>
-          <input type="number" class="form-control" id="addProductMargin" name="margin">
+          <input type="number" class="form-control" id="addProductMargin" name="margin" readonly>
         </div>
         <div class="mb-3">
           <label for="addProductStock" class="form-label">Stock</label>
@@ -198,7 +198,7 @@
         </div>
         <div class="mb-3">
           <label for="editProductMargin" class="form-label">Margin</label>
-          <input type="number" class="form-control" id="editProductMargin" name="margin">
+          <input type="number" class="form-control" id="editProductMargin" name="margin" readonly>
         </div>
         <div class="mb-3">
           <label for="editProductStock" class="form-label">Stock</label>
@@ -244,3 +244,38 @@
   const PRODUCT_BASE_URL = '<?= BASE_URL ?>/index.php?c=sellerProduct';
 </script>
 <script src="<?= BASE_URL ?>/assets/js/product.js"></script>
+
+<script>
+  (function() {
+    function autoMargin(priceInput, costInput, marginInput) {
+      function calculate() {
+        const price = parseFloat(priceInput.value) || 0;
+        const cost = parseFloat(costInput.value) || 0;
+        marginInput.value = price - cost;
+      }
+
+      priceInput.addEventListener('input', calculate);
+      costInput.addEventListener('input', calculate);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      /* ADD MODAL */
+      const addPrice = document.getElementById('addProductPrice');
+      const addCost = document.getElementById('addProductCost');
+      const addMargin = document.getElementById('addProductMargin');
+
+      if (addPrice && addCost && addMargin) {
+        autoMargin(addPrice, addCost, addMargin);
+      }
+
+      /* EDIT MODAL */
+      const editPrice = document.getElementById('editProductPrice');
+      const editCost = document.getElementById('editProductCost');
+      const editMargin = document.getElementById('editProductMargin');
+
+      if (editPrice && editCost && editMargin) {
+        autoMargin(editPrice, editCost, editMargin);
+      }
+    });
+  })();
+</script>
