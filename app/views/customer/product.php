@@ -111,13 +111,22 @@
                     <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
                     <input type="hidden" name="qty" value="1">
 
-                    <button
-                      type="submit"
-                      class="btn btn-sm btn-primary mt-auto"
-                      <?= $product['stock'] <= 0 ? 'disabled' : '' ?>>
-                      <i class="icon-shopping-cart me-1"></i>
-                      Add to Cart
-                    </button>
+                    <div class="d-flex gap-2 mt-auto">
+                      <button
+                        type="submit"
+                        class="btn btn-sm btn-primary flex-grow-1"
+                        <?= $product['stock'] <= 0 ? 'disabled' : '' ?>
+                        style="padding: 5px 10px;">
+                        <i class="icon-shopping-cart"></i> Add
+                      </button>
+
+                      <a href="<?= BASE_URL ?>index.php?c=customerChat&m=startChat&seller_id=<?= $product['seller_id'] ?>"
+                        class="btn btn-sm btn-success"
+                        title="Chat Seller"
+                        style="padding: 5px 10px;">
+                        <i class="fa fa-comments"></i>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </form>

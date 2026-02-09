@@ -1,5 +1,4 @@
 <?php
-
 require_once BASE_PATH . '/app/controllers/BaseSellerController.php';
 require_once BASE_PATH . '/app/models/ChatModels.php';
 
@@ -13,71 +12,77 @@ class SellerChatController extends BaseSellerController
         $this->chatModel = new ChatModel();
     }
 
-    /**
-     * Halaman utama chat seller
-     */
+    private function json($status, $message, $data = [])
+    {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'status'  => $status,
+            'message' => $message,
+            'data'    => $data
+        ]);
+        exit;
+    }
+
     public function index()
     {
-        $sellerId = $_SESSION['user']['id'];
+        $roomId = $_GET['room_id'] ?? null;
+        $targetId = $_GET['target'] ?? null;
+        $userId = $_SESSION['user']['id'];
 
-        $chatList = $this->chatModel->getChatList($sellerId);
+        $chatList = $this->chatModel->getChatRooms($userId);
+        $messages = [];
+        $activeTarget = null;
+
+        if ($roomId) {
+            $messages = $this->chatModel->getMessagesByRoom($roomId);
+        }
+
+        if ($targetId) {
+            $activeTarget = $this->chatModel->getUserById($targetId);
+        }
 
         $this->render('chat', [
-            'chatList' => $chatList
+            'chatList'   => $chatList,
+            'messages'   => $messages,
+            'activeRoom' => $roomId,
+            'target'     => $activeTarget
         ]);
     }
 
-    /**
-     * Fetch pesan (AJAX)
-     */
-    public function fetchMessages()
+    public function send()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            http_response_code(405);
-            echo json_encode(['error' => 'Method not allowed']);
-            return;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $roomId   = $_POST['room_id'] ?? null;
+            $message  = $_POST['message'] ?? '';
+            $senderId = $_SESSION['user']['id'];
+
+            if ($roomId && $message !== '') {
+                $success = $this->chatModel->sendMessage($roomId, $senderId, $message);
+                if ($success) $this->json('success', 'Pesan terkirim');
+            }
+            $this->json('error', 'Gagal mengirim pesan');
         }
-
-        $roomId = $_GET['room_id'] ?? null;
-
-        if (!$roomId) {
-            http_response_code(400);
-            echo json_encode([]);
-            return;
-        }
-
-        echo json_encode(
-            $this->chatModel->getMessages($roomId)
-        );
     }
 
-    /**
-     * Kirim pesan (AJAX)
-     */
-    public function sendMessage()
+    public function startChat()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            echo json_encode(['error' => 'Method not allowed']);
-            return;
+        $sellerId = $_GET['seller_id'] ?? null;
+        $customerId = $_SESSION['user']['id'];
+
+        if (!$sellerId) {
+            header('Location: ' . BASE_URL . 'index.php?c=customerProduct&m=index');
+            exit;
         }
 
-        $roomId  = $_POST['room_id'] ?? null;
-        $message = trim($_POST['message'] ?? '');
-        $senderId = $_SESSION['user']['id'];
+        $existingRoom = $this->chatModel->findExistingRoom($customerId, $sellerId);
 
-        if (!$roomId || $message === '') {
-            http_response_code(400);
-            echo json_encode(['success' => false]);
-            return;
+        if ($existingRoom) {
+            $roomId = $existingRoom['room_id'];
+        } else {
+            $roomId = time() . rand(10, 99); // Generate room unik
         }
 
-        $this->chatModel->sendMessage(
-            $roomId,
-            $senderId,
-            $message
-        );
-
-        echo json_encode(['success' => true]);
+        header("Location: " . BASE_URL . "index.php?c=customerChat&m=index&room_id=$roomId&target=$sellerId");
+        exit;
     }
 }

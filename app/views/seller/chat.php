@@ -10,7 +10,6 @@
   <div class="dot"></div>
 </div>
 <!-- Loader ends-->
-<!-- Page Body Start-->
 <div class="page-body">
   <div class="container-fluid">
     <div class="page-title">
@@ -31,147 +30,94 @@
   <!-- Container-fluid starts-->
   <div class="container-fluid">
     <div class="row">
-
-      <!-- LEFT SIDEBAR -->
-      <div class="col-xl-3 col-lg-4">
-        <div class="card h-100">
+      <div class="col call-chat-sidebar">
+        <div class="card">
           <div class="card-body chat-body">
-
-            <!-- User Header -->
-            <div class="d-flex mb-3">
-              <img class="rounded-circle user-image"
-                src="<?= BASE_URL ?>public/assets/images/user/12.png">
-              <div class="flex-grow-1 ms-2">
-                <div class="name f-w-600">Seller</div>
-                <div class="status text-muted">Online</div>
+            <div class="chat-box">
+              <!-- Chat left side Start-->
+              <div class="chat-left-aside">
+                <div class="people-list" id="people-list">
+                  <div class="search">
+                    <form class="theme-form">
+                      <div class="form-group">
+                        <div class="input-group">
+                          <input class="form-control" type="text" placeholder="Search"><span class="input-group-text"> <i class="fa fa-search"></i></span>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                  <ul class="list custom-scrollbar">
+                    <?php foreach ($chatList as $chat): ?>
+                      <li class="clearfix">
+                        <div class="d-flex align-items-center chat-room" data-room-id="<?= $chat['room_id'] ?>">
+                          <img class="rounded-circle user-image" src="<?= $chat['avatar'] ?: '../../../public/assets/images/user/default.png' ?>" alt="">
+                          <div class="flex-grow-1">
+                            <div class="about">
+                              <div class="name"><?= htmlspecialchars($chat['name']) ?></div>
+                              <div class="status"><?= htmlspecialchars($chat['status'] ?? 'Offline') ?></div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    <?php endforeach; ?>
+                  </ul>
+                </div>
               </div>
+              <!-- Chat left side Ends-->
             </div>
-
-            <!-- Chat List -->
-            <div class="people-list">
-              <div class="search mb-2">
-                <input class="form-control" type="text" placeholder="Search chat">
-              </div>
-
-              <ul class="list custom-scrollbar" id="chat-list">
-                <?php foreach ($chatList as $chat): ?>
-                  <li class="clearfix chat-user"
-                    data-room="<?= $chat['room_id'] ?>"
-                    data-name="<?= htmlspecialchars($chat['name']) ?>"
-                    data-avatar="<?= $chat['avatar'] ?? BASE_URL . 'public/assets/images/user/default.png' ?>">
-                    <div class="d-flex align-items-center">
-                      <img class="rounded-circle user-image"
-                        src="<?= $chat['avatar'] ?? BASE_URL . 'public/assets/images/user/default.png' ?>">
-                      <div class="flex-grow-1 ms-2">
-                        <div class="name"><?= $chat['name'] ?></div>
-                        <div class="status text-muted small">
-                          <?= $chat['last_message'] ?? 'No message yet' ?>
+          </div>
+        </div>
+      </div>
+      <div class="col call-chat-body">
+        <div class="card">
+          <div class="card-body p-0">
+            <div class="row chat-box">
+              <!-- Chat right side start-->
+              <div class="col chat-right-aside">
+                <!-- chat start-->
+                <div class="chat">
+                  <!-- chat-header start-->
+                  <div class="d-flex chat-header clearfix align-items-start"><img class="rounded-circle" src="../../../public/assets/images/user/8.jpg" alt="">
+                    <div class="flex-grow-1">
+                      <div class="about">
+                        <div class="name"><a href="user-profile.html">Kori Thomas  </a></div>
+                        <div class="status digits">Online</div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- chat-header end-->
+                  <div class="chat-history chat-msg-box custom-scrollbar">
+                    <ul>
+                      <li>
+                        <div class="message my-message"><img class="rounded-circle float-start chat-user-img img-30" src="../../../public/assets/images/user/3.png" alt="">
+                          <div class="message-data text-end"><span class="message-data-time">10:12 am</span></div>Are we meeting today? Project has been already finished and I have results to show you.
+                        </div>
+                      </li>
+                      <li class="clearfix">
+                        <div class="message other-message pull-right"><img class="rounded-circle float-end chat-user-img img-30" src="../../../public/assets/images/user/12.png" alt="">
+                          <div class="message-data"><span class="message-data-time">10:14 am</span></div>Well I am not sure. The rest of the team
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- end chat-history-->
+                  <div class="chat-message clearfix">
+                    <div class="row">
+                      <div class="col-xl-12 d-flex">
+                        <div class="input-group text-box">
+                          <input class="form-control input-txt-bx" id="message-to-send" type="text" name="message-to-send" placeholder="Type a message......">
+                          <button class="btn btn-primary input-group-text" type="button">SEND</button>
                         </div>
                       </div>
                     </div>
-                  </li>
-                <?php endforeach ?>
-              </ul>
+                  </div>
+                </div>
+              </div>
             </div>
-
           </div>
         </div>
       </div>
-
-      <!-- CHAT BODY -->
-      <div class="col-xl-9 col-lg-8">
-        <div class="card h-100">
-          <div class="card-body d-flex flex-column p-0">
-
-            <!-- Chat Header -->
-            <div class="chat-header d-flex align-items-center p-3 border-bottom">
-              <img class="rounded-circle" id="chat-avatar"
-                src="<?= BASE_URL ?>public/assets/images/user/default.png">
-              <div class="flex-grow-1 ms-2">
-                <div class="name f-w-600" id="chat-name">Select chat</div>
-                <div class="status text-muted" id="chat-status">---</div>
-              </div>
-            </div>
-
-            <!-- Chat Messages -->
-            <div class="chat-history flex-grow-1 p-3 custom-scrollbar">
-              <input type="hidden" id="room_id">
-              <ul id="chat-messages" class="list-unstyled mb-0"></ul>
-            </div>
-
-            <!-- Chat Input -->
-            <div class="chat-message p-3 border-top">
-              <div class="input-group">
-                <input class="form-control"
-                  id="message-to-send"
-                  type="text"
-                  placeholder="Type a message...">
-                <button class="btn btn-primary" id="send-btn">Send</button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
   <!-- Container-fluid Ends-->
 </div>
-
-<script>
-  const chatList = document.getElementById('chat-list');
-  const messagesBox = document.getElementById('chat-messages');
-  const roomInput = document.getElementById('room_id');
-
-  chatList.addEventListener('click', function(e) {
-    const item = e.target.closest('.chat-user');
-    if (!item) return;
-
-    const roomId = item.dataset.room;
-    roomInput.value = roomId;
-
-    // Update header
-    document.getElementById('chat-name').innerText = item.dataset.name;
-    document.getElementById('chat-avatar').src = item.dataset.avatar;
-
-    loadMessages(roomId);
-  });
-
-  function loadMessages(roomId) {
-    fetch(`index.php?c=sellerChat&m=fetchMessages&room_id=${roomId}`)
-      .then(res => res.json())
-      .then(data => {
-        messagesBox.innerHTML = '';
-        data.forEach(msg => {
-          messagesBox.innerHTML += `
-          <li class="${msg.sender_role === 'seller' ? 'text-end' : ''}">
-            <div class="badge bg-${msg.sender_role === 'seller' ? 'primary' : 'light text-dark'}">
-              ${msg.message}
-            </div>
-          </li>
-        `;
-        });
-      });
-  }
-
-  // SEND MESSAGE
-  document.getElementById('send-btn').addEventListener('click', function() {
-    const message = document.getElementById('message-to-send').value;
-    const roomId = roomInput.value;
-
-    if (!message || !roomId) return;
-
-    fetch('index.php?c=sellerChat&m=sendMessage', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `room_id=${roomId}&message=${encodeURIComponent(message)}`
-      })
-      .then(() => {
-        document.getElementById('message-to-send').value = '';
-        loadMessages(roomId);
-      });
-  });
-</script>
