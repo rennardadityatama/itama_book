@@ -53,6 +53,15 @@ class SellerApproveController extends BaseSellerController
             exit;
         }
 
+        if (!$this->orderModel->rejectOrder($orderId)) {
+            $_SESSION['toast'] = [
+                'type' => 'danger',
+                'message' => 'Failed to reject order'
+            ];
+            header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
+            exit;
+        }
+
         // Validasi: apakah order ini milik seller yang login?
         $order = $this->orderModel->getOrderByIdForSeller($orderId, $sellerId);
 
@@ -73,9 +82,6 @@ class SellerApproveController extends BaseSellerController
         exit;
     }
 
-    /**
-     * Reject order (ubah status jadi 'refund')
-     */
     public function rejectOrder()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -126,6 +132,7 @@ class SellerApproveController extends BaseSellerController
             header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
             exit;
         }
+
 
         // Validasi order
         $order = $this->orderModel->getOrderByIdForSeller($orderId, $sellerId);

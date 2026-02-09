@@ -71,6 +71,11 @@
     <!-- Sidebar jquery-->
     <script src="<?= BASE_URL ?>/assets/js/config.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/sidebar-menu.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/chart/chartjs/chart.min.js"></script>
+    <?php if (!isset($disableDefaultChart)): ?>
+        <script src="<?= BASE_URL ?>/assets/js/chart/chartjs/chart.custom.js"></script>
+    <?php endif; ?>
+    <script src="<?= BASE_URL ?>/assets/js/tooltip-init.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/chart/chartist/chartist.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/chart/chartist/chartist-plugin-tooltip.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/chart/apex-chart/apex-chart.js"></script>

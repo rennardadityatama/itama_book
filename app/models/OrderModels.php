@@ -98,7 +98,9 @@ class OrderModel
     public function getOrderItems($orderId)
     {
         $stmt = $this->db->prepare("
-            SELECT oi.*, p.name AS product_name
+            SELECT oi.*, 
+            p.name AS product_name,
+            p.image AS product_image
             FROM order_items oi
             JOIN products p ON p.id = oi.product_id
             WHERE oi.order_id = :order_id
@@ -316,6 +318,110 @@ class OrderModel
             (SELECT COUNT(*) FROM users WHERE role = 3) AS total_customers,
             (SELECT COUNT(*) FROM products) AS total_products
     ");
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getReportBySeller($sellerId)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            o.id AS order_id,
+            o.created_at,
+            o.status,
+            o.payment_status,
+            o.shipping_status,
+            o.total_amount,
+            c.name AS customer_name
+        FROM orders o
+        JOIN users c ON c.id = o.customer_id
+        WHERE o.seller_id = :seller_id
+        ORDER BY o.created_at DESC
+    ");
+
+        $stmt->execute([':seller_id' => $sellerId]);
+        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($orders as &$order) {
+            $order['items'] = $this->getOrderItems($order['order_id']);
+        }
+
+        return $orders;
+    }
+
+    public function getSalesChartBySeller($sellerId, $month, $year)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            DATE(o.created_at) AS order_date,
+            SUM(o.total_amount) AS total_sales
+        FROM orders o
+        WHERE o.seller_id = :seller_id
+          AND o.status = 'approved'
+          AND o.payment_status = 'paid'
+          AND MONTH(o.created_at) = :month
+          AND YEAR(o.created_at) = :year
+        GROUP BY DATE(o.created_at)
+        ORDER BY order_date ASC
+    ");
+
+        $stmt->execute([
+            ':seller_id' => $sellerId,
+            ':month'     => (int)$month,
+            ':year'      => (int)$year
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getRevenueReportBySeller($sellerId, $month, $year)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            o.id,
+            o.created_at,
+            o.total_amount,
+            o.payment_status,
+            u.name AS customer_name
+        FROM orders o
+        JOIN users u ON u.id = o.customer_id
+        WHERE o.seller_id = :seller_id
+          AND o.status = 'approved'
+          AND o.payment_status = 'paid'
+          AND MONTH(o.created_at) = :month
+          AND YEAR(o.created_at) = :year
+        ORDER BY o.created_at DESC
+    ");
+
+        $stmt->execute([
+            ':seller_id' => $sellerId,
+            ':month'     => (int)$month,
+            ':year'      => (int)$year
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getSellerReportSummary($sellerId, $month, $year)
+    {
+        $stmt = $this->db->prepare("
+        SELECT
+            COUNT(o.id) AS total_orders,
+            SUM(o.total_amount) AS total_revenue,
+            AVG(o.total_amount) AS avg_order
+        FROM orders o
+        WHERE o.seller_id = :seller_id
+          AND o.status = 'approved'
+          AND o.payment_status = 'paid'
+          AND MONTH(o.created_at) = :month
+          AND YEAR(o.created_at) = :year
+    ");
+
+        $stmt->execute([
+            ':seller_id' => $sellerId,
+            ':month'     => (int)$month,
+            ':year'      => (int)$year
+        ]);
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }

@@ -45,7 +45,7 @@
                 </li>
                 <li class="sidebar-list">
                     <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=admin&m=customer">
+                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=sellerReports&m=index">
                     <i data-feather="printer"> </i>
                     <span>Reports</span></a>
                 </li>
@@ -54,6 +54,12 @@
                     <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=sellerChat&m=index">
                     <i data-feather="message-circle"> </i>
                     <span>Chat</span></a>
+                </li>
+                <li class="sidebar-list">
+                  <i class="fa fa-thumb-tack"></i>
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=seller&m=faq">
+                    <i data-feather="help-circle"> </i>
+                    <span>FAQ</span></a>
                 </li>
               </ul>
             </div>

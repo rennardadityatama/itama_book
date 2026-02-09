@@ -20,40 +20,46 @@
                 </li>
                 <hr>
                 <li class="sidebar-list">
-                    <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=customer&m=dashboard">
+                  <i class="fa fa-thumb-tack"></i>
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=customer&m=dashboard">
                     <i data-feather="home"> </i>
                     <span>Dashboard</span></a>
                 </li>
                 <li class="sidebar-list">
-                    <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=customerProduct&m=index">
+                  <i class="fa fa-thumb-tack"></i>
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=customerProduct&m=index">
                     <i data-feather="archive"> </i>
                     <span>Product</span></a>
                 </li>
                 <li class="sidebar-list">
-                    <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=customerCart&m=index">
+                  <i class="fa fa-thumb-tack"></i>
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=customerCart&m=index">
                     <i data-feather="shopping-cart"> </i>
                     <span>Cart</span></a>
-                    </li>
+                </li>
                 <li class="sidebar-list">
-                    <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=customerStatus&m=index">
+                  <i class="fa fa-thumb-tack"></i>
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=customerStatus&m=index">
                     <i data-feather="clock"> </i>
                     <span>Status</span></a>
                 </li>
                 <li class="sidebar-list">
-                    <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=admin&m=customer">
+                  <i class="fa fa-thumb-tack"></i>
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=admin&m=customer">
                     <i data-feather="printer"> </i>
                     <span>Reports</span></a>
                 </li>
                 <li class="sidebar-list">
-                    <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=admin&m=customer">
+                  <i class="fa fa-thumb-tack"></i>
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=customerChat&m=index">
                     <i data-feather="message-circle"> </i>
                     <span>Chat</span></a>
+                </li>
+                <li class="sidebar-list">
+                  <i class="fa fa-thumb-tack"></i>
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=admin&m=faq">
+                    <i data-feather="help-circle"> </i>
+                    <span>FAQ</span></a>
                 </li>
               </ul>
             </div>

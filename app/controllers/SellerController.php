@@ -72,20 +72,15 @@ class SellerController extends BaseSellerController
   {
     $sellerId = $_SESSION['user']['id'];
 
-    // Ambil data summary
     $productModel = new ProductModel();
     $orderModel = new OrderModel();
 
-    // Card 1: Total Revenue (dari orders seller ini)
     $totalRevenue = $this->getTotalRevenue($sellerId);
 
-    // Card 2: Total Products
     $totalProducts = $this->getTotalProducts($sellerId);
 
-    // Card 3: Total Products Sold
     $totalSold = $this->getTotalProductsSold($sellerId);
 
-    // Table: Best Selling Products (top 5)
     $bestSellingProducts = $productModel->getBestSellingProductsBySeller($sellerId, 5);
 
     $this->render('dashboard', [

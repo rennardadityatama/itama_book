@@ -115,7 +115,7 @@
                               $statusBadge = match ($order['status']) {
                                 'pending' => '<span class="badge bg-warning">Pending</span>',
                                 'approved' => '<span class="badge bg-success">Approved</span>',
-                                'refund' => '<span class="badge bg-danger">Refunded</span>',
+                                'refund' => '<span class="badge bg-danger">Refund</span>',
                                 default => '<span class="badge bg-secondary">' . ucfirst($order['status']) . '</span>'
                               };
                               echo $statusBadge;
@@ -268,45 +268,35 @@
       function initRefundCountdown() {
         document.querySelectorAll('.countdown').forEach(el => {
 
+          // cegah double interval
           if (el.dataset.running === '1') return;
           el.dataset.running = '1';
 
-          const refundedAt = parseInt(el.dataset.refunded) * 1000;
+          const refundedRaw = el.dataset.refunded;
+          if (!refundedRaw) return;
 
-          const interval = setInterval(() => {
+          const refundedAt = parseInt(refundedRaw, 10) * 1000;
+
+          const timer = setInterval(() => {
             const now = Date.now();
             const diff = Math.floor((now - refundedAt) / 1000);
             const remaining = 60 - diff;
 
             if (remaining <= 0) {
-              clearInterval(interval);
+              clearInterval(timer);
               location.reload();
               return;
             }
 
-            el.innerText = `Delete available in ${remaining}s`;
+            el.textContent = `Delete available in ${remaining}s`;
           }, 1000);
         });
       }
 
-      $(document).ready(function() {
-
-        const table = $('#order-table').DataTable({
-          order: [
-            [0, 'desc']
-          ],
-          pageLength: 25,
-          responsive: true
-        });
-
-        feather.replace();
+      document.addEventListener('DOMContentLoaded', function() {
         initRefundCountdown();
-
-        table.on('draw', function() {
-          initRefundCountdown();
-        });
       });
-      // Show modal for approve/reject
+
       function showModal(orderId, action) {
         const modalTitle = action === 'approve' ? 'Confirm Approve' : 'Confirm Reject';
         const modalMessage = action === 'approve' ?
@@ -367,10 +357,4 @@
         const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
         modal.show();
       }
-
-      // setTimeout(() => {
-      //   fetch('<?= BASE_URL ?>index.php?c=sellerApprove&m=deleteExpiredRefund', {
-      //     method: 'POST'
-      //   });
-      // }, 60000); // 1 menit
     </script>
