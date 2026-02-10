@@ -27,7 +27,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- CONTENT -->
   <div class="container-fluid">
     <?php if (empty($groupedCart)): ?>
@@ -93,42 +93,35 @@
 
                           <!-- QTY CONTROL -->
                           <td>
-                            <?php if ($item['stock'] <= 0): ?>
-                              <span class="badge bg-danger">Stok habis</span>
-                            <?php else: ?>
-                              <form
-                                action="<?= BASE_URL ?>index.php?c=customerCart&m=updateQty"
-                                method="POST"
-                                class="d-flex justify-content-center align-items-center gap-1">
+                            <form
+                              class="cart-qty-form d-flex justify-content-center align-items-center gap-1"
+                              data-cart-id="<?= $item['cart_id'] ?>"
+                              data-price="<?= $item['price'] ?>"
+                              data-seller-id="<?= $seller['seller_id'] ?>">
 
-                                <input type="hidden" name="cart_id" value="<?= $item['cart_id'] ?>">
+                              <button
+                                type="button"
+                                data-action="minus"
+                                class="btn btn-sm btn-outline-secondary"
+                                <?= $item['qty'] <= 1 ? 'disabled' : '' ?>>
+                                −
+                              </button>
 
-                                <button
-                                  type="submit"
-                                  name="action"
-                                  value="minus"
-                                  class="btn btn-sm btn-outline-secondary"
-                                  <?= $item['qty'] <= 1 ? 'disabled' : '' ?>>
-                                  −
-                                </button>
+                              <input
+                                type="text"
+                                class="form-control text-center qty-input"
+                                value="<?= $item['qty'] ?>"
+                                readonly
+                                style="width:50px">
 
-                                <input
-                                  type="text"
-                                  class="form-control text-center"
-                                  value="<?= $item['qty'] ?>"
-                                  readonly
-                                  style="width:50px">
-
-                                <button
-                                  type="submit"
-                                  name="action"
-                                  value="plus"
-                                  class="btn btn-sm btn-outline-secondary"
-                                  <?= $item['qty'] >= $item['stock'] ? 'disabled' : '' ?>>
-                                  +
-                                </button>
-                              </form>
-                            <?php endif; ?>
+                              <button
+                                type="button"
+                                data-action="plus"
+                                class="btn btn-sm btn-outline-secondary"
+                                <?= $item['qty'] >= $item['stock'] ? 'disabled' : '' ?>>
+                                +
+                              </button>
+                            </form>
                           </td>
 
                           <!-- STOCK -->
@@ -141,7 +134,9 @@
                           </td>
 
                           <!-- TOTAL -->
-                          <td class="fw-bold">
+                          <td class="item-subtotal fw-bold"
+                            data-cart-id="<?= $item['cart_id'] ?>"
+                            data-seller-id="<?= $seller['seller_id'] ?>">
                             Rp <?= number_format($itemSubtotal, 0, ',', '.') ?>
                           </td>
                         </tr>
@@ -152,7 +147,8 @@
                         <td colspan="5" class="text-end fw-bold">
                           Subtotal Seller
                         </td>
-                        <td class="fw-bold text-primary">
+                        <td class="fw-bold text-primary seller-subtotal"
+                          data-seller-id="<?= $seller['seller_id'] ?>">
                           Rp <?= number_format($sellerSubtotal, 0, ',', '.') ?>
                         </td>
                       </tr>
@@ -184,3 +180,99 @@
     <?php endif; ?>
   </div>
 </div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+  document.querySelectorAll('.cart-qty-form button').forEach(btn => {
+    btn.addEventListener('click', function() {
+
+      const form = this.closest('.cart-qty-form');
+      const cartId = form.dataset.cartId;
+      const price = parseInt(form.dataset.price);
+      const sellerId = form.dataset.sellerId;
+
+      fetch('<?= BASE_URL ?>index.php?c=customerCart&m=updateQty', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({
+            cart_id: cartId,
+            action: this.dataset.action
+          })
+        })
+        .then(res => res.json())
+        .then(res => {
+
+          // ITEM DIHAPUS
+          if (res.status === 'deleted') {
+            const row = document
+              .querySelector(`.item-subtotal[data-cart-id="${cartId}"]`)
+              .closest('tr');
+
+            row.remove();
+            updateSellerSubtotal(res.data.sellerId);
+
+            showToast(res.message, 'warning');
+            return;
+          }
+
+          // ERROR / WARNING
+          if (res.status !== 'success') {
+            showToast(res.message, res.status);
+            return;
+          }
+
+          // UPDATE QTY
+          form.querySelector('.qty-input').value = res.data.qty;
+
+          // UPDATE SUBTOTAL ITEM
+          const newSubtotal = res.data.qty * res.data.price;
+          document
+            .querySelector(`.item-subtotal[data-cart-id="${cartId}"]`)
+            .innerText = formatRupiah(newSubtotal);
+
+          // UPDATE SUBTOTAL SELLER
+          updateSellerSubtotal(res.data.sellerId);
+
+          showToast(res.message, 'success');
+        });
+    });
+  });
+
+  // =========================
+  // HITUNG SUBTOTAL SELLER
+  // =========================
+  function updateSellerSubtotal(sellerId) {
+    let total = 0;
+
+    document
+      .querySelectorAll(`.item-subtotal[data-seller-id="${sellerId}"]`)
+      .forEach(el => {
+        total += rupiahToInt(el.innerText);
+      });
+
+    const sellerSubtotalEl =
+      document.querySelector(`.seller-subtotal[data-seller-id="${sellerId}"]`);
+
+    if (sellerSubtotalEl) {
+      sellerSubtotalEl.innerText = formatRupiah(total);
+    }
+  }
+
+  // =========================
+  // HELPER
+  // =========================
+  function rupiahToInt(text) {
+    return parseInt(text.replace(/[^\d]/g, '')) || 0;
+  }
+
+  function formatRupiah(num) {
+    return 'Rp ' + num.toLocaleString('id-ID');
+  }
+
+  function showToast(msg, type = 'info') {
+    toastr[type](msg);
+  }
+</script>

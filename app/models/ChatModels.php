@@ -160,4 +160,31 @@ class ChatModel
         $stmt->execute([$roomId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getSellerChatList($sellerId)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            cr.id AS room_id,
+            u.name AS customer_name,
+            u.avatar AS customer_avatar,
+            u.last_activity AS customer_last_activity,
+            (SELECT message FROM chat_messages 
+             WHERE room_id = cr.id 
+             ORDER BY created_at DESC LIMIT 1) AS last_message,
+            (SELECT created_at FROM chat_messages 
+             WHERE room_id = cr.id 
+             ORDER BY created_at DESC LIMIT 1) AS last_message_time,
+            (SELECT COUNT(*) FROM chat_messages 
+             WHERE room_id = cr.id 
+             AND sender_id != ? 
+             AND is_read = 0) AS unread_count
+        FROM chat_rooms cr
+        JOIN users u ON cr.customer_id = u.id
+        WHERE cr.seller_id = ?
+        ORDER BY cr.updated_at DESC
+    ");
+        $stmt->execute([$sellerId, $sellerId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

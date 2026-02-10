@@ -23,10 +23,21 @@ class SellerReportsController extends BaseSellerController
     {
         $sellerId = $_SESSION['user']['id'];
 
-        $month = $_GET['month'] ?? date('m');
-        $year  = $_GET['year'] ?? date('Y');
+        $month = (int)($_GET['month'] ?? date('m'));
+        $year  = (int)($_GET['year'] ?? date('Y'));
 
-        $chartData = $this->orderModel->getSalesChartBySeller($sellerId, $month, $year);
+        $rawChart = $this->orderModel->getSalesChartBySeller($sellerId, $month, $year);
+
+        $chartData = [
+            'dates'  => [],
+            'totals' => []
+        ];
+
+        foreach ($rawChart as $row) {
+            $chartData['dates'][]  = date('d M', strtotime($row['order_date']));
+            $chartData['totals'][] = (int) $row['total_sales'];
+        }
+
         $revenues  = $this->orderModel->getRevenueReportBySeller($sellerId, $month, $year);
         $summary   = $this->orderModel->getSellerReportSummary($sellerId, $month, $year);
 
@@ -34,11 +45,10 @@ class SellerReportsController extends BaseSellerController
             'title'     => 'Sales Report',
             'menu'      => 'seller_reports',
             'chartData' => $chartData,
-            'revenues'  => $revenues,
-            'summary'   => $summary,
+            'revenues'  => $revenues ?? [],
+            'summary'   => $summary ?? [],
             'month'     => $month,
-            'year'      => $year,
-            'disableDefaultChart' => true
+            'year'      => $year
         ]);
     }
 

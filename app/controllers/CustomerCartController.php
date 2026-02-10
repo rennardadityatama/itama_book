@@ -42,26 +42,38 @@ class CustomerCartController extends BaseCustomerController
             $this->json('error', 'Item tidak ditemukan');
         }
 
-        $qty   = (int) $item['qty'];
-        $stock = (int) $item['stock'];
+        $qty    = (int) $item['qty'];
+        $stock  = (int) $item['stock'];
+        $price  = (int) $item['price'];
+
+        if ($action === 'minus') {
+            if ($qty <= 1) {
+                $this->cartModel->delete($cartId);
+
+                $this->json('deleted', 'Produk dihapus dari keranjang', [
+                    'cart_id'  => $cartId,
+                    'sellerId' => $item['seller_id']
+                ]);
+            }
+            $qty--;
+        }
 
         if ($action === 'plus') {
-            if ($stock <= 0 || $qty >= $stock) {
-                $this->json('warning', 'Stok tidak mencukupi');
+            if ($qty >= $stock) {
+                $this->json('warning', 'Stok sudah maksimal');
             }
             $qty++;
         }
 
-        if ($action === 'minus' && $qty > 1) {
-            $qty--;
-        }
-
         $this->cartModel->updateQty($cartId, $qty);
 
-        $this->json('success', 'Jumlah produk diperbarui', [
-            'qty' => $qty
+        $this->json('success', 'Jumlah diperbarui', [
+            'qty'      => $qty,
+            'price'    => $price,
+            'sellerId' => $item['seller_id']
         ]);
     }
+
 
 
     // ======================

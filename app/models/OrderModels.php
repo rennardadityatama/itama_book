@@ -17,7 +17,7 @@ class OrderModel
             INSERT INTO orders 
                 (customer_id, seller_id, total_amount, payment_method, payment_proof, shipping_resi, tracking_link, shipping_status, status, payment_status)
             VALUES
-                (:customer_id, :seller_id, :total_amount, :payment_method, :payment_proof, :shipping_resi, :tracking_link, 'pending', 'pending', 'unpaid')
+                (:customer_id, :seller_id, :total_amount, :payment_method, :payment_proof, :shipping_resi, :tracking_link, 'pending', 'pending', 'paid')
         ");
 
         $stmt->execute([
@@ -424,5 +424,55 @@ class OrderModel
         ]);
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getRecentOrdersBySeller($sellerId, $limit = 5)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            o.id,
+            o.created_at,
+            o.total_amount,
+            c.name AS customer_name,
+            c.address AS customer_address
+        FROM orders o
+        JOIN users c ON c.id = o.customer_id
+        WHERE o.seller_id = :seller_id
+        ORDER BY o.created_at DESC
+        LIMIT :limit
+    ");
+
+        $stmt->bindValue(':seller_id', $sellerId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getRevenueCostMargin($sellerId)
+    {
+        $db = Database::getInstance();
+
+        $stmt = $db->prepare("
+        SELECT 
+            COALESCE(SUM(oi.qty * p.price), 0) AS revenue,
+            COALESCE(SUM(oi.qty * p.cost_price), 0) AS cost
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id
+        JOIN products p ON p.id = oi.product_id
+        WHERE o.seller_id = :seller_id
+          AND o.payment_status = 'paid'
+    ");
+
+        $stmt->execute([':seller_id' => $sellerId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $margin = $row['revenue'] - $row['cost'];
+
+        return [
+            'revenue' => (float)$row['revenue'],
+            'cost'    => (float)$row['cost'],
+            'margin'  => (float)$margin
+        ];
     }
 }

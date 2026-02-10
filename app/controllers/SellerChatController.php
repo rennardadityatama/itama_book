@@ -3,7 +3,6 @@ require_once BASE_PATH . '/app/controllers/BaseSellerController.php';
 require_once BASE_PATH . '/app/models/ChatModels.php';
 require_once BASE_PATH . '/app/helpers/chat.php';
 
-
 class SellerChatController extends BaseSellerController
 {
     private $chatModel;
@@ -16,20 +15,14 @@ class SellerChatController extends BaseSellerController
 
     private function json($status, $message, $data = [])
     {
-        if (ob_get_length()) {
-            ob_clean();
-        }
+        if (ob_get_length()) ob_clean();
         header('Content-Type: application/json');
-        echo json_encode([
-            'status'  => $status,
-            'message' => $message,
-            'data'    => $data
-        ]);
+        echo json_encode(compact('status', 'message', 'data'));
         exit;
     }
 
     /**
-     * Halaman utama chat
+     * Halaman chat seller
      */
     public function index()
     {
@@ -38,72 +31,34 @@ class SellerChatController extends BaseSellerController
             exit;
         }
 
-        $userId = $_SESSION['user']['id'];
-        $roomId = $_GET['room'] ?? null;
+        $sellerId = $_SESSION['user']['id'];
+        $roomId   = $_GET['room'] ?? null;
 
-        // Ambil chat list
-        $chatList = $this->chatModel->getCustomerChatList($userId);
+        $chatList = $this->chatModel->getSellerChatList($sellerId);
 
-        // Data untuk view
         $data = [
-            'chatList' => $chatList,
-            'activeRoom' => null,
-            'messages' => [],
-            'discussedProducts' => [] // TAMBAHAN
+            'chatList'          => $chatList,
+            'activeRoom'        => null,
+            'messages'          => [],
+            'discussedProducts' => []
         ];
 
-        // Jika ada room yang aktif
-        if ($roomId) {
-            if ($this->chatModel->isRoomMember($roomId, $userId)) {
-                $data['activeRoom'] = $this->chatModel->getRoomDetail($roomId);
-                $data['messages'] = $this->chatModel->getRoomMessages($roomId, $userId);
-                $data['discussedProducts'] = $this->chatModel->getRoomProducts($roomId); // TAMBAHAN
-            }
+        if ($roomId && $this->chatModel->isRoomMember($roomId, $sellerId)) {
+            $data['activeRoom']        = $this->chatModel->getRoomDetail($roomId);
+            $data['messages']          = $this->chatModel->getRoomMessages($roomId, $sellerId);
+            $data['discussedProducts'] = $this->chatModel->getRoomProducts($roomId);
         } elseif (!empty($chatList)) {
-            // Default ke chat pertama
-            $firstRoom = $chatList[0]['room_id'];
-            $data['activeRoom'] = $this->chatModel->getRoomDetail($firstRoom);
-            $data['messages'] = $this->chatModel->getRoomMessages($firstRoom, $userId);
-            $data['discussedProducts'] = $this->chatModel->getRoomProducts($firstRoom); // TAMBAHAN
+            $firstRoom                 = $chatList[0]['room_id'];
+            $data['activeRoom']        = $this->chatModel->getRoomDetail($firstRoom);
+            $data['messages']          = $this->chatModel->getRoomMessages($firstRoom, $sellerId);
+            $data['discussedProducts'] = $this->chatModel->getRoomProducts($firstRoom);
         }
 
         $this->render('chat', $data);
     }
 
     /**
-     * Mulai chat dari halaman product
-     * PERUBAHAN: productId opsional untuk tracking saja
-     */
-    public function start()
-    {
-        if (!isset($_SESSION['user'])) {
-            $this->json('error', 'Please login first');
-        }
-
-        $customerId = $_SESSION['user']['id'];
-        $sellerId = $_POST['seller_id'] ?? null;
-        $productId = $_POST['product_id'] ?? null; // Opsional
-
-        if (!$sellerId) {
-            $this->json('error', 'Seller ID tidak valid');
-        }
-
-        try {
-            $roomId = $this->chatModel->getOrCreateRoom($customerId, $sellerId, $productId);
-
-            $this->json('success', 'Chat is ready', [
-                'room_id' => $roomId,
-                'redirect_url' => BASE_URL . '/index.php?c=sellerChat&m=index&room=' . $roomId
-            ]);
-            
-        } catch (Exception $e) {
-            $this->json('error', 'Failed to create message: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Kirim pesan (AJAX)
-     * PERUBAHAN: Bisa attach product_id
+     * Seller kirim pesan
      */
     public function sendMessage()
     {
@@ -111,37 +66,40 @@ class SellerChatController extends BaseSellerController
             $this->json('error', 'Unauthorized');
         }
 
-        $userId = $_SESSION['user']['id'];
-        $roomId = $_POST['room_id'] ?? null;
-        $message = trim($_POST['message'] ?? '');
-        $productId = $_POST['product_id'] ?? null; // OPSIONAL
+        $sellerId  = $_SESSION['user']['id'];
+        $roomId    = $_POST['room_id'] ?? null;
+        $message   = trim($_POST['message'] ?? '');
+        $productId = $_POST['product_id'] ?? null;
 
-        if (!$roomId || empty($message)) {
+        if (!$roomId || $message === '') {
             $this->json('error', 'Invalid input');
         }
 
-        if (!$this->chatModel->isRoomMember($roomId, $userId)) {
+        if (!$this->chatModel->isRoomMember($roomId, $sellerId)) {
             $this->json('error', 'Access denied');
         }
 
         try {
-            $messageId = $this->chatModel->sendMessage($roomId, $userId, $message, $productId);
+            $messageId = $this->chatModel->sendMessage(
+                $roomId,
+                $sellerId,   
+                $message,
+                $productId
+            );
 
             $this->json('success', 'Message sent', [
                 'message_id' => $messageId,
-                'sender_id' => $userId,
-                'message' => htmlspecialchars($message),
-                'product_id' => $productId,
+                'sender_id'  => $sellerId,
+                'message'    => htmlspecialchars($message),
                 'created_at' => date('Y-m-d H:i:s')
             ]);
-            
         } catch (Exception $e) {
-            $this->json('error', 'Failed to send message: ' . $e->getMessage());
+            $this->json('error', $e->getMessage());
         }
     }
 
     /**
-     * Load pesan room tertentu (AJAX)
+     * Load pesan (AJAX polling)
      */
     public function loadMessages()
     {
@@ -149,28 +107,16 @@ class SellerChatController extends BaseSellerController
             $this->json('error', 'Unauthorized');
         }
 
-        $userId = $_SESSION['user']['id'];
-        $roomId = $_GET['room_id'] ?? null;
+        $sellerId = $_SESSION['user']['id'];
+        $roomId   = $_GET['room_id'] ?? null;
 
-        if (!$roomId) {
-            $this->json('error', 'Room ID required');
-        }
-
-        if (!$this->chatModel->isRoomMember($roomId, $userId)) {
+        if (!$roomId || !$this->chatModel->isRoomMember($roomId, $sellerId)) {
             $this->json('error', 'Access denied');
         }
 
-        try {
-            $messages = $this->chatModel->getRoomMessages($roomId, $userId);
-            $roomDetail = $this->chatModel->getRoomDetail($roomId);
-
-            $this->json('success', 'Messages loaded', [
-                'messages' => $messages,
-                'room' => $roomDetail
-            ]);
-            
-        } catch (Exception $e) {
-            $this->json('error', 'Failed to load message: ' . $e->getMessage());
-        }
+        $this->json('success', 'OK', [
+            'messages' => $this->chatModel->getRoomMessages($roomId, $sellerId),
+            'room'     => $this->chatModel->getRoomDetail($roomId)
+        ]);
     }
 }

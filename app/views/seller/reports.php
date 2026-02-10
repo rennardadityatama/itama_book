@@ -125,7 +125,7 @@
             </small>
           </div>
           <div class="card-body">
-            <canvas id="myGraph" height="100"></canvas>
+            <div id="salesChart" style="height:300px;"></div>
           </div>
         </div>
 
@@ -177,14 +177,87 @@
 </div>
 
 <script>
+  document.addEventListener("DOMContentLoaded", function() {
+
+    const options = {
+      chart: {
+        type: 'area',
+        height: 300,
+        toolbar: {
+          show: false
+        },
+        fontFamily: 'inherit'
+      },
+      colors: ['#7366FF'],
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 3
+      },
+      series: [{
+        name: 'Revenue',
+        data: <?= json_encode(array_values($chartData['totals'] ?? [])) ?>
+      }],
+      xaxis: {
+        categories: <?= json_encode(array_values($chartData['dates'] ?? [])) ?>,
+        labels: {
+          style: {
+            colors: '#999'
+          }
+        }
+      },
+      yaxis: {
+        labels: {
+          formatter: function(val) {
+            return 'Rp ' + val.toLocaleString();
+          }
+        }
+      },
+      grid: {
+        borderColor: '#f1f1f1'
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.4,
+          opacityTo: 0.05,
+          stops: [0, 90, 100]
+        }
+      },
+      tooltip: {
+        y: {
+          formatter: function(val) {
+            return 'Rp ' + val.toLocaleString();
+          }
+        }
+      }
+    };
+
+    const chart = new ApexCharts(
+      document.querySelector("#salesChart"),
+      options
+    );
+
+    chart.render();
+
+    // simpan chart instance buat export
+    window.salesChart = chart;
+  });
+
   function exportPdfWithChart() {
-    const canvas = document.getElementById('myGraph');
-    if (!canvas) {
+    if (!window.salesChart) {
       alert('Chart not ready');
       return;
     }
-    const image = canvas.toDataURL('image/png');
-    document.getElementById('chartImage').value = image;
-    document.getElementById('exportPdfForm').submit();
+
+    window.salesChart.dataURI().then(({
+      imgURI
+    }) => {
+      document.getElementById('chartImage').value = imgURI;
+      document.getElementById('exportPdfForm').submit();
+    });
   }
 </script>

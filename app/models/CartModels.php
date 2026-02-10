@@ -58,7 +58,9 @@ class CartModel
         SELECT 
             c.id,
             c.qty,
-            p.stock
+            c.price,
+            p.stock,
+            p.seller_id
         FROM carts c
         JOIN products p ON p.id = c.product_id
         WHERE c.id = :id
@@ -68,6 +70,12 @@ class CartModel
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['id' => $cartId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function delete($id)
+    {
+        $stmt = $this->db->prepare("DELETE FROM carts WHERE id = :id");
+        return $stmt->execute(['id' => $id]);
     }
 
     public function getCartByUserGroupedSeller($userId)

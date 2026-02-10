@@ -36,16 +36,6 @@
             <div class="chat-box">
               <div class="chat-left-aside">
                 <div class="people-list" id="people-list">
-                  <div class="search">
-                    <form class="theme-form">
-                      <div class="form-group">
-                        <div class="input-group">
-                          <input class="form-control" type="text" id="search-chat" placeholder="Search seller...">
-                          <span class="input-group-text"><i class="fa fa-search"></i></span>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
 
                   <ul class="list custom-scrollbar" id="chat-list">
                     <?php if (empty($chatList)): ?>
@@ -56,23 +46,23 @@
                       <?php foreach ($chatList as $chat): ?>
                         <li class="clearfix chat-item <?= isset($activeRoom) && $activeRoom['id'] == $chat['room_id'] ? 'active' : '' ?>"
                           data-room-id="<?= $chat['room_id'] ?>">
-                          <a href="<?= BASE_URL ?>/index.php?c=customerChat&m=index&room=<?= $chat['room_id'] ?>"
+                          <a href="<?= BASE_URL ?>/index.php?c=sellerChat&m=index&room=<?= $chat['room_id'] ?>"
                             class="d-flex align-items-center chat-room-link p-3">
                             <img class="rounded-circle user-image"
                               style="width: 50px; height: 50px; object-fit: cover;"
-                              src="<?= !empty($chat['seller_avatar']) ? BASE_URL . '/uploads/avatars/' . htmlspecialchars($chat['seller_avatar']) : BASE_URL . '/assets/images/default-avatar.png' ?>"
-                              alt="">
+                              src="<?= !empty($chat['customer_avatar'])
+                                      ? BASE_URL . '/uploads/avatars/' . htmlspecialchars($chat['customer_avatar'])
+                                      : BASE_URL . '/assets/images/default-avatar.png' ?>">
                             <div class="flex-grow-1 ms-3">
                               <div class="about">
                                 <div class="d-flex justify-content-between align-items-center">
                                   <div class="name fw-bold">
-                                    <?= htmlspecialchars($chat['seller_name']) ?>
+                                    <?= htmlspecialchars($chat['customer_name']) ?>
                                   </div>
                                   <?php if ($chat['unread_count'] > 0): ?>
                                     <span class="badge bg-primary rounded-pill"><?= $chat['unread_count'] ?></span>
                                   <?php endif; ?>
                                 </div>
-
                                 <?php if ($chat['last_message']): ?>
                                   <div class="text-muted small text-truncate mt-1" style="max-width: 200px;">
                                     <?= htmlspecialchars(substr($chat['last_message'], 0, 40)) ?><?= strlen($chat['last_message']) > 40 ? '...' : '' ?>
@@ -109,12 +99,12 @@
                     <div class="d-flex chat-header clearfix align-items-center justify-content-between p-3 border-bottom">
                       <div class="d-flex align-items-center">
                         <img class="rounded-circle"
-                          src="<?= !empty($activeRoom['seller_avatar']) ? BASE_URL . '/uploads/avatars/' . htmlspecialchars($activeRoom['seller_avatar']) : BASE_URL . '/assets/images/default-avatar.png' ?>"
+                          src="<?= !empty($activeRoom['customer_avatar']) ? BASE_URL . '/uploads/avatars/' . htmlspecialchars($activeRoom['customer_avatar']) : BASE_URL . '/assets/images/default-avatar.png' ?>"
                           alt="" style="width: 50px; height: 50px; object-fit: cover;">
                         <div class="ms-3">
-                          <div class="name fw-bold"><?= htmlspecialchars($activeRoom['seller_name']) ?></div>
+                          <div class="name fw-bold"><?= htmlspecialchars($activeRoom['customer_name']) ?></div>
                           <div class="status">
-                            <?= chatStatusHtml($activeRoom['seller_last_activity']) ?>
+                            <?= chatStatusHtml($activeRoom['customer_last_activity'] ?? null) ?>
                           </div>
                         </div>
                       </div>
@@ -244,7 +234,7 @@
 </style>
 
 <script>
-  const CHAT_BASE_URL = '<?= BASE_URL ?>/index.php?c=customerChat';
+  const CHAT_BASE_URL = '<?= BASE_URL ?>/index.php?c=sellerChat';
   const CURRENT_USER_ID = <?= $_SESSION['user']['id'] ?>;
   const CURRENT_ROOM_ID = <?= $activeRoom['id'] ?? 'null' ?>;
 </script>

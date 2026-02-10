@@ -82,6 +82,8 @@ class SellerController extends BaseSellerController
     $totalSold = $this->getTotalProductsSold($sellerId);
 
     $bestSellingProducts = $productModel->getBestSellingProductsBySeller($sellerId, 5);
+    $recentOrders        = $orderModel->getRecentOrdersBySeller($sellerId, 5);
+    $financeSummary = $orderModel->getRevenueCostMargin($sellerId);
 
     $this->render('dashboard', [
       'title' => 'Dashboard | iTama Book',
@@ -90,7 +92,9 @@ class SellerController extends BaseSellerController
       'totalRevenue' => $totalRevenue,
       'totalProducts' => $totalProducts,
       'totalSold' => $totalSold,
-      'bestSellingProducts' => $bestSellingProducts
+      'bestSellingProducts' => $bestSellingProducts,
+      'recentOrders'        => $recentOrders,
+      'financeSummary' => $financeSummary
     ]);
   }
 
