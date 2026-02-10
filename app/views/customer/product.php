@@ -120,12 +120,11 @@
                         <i class="icon-shopping-cart"></i> Add
                       </button>
 
-                      <a href="<?= BASE_URL ?>index.php?c=customerChat&m=startChat&seller_id=<?= $product['seller_id'] ?>"
-                        class="btn btn-sm btn-success"
-                        title="Chat Seller"
-                        style="padding: 5px 10px;">
-                        <i class="fa fa-comments"></i>
-                      </a>
+                      <button class="btn btn-primary btn-chat-seller"
+                        data-seller-id="<?= $product['seller_id'] ?>"
+                        data-product-id="<?= $product['id'] ?>">
+                        <i class="fa fa-comments"></i> Chat Seller
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -140,6 +139,69 @@
 </div>
 
 <script>
+  (function() {
+    'use strict';
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.body.addEventListener('click', function(e) {
+        const btn = e.target.closest('.btn-chat-seller');
+        if (!btn) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const sellerId = btn.dataset.sellerId;
+        const productId = btn.dataset.productId;
+
+        if (!sellerId || !productId) {
+          alert('Data produk tidak lengkap');
+          return;
+        }
+
+        btn.disabled = true;
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+
+        // UBAH URL: Langsung ke customerChat controller dengan method start
+        fetch('<?= BASE_URL ?>/index.php?c=customerChat&m=start', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'seller_id=' + encodeURIComponent(sellerId) + '&product_id=' + encodeURIComponent(productId)
+          })
+          .then(response => {
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+              return response.text().then(text => {
+                console.error('Response bukan JSON:', text);
+                throw new Error('Server error: ' + text.substring(0, 200));
+              });
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('Response:', data);
+
+            if (data.status === 'success') {
+              window.location.href = data.data.redirect_url;
+            } else {
+              alert(data.message || 'Gagal memulai chat');
+              btn.disabled = false;
+              btn.innerHTML = originalHTML;
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan: ' + error.message);
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
+          });
+      });
+    });
+  })();
+
+  // Category filter
   document.querySelectorAll('.category-filter').forEach(el => {
     el.addEventListener('change', () => {
       let checked = document.querySelector('.category-filter:checked');

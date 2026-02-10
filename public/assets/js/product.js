@@ -176,3 +176,4 @@ document.addEventListener('DOMContentLoaded', () => {
             if (del) openDeleteProduct(del.dataset.id, del.dataset.name);
         });
 });
+

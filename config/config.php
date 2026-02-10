@@ -1,5 +1,4 @@
 <?php
-
 // Base URL
 define('BASE_URL', 'https://localhost/itama_book/public/');
 

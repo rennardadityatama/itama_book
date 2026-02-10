@@ -3,6 +3,7 @@
 require_once BASE_PATH . '/app/middlewares/Middleware.php';
 require_once BASE_PATH . '/app/models/UserModels.php';
 require_once BASE_PATH . '/app/helpers/Csrf.php';
+require_once BASE_PATH . '/app/helpers/chat.php';
 
 class BaseCustomerController
 {
