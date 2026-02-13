@@ -105,6 +105,7 @@
           </div>
         </div>
       </div>
+
       <div class="row">
         <!-- TOP CATEGORIES -->
         <div class="col-xl-4 col-lg-6">
@@ -195,11 +196,57 @@
             </div>
           </div>
         </div>
+
+              <div class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Total Sales Per Month (<?= date('Y') ?>)</h5>
+            </div>
+            <div class="card-body">
+              <canvas id="monthlySalesChart" height="100"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
     <!-- Container-fluid Ends-->
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script>
+    const ctx = document.getElementById('monthlySalesChart');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [
+          'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ],
+        datasets: [{
+          label: 'Total Sales (Rp)',
+          data: <?= json_encode(array_values($monthly_sales)) ?>,
+          tension: 0.4,
+          fill: true,
+          borderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
     feather.replace()
   </script>

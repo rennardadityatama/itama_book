@@ -79,8 +79,8 @@
                                 <!-- Badge -->
                                 <?php
                                 $paymentBadge = match ($order['payment_status']) {
-                                  'waiting_payment' => '<span class="badge bg-warning">Waiting</span>',
-                                  'completed' => '<span class="badge bg-success">Completed</span>',
+                                  'unpaid' => '<span class="badge bg-warning">Unpaid</span>',
+                                  'paid' => '<span class="badge bg-success">Paid</span>',
                                   default => '<span class="badge bg-secondary">' . ucfirst($order['payment_status']) . '</span>'
                                 };
                                 echo $paymentBadge;

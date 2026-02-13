@@ -22,17 +22,28 @@
 
         <!-- Input tambah kategori -->
         <div class="row mb-3 align-items-end">
-          <div class="col-md-6">
-            <label class="form-label">Category Name</label>
-            <input type="text" class="form-control" id="categoryName" placeholder="Insert Category Name">
-          </div>
-          <div class="col-md-2">
-            <button class="btn btn-primary d-flex align-items-center gap-1" id="addCategoryBtn">
-              <i data-feather="plus-circle"></i> Add
-            </button>
-          </div>
+          <form action="<?= BASE_URL ?>?c=adminCategories&m=store" method="POST">
+            <div class="input-group">
+              <input type="text" name="name" class="form-control" placeholder="Insert Category Name" required>
+              <button type="submit" class="btn btn-primary">
+                Add
+              </button>
+            </div>
+          </form>
         </div>
+        <?php if (isset($_SESSION['success'])): ?>
+          <div class="alert alert-success">
+            <?= $_SESSION['success'];
+            unset($_SESSION['success']); ?>
+          </div>
+        <?php endif; ?>
 
+        <?php if (isset($_SESSION['error'])): ?>
+          <div class="alert alert-danger">
+            <?= $_SESSION['error'];
+            unset($_SESSION['error']); ?>
+          </div>
+        <?php endif; ?>
         <!-- Tabel -->
         <div class="table-responsive theme-scrollbar">
           <table class="table table-bordered table-striped">
@@ -50,18 +61,31 @@
                     <td><?= $i + 1 ?></td>
                     <td class="cat-name"><?= htmlspecialchars($cat['name']) ?></td>
                     <td>
-                      <ul class="action">
-                        <li class="edit">
-                          <a href="javascript:void(0)" onclick="openEditModal(<?= $cat['id'] ?>, '<?= htmlspecialchars($cat['name']) ?>', this)">
-                            <i class="icon-pencil-alt"></i>
-                          </a>
-                        </li>
-                        <li class="delete">
-                          <a href="javascript:void(0)" onclick="openDeleteModal(<?= $cat['id'] ?>, '<?= htmlspecialchars($cat['name']) ?>', this)">
-                            <i class="icon-trash"></i>
-                          </a>
-                        </li>
-                      </ul>
+                      <div class="d-flex gap-2">
+
+                        <!-- Edit -->
+                        <button
+                          class="btn btn-sm btn-warning"
+                          data-bs-toggle="modal"
+                          data-bs-target="#editModal"
+                          data-id="<?= $cat['id'] ?>"
+                          data-name="<?= htmlspecialchars($cat['name']) ?>"
+                          title="Edit">
+                          <i data-feather="edit-2"></i>
+                        </button>
+
+                        <!-- Delete -->
+                        <button
+                          class="btn btn-sm btn-danger"
+                          data-bs-toggle="modal"
+                          data-bs-target="#deleteModal"
+                          data-id="<?= $cat['id'] ?>"
+                          data-name="<?= htmlspecialchars($cat['name']) ?>"
+                          title="Delete">
+                          <i data-feather="trash-2"></i>
+                        </button>
+
+                      </div>
                     </td>
                   </tr>
                 <?php endforeach ?>
@@ -85,49 +109,85 @@
   <div id="toastContainer"></div>
 </div>
 
-<!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+<!-- EDIT MODAL -->
+<div class="modal fade" id="editModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <form class="modal-content" id="editForm">
+    <form method="POST" id="editForm" class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Edit Category</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+
       <div class="modal-body">
-        <input type="hidden" id="editCategoryId">
+        <input type="hidden" name="id" id="editCategoryId">
         <div class="mb-3">
-          <label for="editCategoryName" class="form-label">Category Name</label>
-          <input type="text" class="form-control" id="editCategoryName" required>
+          <label class="form-label">Category Name</label>
+          <input type="text" name="name" id="editCategoryName" class="form-control" required>
         </div>
       </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-warning">Update</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
+    <form method="POST" id="deleteForm" class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Confirm Delete</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+
       <div class="modal-body">
-        <p id="deleteMessage"></p>
+        <input type="hidden" name="id" id="deleteCategoryId">
+        <p id="deleteText"></p>
       </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        <button type="submit" class="btn btn-danger">Delete</button>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 
+
 <script>
-  const CATEGORY_BASE_URL = '<?= BASE_URL ?>/index.php?c=adminCategories';
+  document.addEventListener('DOMContentLoaded', function() {
+
+    const editModal = document.getElementById('editModal');
+    const deleteModal = document.getElementById('deleteModal');
+
+    editModal.addEventListener('show.bs.modal', function(event) {
+      const button = event.relatedTarget;
+
+      const id = button.getAttribute('data-id');
+      const name = button.getAttribute('data-name');
+
+      document.getElementById('editCategoryId').value = id;
+      document.getElementById('editCategoryName').value = name;
+
+      document.getElementById('editForm').action =
+        "<?= BASE_URL ?>?c=adminCategories&m=update&id=" + id;
+    });
+
+    deleteModal.addEventListener('show.bs.modal', function(event) {
+      const button = event.relatedTarget;
+
+      const id = button.getAttribute('data-id');
+      const name = button.getAttribute('data-name');
+
+      document.getElementById('deleteCategoryId').value = id;
+      document.getElementById('deleteText').innerText =
+        'Yakin mau hapus kategori "' + name + '" ?';
+
+      document.getElementById('deleteForm').action =
+        "<?= BASE_URL ?>?c=adminCategories&m=destroy&id=" + id;
+    });
+
+  });
 </script>
-<script src="<?= BASE_URL ?>/assets/js/category.js"></script>

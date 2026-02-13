@@ -246,40 +246,18 @@ class AdminCustomerController extends BaseAdminController
                 throw new Exception('Customer not found');
             }
 
-            if ($this->customerModel->hasTransaction($id)) {
-                throw new Exception(
-                    'Customer cannot be deleted because they have transaction history.'
-                );
-            }
-
+            // Optional: hanya cek cart aktif
             if ($this->customerModel->hasActiveCart($id)) {
                 throw new Exception(
                     'This customer cannot be deleted because there are still items in the cart.'
                 );
             }
 
-            if ($customer['online_status'] !== 'online') {
-                throw new Exception(
-                    'Only offline customers can be deleted.'
-                );
-            }
-
-            if (!$this->customerModel->delete($id)) {
+            if (!$this->customerModel->softDelete($id)) {
                 throw new Exception('Failed to delete customer');
             }
 
             $this->json(true, 'Customer deleted successfully');
-        } catch (PDOException $e) {
-
-            if ($e->getCode() == 23000) {
-                $this->json(
-                    false,
-                    'This customer cannot be deleted because there are still items in the cart.'
-                );
-                return;
-            }
-
-            $this->json(false, 'Database error occurred');
         } catch (Exception $e) {
             $this->json(false, $e->getMessage());
         }

@@ -15,7 +15,10 @@ class CustomerModel
     public function getById($id)
     {
         $stmt = $this->db->prepare(
-            "SELECT * FROM users WHERE id = :id AND role = 3"
+            "SELECT * FROM users 
+         WHERE id = :id 
+           AND role = 3 
+           AND deleted_at IS NULL"
         );
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -124,6 +127,7 @@ class CustomerModel
             END AS online_status
         FROM users
         WHERE role = 3
+          AND deleted_at IS NULL
         ORDER BY id DESC
     ");
         $stmt->execute();
@@ -167,11 +171,14 @@ class CustomerModel
     }
 
     // DELETE
-    public function delete($id)
+    public function softDelete($id)
     {
         $stmt = $this->db->prepare(
-            "DELETE FROM users WHERE id = :id AND role = 3"
+            "UPDATE users 
+         SET deleted_at = NOW() 
+         WHERE id = :id AND role = 3"
         );
+
         return $stmt->execute([':id' => $id]);
     }
 }

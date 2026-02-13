@@ -74,7 +74,7 @@
           </div>
         </div>
       </div>
-      <div class="product-wrapper-grid">
+      <div class="product-wrapper-grid mb-5">
         <div class="row g-4">
           <?php foreach ($products as $product): ?>
             <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">

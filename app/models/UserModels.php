@@ -90,8 +90,9 @@ class User
     FROM users u
     LEFT JOIN roles r ON u.role = r.id
     WHERE u.email = ?
+      AND u.deleted_at IS NULL
     LIMIT 1
-  ");
+    ");
 
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -122,6 +123,7 @@ class User
             END AS online_status
         FROM users
         WHERE role IN ($in)
+          AND deleted_at IS NULL
         ORDER BY id DESC
     ");
 
@@ -144,8 +146,8 @@ class User
   public function register($data)
   {
     $stmt = $this->db->prepare("
-      INSERT INTO users (name, nik, email, password, phone, address, role, status, account_number, qris_photo  )
-      VALUES (:name, :nik, :email, :password, :phone, :address, :role, :status, :account_number, :qris_photo)
+      INSERT INTO users (name, nik, email, password, phone, address, role, account_number, qris_photo  )
+      VALUES (:name, :nik, :email, :password, :phone, :address, :role, :account_number, :qris_photo)
     ");
 
     return $stmt->execute([
@@ -158,7 +160,6 @@ class User
       ':role'           => $data['role'],
       ':account_number' => !empty($data['account_number']) ? $data['account_number'] : '',
       ':qris_photo'     => $data['qris_photo'] ?? null,
-      ':status'         => $data['status']
     ]);
   }
 

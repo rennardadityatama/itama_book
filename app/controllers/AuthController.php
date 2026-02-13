@@ -180,8 +180,7 @@ class AuthController
       'address'        => $_POST['address'],
       'role'           => $role,
       'account_number' => $account_number,
-      'qris_photo'     => $qris_photo,
-      'status'         => 'offline'
+      'qris_photo'     => $qris_photo
     ]);
 
     $this->json(true, 'Account Created Successfully', [

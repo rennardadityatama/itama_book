@@ -26,7 +26,6 @@ function showToast(message, type = 'success') {
 function showLoader() {
     const loader = document.querySelector('.loader-wrapper');
     if (loader) {
-        loader.classList.add('loderhide');
         loader.style.display = 'block';
     }
 }
@@ -34,14 +33,13 @@ function showLoader() {
 function hideLoader() {
     const loader = document.querySelector('.loader-wrapper');
     if (loader) {
-        setTimeout(() => {
-            loader.classList.remove('loderhide');
-        }, 500);
+        loader.style.display = 'none';
     }
 }
 
+
 // Hide loader saat halaman selesai dimuat
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     hideLoader();
 });
 // ==================== END LOADER ====================
@@ -50,10 +48,10 @@ window.addEventListener('load', function() {
 function addCategory() {
     const input = document.getElementById('categoryName');
     const name = input.value.trim();
-    if (!name) { 
-        showToast('Nama kategori wajib diisi', 'danger'); 
-        input.focus(); 
-        return; 
+    if (!name) {
+        showToast('Nama kategori wajib diisi', 'danger');
+        input.focus();
+        return;
     }
 
     showLoader(); // Tampilkan loader
@@ -69,28 +67,28 @@ function addCategory() {
             input.value = '';
             showToast(res.message, 'success');
             const tbody = document.getElementById('categoryTableBody');
-            
+
             // Hapus row "Belum ada data" jika ada
             const emptyRow = tbody.querySelector('tr td[colspan="3"]');
             if (emptyRow) {
                 emptyRow.closest('tr').remove();
             }
-            
+
             const rowNumber = tbody.rows.length + 1;
             const newRow = document.createElement('tr');
-            newRow.dataset.id = res.id;
+            newRow.dataset.id = res.data.id;
             newRow.innerHTML = `
                 <td>${rowNumber}</td>
                 <td class="cat-name">${name}</td>
                 <td>
                     <ul class="action">
-                        <li class="edit"><a href="javascript:void(0)" onclick="openEditModal(${res.id},'${name}',this)"><i class="icon-pencil-alt"></i></a></li>
-                        <li class="delete"><a href="javascript:void(0)" onclick="openDeleteModal(${res.id},'${name}',this)"><i class="icon-trash"></i></a></li>
+                        <li class="edit"><a href="javascript:void(0)" onclick="openEditModal(${res.data.id},'${name}',this)"><i class="icon-pencil-alt"></i></a></li>
+                        <li class="delete"><a href="javascript:void(0)" onclick="openDeleteModal(${res.data.id},'${name}',this)"><i class="icon-trash"></i></a></li>
                     </ul>
                 </td>
             `;
             tbody.appendChild(newRow);
-            
+
             // Re-initialize feather icons
             if (typeof feather !== 'undefined') {
                 feather.replace();
@@ -98,10 +96,10 @@ function addCategory() {
         } else {
             showToast(res.message, 'danger');
         }
-    }).catch(err => { 
+    }).catch(err => {
         hideLoader(); // Sembunyikan loader
-        console.error(err); 
-        showToast('Terjadi kesalahan', 'danger'); 
+        console.error(err);
+        showToast('Terjadi kesalahan', 'danger');
     });
 }
 
@@ -118,13 +116,13 @@ document.getElementById('editForm').addEventListener('submit', function (e) {
     e.preventDefault();
     const id = document.getElementById('editCategoryId').value;
     const name = document.getElementById('editCategoryName').value.trim();
-    if (!name) { 
-        showToast('Nama kategori wajib diisi', 'danger'); 
-        return; 
+    if (!name) {
+        showToast('Nama kategori wajib diisi', 'danger');
+        return;
     }
 
     const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
-    
+
     showLoader(); // Tampilkan loader
 
     fetch(CATEGORY_BASE_URL + '&m=update&id=' + id, {
@@ -156,10 +154,10 @@ document.getElementById('editForm').addEventListener('submit', function (e) {
         } else {
             showToast(res.message, 'danger');
         }
-    }).catch(err => { 
+    }).catch(err => {
         hideLoader(); // Sembunyikan loader
-        console.error(err); 
-        showToast('Terjadi kesalahan saat update', 'danger'); 
+        console.error(err);
+        showToast('Terjadi kesalahan saat update', 'danger');
     });
 });
 
@@ -182,9 +180,9 @@ function openDeleteModal(id, name, element) {
 
 document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
     if (!deleteId || !deleteElement) return;
-    
+
     showLoader(); // Tampilkan loader
-    
+
     fetch(CATEGORY_BASE_URL + '&m=destroy&id=' + deleteId, { method: 'POST' })
         .then(r => r.json()).then(res => {
             hideLoader(); // Sembunyikan loader
@@ -192,7 +190,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
                 showToast(res.message, 'success');
                 deleteElement.closest('tr').remove();
                 updateRowNumbers();
-                
+
                 // Tambahkan row kosong jika tidak ada data
                 const tbody = document.getElementById('categoryTableBody');
                 if (tbody.rows.length === 0) {
@@ -207,13 +205,13 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
             } else {
                 showToast(res.message, 'danger');
             }
-            deleteId = null; 
+            deleteId = null;
             deleteElement = null;
             bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
-        }).catch(err => { 
+        }).catch(err => {
             hideLoader(); // Sembunyikan loader
-            console.error(err); 
-            showToast('Terjadi kesalahan saat hapus', 'danger'); 
+            console.error(err);
+            showToast('Terjadi kesalahan saat hapus', 'danger');
         });
 });
 
@@ -221,7 +219,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('addCategoryBtn');
     if (btn) btn.addEventListener('click', addCategory);
-    
+
     // Hide loader saat halaman category ready
     hideLoader();
 });

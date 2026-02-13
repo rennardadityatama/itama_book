@@ -36,7 +36,8 @@ class AdminController extends BaseAdminController
             'summary'        => $orderModel->getDashboardSummary(),
             'best_products' => $productModel->getBestSellingProducts(),
             'low_stock'     => $productModel->getLowStockProducts(),
-            'top_categories' => $categoryModel->getTopCategories()
+            'top_categories' => $categoryModel->getTopCategories(),
+            'monthly_sales' => $orderModel->getMonthlySales(date('Y'))
         ]);
     }
 

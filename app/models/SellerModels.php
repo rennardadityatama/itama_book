@@ -150,8 +150,8 @@ class SellerModel
     {
         $stmt = $this->db->prepare(
             "INSERT INTO users 
-            (name, nik, email, password, address, role, account_number, qris_photo, avatar, status)
-            VALUES (:name, :nik, :email, :password, :address, 2, :account_number, :qris_photo, :avatar, 'offline')"
+            (name, nik, email, password, address, role, account_number, qris_photo, avatar)
+            VALUES (:name, :nik, :email, :password, :address, 2, :account_number, :qris_photo, :avatar)"
         );
 
         return $stmt->execute([

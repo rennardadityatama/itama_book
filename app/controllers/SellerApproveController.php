@@ -53,15 +53,6 @@ class SellerApproveController extends BaseSellerController
             exit;
         }
 
-        if (!$this->orderModel->rejectOrder($orderId)) {
-            $_SESSION['toast'] = [
-                'type' => 'danger',
-                'message' => 'Failed to reject order'
-            ];
-            header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
-            exit;
-        }
-
         // Validasi: apakah order ini milik seller yang login?
         $order = $this->orderModel->getOrderByIdForSeller($orderId, $sellerId);
 
@@ -75,7 +66,7 @@ class SellerApproveController extends BaseSellerController
         $this->orderModel->updateOrderStatus($orderId, 'approved');
 
         // Update payment status jadi 'completed'
-        $this->orderModel->updatePaymentStatus($orderId, 'completed');
+        $this->orderModel->updatePaymentStatus($orderId, 'paid');
 
         $_SESSION['toast'] = ['type' => 'success', 'message' => 'Order approved successfully'];
         header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
@@ -97,6 +88,15 @@ class SellerApproveController extends BaseSellerController
             header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
             exit;
         }
+
+        // if (!$this->orderModel->rejectOrder($orderId)) {
+        //     $_SESSION['toast'] = [
+        //         'type' => 'danger',
+        //         'message' => 'Failed to reject order'
+        //     ];
+        //     header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
+        //     exit;
+        // }
 
         // Validasi order
         $order = $this->orderModel->getOrderByIdForSeller($orderId, $sellerId);

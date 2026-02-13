@@ -228,6 +228,37 @@ class OrderModel
         return $stmt->execute([':id' => $orderId]);
     }
 
+    public function getMonthlySales($year = null)
+    {
+        if (!$year) {
+            $year = date('Y');
+        }
+
+        $stmt = $this->db->prepare("
+        SELECT 
+            MONTH(created_at) as month,
+            SUM(total_amount) as total
+        FROM orders
+        WHERE status = 'approved'
+          AND payment_status = 'paid'
+          AND YEAR(created_at) = :year
+        GROUP BY MONTH(created_at)
+        ORDER BY month ASC
+    ");
+
+        $stmt->execute([':year' => $year]);
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Default 12 bulan = 0
+        $data = array_fill(1, 12, 0);
+
+        foreach ($results as $row) {
+            $data[(int)$row['month']] = (float)$row['total'];
+        }
+
+        return $data;
+    }
 
     public function getOrderByIdForSeller($orderId, $sellerId)
     {
@@ -474,5 +505,141 @@ class OrderModel
             'cost'    => (float)$row['cost'],
             'margin'  => (float)$margin
         ];
+    }
+
+    public function getCustomerOrderSummary($customerId)
+    {
+        $stmt = $this->db->prepare("
+        SELECT
+            SUM(CASE WHEN payment_status = 'unpaid' THEN 1 ELSE 0 END) AS pending_payment,
+            SUM(CASE WHEN status IN ('approved','processing','shipped') THEN 1 ELSE 0 END) AS in_progress,
+            SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed_orders
+        FROM orders
+        WHERE customer_id = :customer_id
+    ");
+
+        $stmt->execute([':customer_id' => $customerId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getRecentOrdersByCustomer($customerId, $limit = 5)
+    {
+        $stmt = $this->db->prepare("
+        SELECT id, status, payment_status, created_at
+        FROM orders
+        WHERE customer_id = :customer_id
+        ORDER BY created_at DESC
+        LIMIT :limit
+    ");
+
+        $stmt->bindValue(':customer_id', $customerId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getRecentlyBoughtProducts($customerId, $limit = 5)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            p.name,
+            oi.price,
+            p.image
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id
+        JOIN products p ON p.id = oi.product_id
+        WHERE o.customer_id = :customer_id
+        ORDER BY o.created_at DESC
+        LIMIT :limit
+    ");
+
+        $stmt->bindValue(':customer_id', $customerId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getActiveShipments($customerId, $limit = 10)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            o.id,
+            o.created_at,
+            o.shipping_status,
+            o.shipping_resi,
+            o.tracking_link,
+            MIN(p.name) AS product_name,
+            MIN(p.image) AS product_image
+        FROM orders o
+        JOIN order_items oi ON oi.order_id = o.id
+        JOIN products p ON p.id = oi.product_id
+        WHERE o.customer_id = :customer_id
+          AND o.shipping_status IN ('pending','processing','shipped')
+        GROUP BY o.id
+        ORDER BY o.created_at DESC
+        LIMIT :limit
+    ");
+
+        $stmt->bindValue(':customer_id', (int)$customerId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getCustomerReport($customerId, $month, $year)
+    {
+        $stmt = $this->db->prepare("
+        SELECT o.*, u.name as customer_name
+        FROM orders o
+        JOIN users u ON u.id = o.customer_id
+        WHERE o.customer_id = :customer_id
+          AND MONTH(o.created_at) = :month
+          AND YEAR(o.created_at) = :year
+        ORDER BY o.created_at DESC
+    ");
+
+        $stmt->execute([
+            ':customer_id' => $customerId,
+            ':month'       => $month,
+            ':year'        => $year
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getCustomerReportSummary($customerId, $month, $year)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            SUM(CASE 
+                    WHEN payment_status = 'paid' 
+                    THEN total_amount 
+                    ELSE 0 
+                END) as total_revenue,
+
+            COUNT(*) as total_orders,
+
+            COUNT(CASE 
+                    WHEN payment_status = 'paid' 
+                    THEN 1 
+                 END) as paid_orders
+
+        FROM orders
+        WHERE customer_id = :customer_id
+          AND MONTH(created_at) = :month
+          AND YEAR(created_at) = :year
+    ");
+
+        $stmt->execute([
+            ':customer_id' => $customerId,
+            ':month'       => $month,
+            ':year'        => $year
+        ]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

@@ -11,12 +11,20 @@ class CategoryModel
         $this->db = Database::getInstance();
     }
 
-    public function findByName($nik)
+    public function findByName($name, $excludeId = null)
     {
-        $stmt = $this->db->prepare(
-            "SELECT * FROM categories WHERE name = ? LIMIT 1"
-        );
-        $stmt->execute([$nik]);
+        if ($excludeId) {
+            $stmt = $this->db->prepare(
+                "SELECT * FROM categories WHERE name = ? AND id != ? LIMIT 1"
+            );
+            $stmt->execute([$name, $excludeId]);
+        } else {
+            $stmt = $this->db->prepare(
+                "SELECT * FROM categories WHERE name = ? LIMIT 1"
+            );
+            $stmt->execute([$name]);
+        }
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -40,7 +48,7 @@ class CategoryModel
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     public function isUsedInCart($categoryId)
     {
         $stmt = $this->db->prepare("
@@ -69,13 +77,15 @@ class CategoryModel
         $stmt = $this->db->prepare(
             "INSERT INTO categories (name) VALUES (:name)"
         );
-        return $stmt->execute([
+
+        $result = $stmt->execute([
             ':name' => $name
         ]);
 
         if ($result) {
             return $this->db->lastInsertId();
         }
+
         return false;
     }
 
