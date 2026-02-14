@@ -276,7 +276,7 @@
                   <i data-feather="printer" class="me-2"></i>
                   <span>Download Invoice</span>
                 </a>
-                <a href="<?= BASE_URL ?>index.php?c=customerStatus&m=index"
+                <a href="<?= BASE_URL ?>index.php?c=customerReports&m=index"
                   class="btn btn-secondary d-inline-flex align-items-center me-2">
                   <i data-feather="list" class="me-2"></i>
                   <span>View Order History</span>

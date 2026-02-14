@@ -79,8 +79,8 @@
                         <td>
                           <?php
                           $paymentClass = match ($order['payment_status']) {
-                            'waiting_payment' => 'bg-warning',
-                            'completed' => 'bg-success',
+                            'unpaid' => 'bg-warning',
+                            'paid' => 'bg-success',
                             default => 'bg-secondary'
                           };
                           ?>
@@ -97,6 +97,7 @@
                           $shippingClass = match ($order['shipping_status']) {
                             'pending' => 'bg-warning',
                             'shipped' => 'bg-success',
+                            'refund' => 'bg-danger',
                             default => 'bg-secondary'
                           };
                           ?>

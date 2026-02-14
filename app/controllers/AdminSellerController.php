@@ -127,8 +127,16 @@ class AdminSellerController extends BaseAdminController
             $address  = trim($_POST['address'] ?? '');
             $account  = trim($_POST['account_number'] ?? '');
 
-            if (!$name || !$nik || !$email || !$password) {
+            if (!$name || !$nik || !$email || !$password || !$address || !$account) {
                 throw new Exception('Please fill all required fields');
+            }
+
+            if (empty($_FILES['qris_photo']['name'])) {
+                throw new Exception('QRIS photo is required');
+            }
+
+            if (empty($_FILES['avatar']['name'])) {
+                throw new Exception('Avatar is required');
             }
 
             if ($this->sellerModel->findByEmail($email)) {

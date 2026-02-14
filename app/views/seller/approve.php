@@ -102,6 +102,7 @@
                               $shippingBadge = match ($order['shipping_status']) {
                                 'pending' => '<span class="badge bg-warning">Pending</span>',
                                 'shipped' => '<span class="badge bg-success">Shipped</span>',
+                                'refund' => '<span class="badge bg-danger">Refund</span>',
                                 default => '<span class="badge bg-secondary">' . ucfirst($order['shipping_status']) . '</span>'
                               };
                               echo $shippingBadge;

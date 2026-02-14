@@ -110,44 +110,46 @@
 
 <!-- Add Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <form class="modal-content" id="addForm" enctype="multipart/form-data">
       <div class="modal-header">
         <h5 class="modal-title">Add Seller</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-3">
-          <label for="addSellerName" class="form-label">Name</label>
-          <input type="text" class="form-control" id="addSellerName" name="name" required>
-        </div>
-        <div class="mb-3">
-          <label for="addSellerNIK" class="form-label">NIK</label>
-          <input type="text" class="form-control" id="addSellerNIK" name="nik" required>
-        </div>
-        <div class="mb-3">
-          <label for="addSellerEmail" class="form-label">Email</label>
-          <input type="email" class="form-control" id="addSellerEmail" name="email" required>
-        </div>
-        <div class="mb-3">
-          <label for="addSellerPassword" class="form-label">Password</label>
-          <input type="password" class="form-control" id="addSellerPassword" name="password">
-        </div>
-        <div class="mb-3">
-          <label for="addSellerAddress" class="form-label">Address</label>
-          <input type="text" class="form-control" id="addSellerAddress" name="address">
-        </div>
-        <div class="mb-3">
-          <label for="addSellerAccount" class="form-label">Account Number</label>
-          <input type="text" class="form-control" id="addSellerAccount" name="account_number">
-        </div>
-        <div class="mb-3">
-          <label for="addSellerQris" class="form-label">Avatar</label>
-          <input type="file" class="form-control" id="addSellerAvatar" name="avatar">
-        </div>
-        <div class="mb-3">
-          <label for="addSellerQris" class="form-label">QRIS Photo</label>
-          <input type="file" class="form-control" id="addSellerQris" name="qris_photo">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="addSellerName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="addSellerName" name="name" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="addSellerNIK" class="form-label">NIK</label>
+            <input type="text" class="form-control" id="addSellerNIK" name="nik" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="addSellerEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="addSellerEmail" name="email" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="addSellerPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" id="addSellerPassword" name="password">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="addSellerAddress" class="form-label">Address</label>
+            <input type="text" class="form-control" id="addSellerAddress" name="address">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="addSellerAccount" class="form-label">Account Number</label>
+            <input type="text" class="form-control" id="addSellerAccount" name="account_number">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="addSellerAvatar" class="form-label">Avatar</label>
+            <input type="file" class="form-control" id="addSellerAvatar" name="avatar">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="addSellerQris" class="form-label">QRIS Photo</label>
+            <input type="file" class="form-control" id="addSellerQris" name="qris_photo">
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -160,7 +162,7 @@
 
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <form class="modal-content" id="editForm" enctype="multipart/form-data">
       <div class="modal-header">
         <h5 class="modal-title">Edit Seller</h5>
@@ -168,42 +170,44 @@
       </div>
       <div class="modal-body">
         <input type="hidden" id="editSellerId">
-        <div class="mb-3">
-          <label for="editSellerName" class="form-label">Name</label>
-          <input type="text" class="form-control" id="editSellerName" name="name" required>
-        </div>
-        <div class="mb-3">
-          <label for="editSellerEmail" class="form-label">Email</label>
-          <input type="email" class="form-control" id="editSellerEmail" name="email" required>
-        </div>
-        <div class="mb-3">
-          <label for="editSellerEmail" class="form-label">NIK</label>
-          <input type="text" class="form-control" id="editSellerNik" name="nik" required>
-        </div>
-        <div class="mb-3">
-          <label for="editSellerEmail" class="form-label">New Password</label>
-          <input type="password" class="form-control" id="editSellerPassword" name="password">
-        </div>
-        <div class="mb-3">
-          <label for="editSellerAddress" class="form-label">Address</label>
-          <input type="text" class="form-control" id="editSellerAddress" name="address">
-        </div>
-        <div class="mb-3">
-          <label for="editSellerAccount" class="form-label">Account Number</label>
-          <input type="text" class="form-control" id="editSellerAccount" name="account_number">
-        </div>
-        <div class="mb-3">
-          <label for="editSellerQris" class="form-label">Avatar</label>
-          <input type="file" class="form-control" id="editSellerAvatar" name="avatar">
-        </div>
-        <div class="mb-3">
-          <label for="editSellerQris" class="form-label">QRIS Photo</label>
-          <input type="file" class="form-control" id="editSellerQris" name="qris_photo">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="editSellerName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="editSellerName" name="name" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="editSellerEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="editSellerEmail" name="email" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="editSellerNik" class="form-label">NIK</label>
+            <input type="text" class="form-control" id="editSellerNik" name="nik" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="editSellerPassword" class="form-label">New Password</label>
+            <input type="password" class="form-control" id="editSellerPassword" name="password">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="editSellerAddress" class="form-label">Address</label>
+            <input type="text" class="form-control" id="editSellerAddress" name="address">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="editSellerAccount" class="form-label">Account Number</label>
+            <input type="text" class="form-control" id="editSellerAccount" name="account_number">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="editSellerAvatar" class="form-label">Avatar</label>
+            <input type="file" class="form-control" id="editSellerAvatar" name="avatar">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="editSellerQris" class="form-label">QRIS Photo</label>
+            <input type="file" class="form-control" id="editSellerQris" name="qris_photo">
+          </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
       </div>
     </form>
   </div>

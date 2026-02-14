@@ -196,6 +196,7 @@ class OrderModel
         $stmt = $this->db->prepare("
         UPDATE orders 
         SET status = 'refund',
+        shipping_status = 'refund',
             refunded_at = NOW()
         WHERE id = :order_id
     ");

@@ -181,4 +181,20 @@ class CustomerModel
 
         return $stmt->execute([':id' => $id]);
     }
+
+    public function isOnline($id)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 1 FROM users
+        WHERE id = ?
+          AND role = 3
+          AND deleted_at IS NULL
+          AND last_activity IS NOT NULL
+          AND last_activity >= (NOW() - INTERVAL 4 MINUTE)
+        LIMIT 1
+    ");
+
+        $stmt->execute([$id]);
+        return $stmt->fetch() !== false;
+    }
 }

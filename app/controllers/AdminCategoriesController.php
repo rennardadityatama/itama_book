@@ -23,19 +23,19 @@ class AdminCategoriesController extends BaseAdminController
         exit;
     }
 
-    // READ - Tampilkan list kategori
+    // READ - Show category list
     public function index()
     {
         $categories = $this->categoryModel->getAll();
 
         $this->render('category_list', [
-            'title' => 'List Category | iTama Book',
+            'title' => 'Category List | iTama Book',
             'menu'  => 'category',
             'categories' => $categories
         ]);
     }
 
-    // CREATE - Tambah kategori baru
+    // CREATE - Add new category
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -43,26 +43,26 @@ class AdminCategoriesController extends BaseAdminController
             $name = trim($_POST['name']);
 
             if (empty($name)) {
-                $_SESSION['error'] = 'Nama kategori wajib diisi';
+                $_SESSION['error'] = 'Category name is required.';
                 header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
                 exit;
             }
 
             if ($this->categoryModel->findByName($name)) {
-                $_SESSION['error'] = 'Kategori sudah ada';
+                $_SESSION['error'] = 'Category already exists.';
                 header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
                 exit;
             }
 
             $this->categoryModel->create($name);
 
-            $_SESSION['success'] = 'Kategori berhasil ditambahkan';
+            $_SESSION['success'] = 'Category has been successfully added.';
             header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
             exit;
         }
     }
 
-    // READ - Get single category (untuk edit)
+    // READ - Get single category (for edit)
     public function show($id)
     {
         header('Content-Type: application/json');
@@ -76,7 +76,7 @@ class AdminCategoriesController extends BaseAdminController
                     'data' => $category
                 ]);
             } else {
-                throw new Exception('Category not found');
+                throw new Exception('Category not found.');
             }
         } catch (Exception $e) {
             http_response_code(404);
@@ -88,13 +88,13 @@ class AdminCategoriesController extends BaseAdminController
         exit;
     }
 
-    // UPDATE - Update kategori
+    // UPDATE - Update category
     public function update($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (!is_numeric($id)) {
-                $_SESSION['error'] = 'Invalid ID';
+                $_SESSION['error'] = 'Invalid category ID.';
                 header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
                 exit;
             }
@@ -102,32 +102,32 @@ class AdminCategoriesController extends BaseAdminController
             $name = trim($_POST['name']);
 
             if (empty($name)) {
-                $_SESSION['error'] = 'Nama kategori wajib diisi';
+                $_SESSION['error'] = 'Category name is required.';
                 header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
                 exit;
             }
 
             if ($this->categoryModel->findByName($name, $id)) {
-                $_SESSION['error'] = 'Kategori sudah ada';
+                $_SESSION['error'] = 'Category already exists.';
                 header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
                 exit;
             }
 
             $this->categoryModel->update($id, $name);
 
-            $_SESSION['success'] = 'Kategori berhasil diupdate';
+            $_SESSION['success'] = 'Category has been successfully updated.';
             header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
             exit;
         }
     }
 
-    // DELETE - Hapus kategori
+    // DELETE - Delete category
     public function destroy($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (!is_numeric($id)) {
-                $_SESSION['error'] = 'Invalid ID';
+                $_SESSION['error'] = 'Invalid category ID.';
                 header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
                 exit;
             }
@@ -136,14 +136,14 @@ class AdminCategoriesController extends BaseAdminController
 
                 $this->categoryModel->delete($id);
 
-                $_SESSION['success'] = 'Kategori berhasil dihapus';
+                $_SESSION['success'] = 'Category has been successfully deleted.';
+
             } catch (PDOException $e) {
 
-                // Error karena foreign key
                 if ($e->getCode() == 23000) {
-                    $_SESSION['error'] = 'Kategori tidak bisa dihapus karena masih digunakan oleh produk / order.';
+                    $_SESSION['error'] = 'This category cannot be deleted because it is still associated with products or orders.';
                 } else {
-                    $_SESSION['error'] = 'Terjadi kesalahan saat menghapus kategori.';
+                    $_SESSION['error'] = 'An error occurred while deleting the category.';
                 }
             }
 

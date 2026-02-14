@@ -90,64 +90,103 @@
           <div>
             <div><a class="logo text-center" href="login.php"><img class="img-fluid for-light" src="<?= BASE_URL ?>/assets/img/logo.png" alt="looginpage"></a></div>
             <div class="login-main">
-              <form class="theme-form" id="registerForm" method="POST" action="<?= BASE_URL ?>index.php?c=auth&m=register">
+              <form class="theme-form" id="registerForm" method="POST"
+                action="<?= BASE_URL ?>index.php?c=auth&m=register"
+                enctype="multipart/form-data">
+
                 <input type="hidden" name="csrf_token" value="<?= Csrf::token(); ?>">
+
                 <h4>Create your account</h4>
                 <p>Enter your personal details to create account</p>
-                <div class="form-group">
-                  <label class="col-form-label">Your Name</label>
-                  <input class="form-control" name="name" type="text" required="" placeholder="Your Name">
-                </div>
-                <div class="form-group">
-                  <label class="col-form-label">NIK</label>
-                  <input class="form-control" name="nik" type="text" required="" placeholder="3175...">
-                </div>
-                <div class="form-group">
-                  <label class="col-form-label">Email Address</label>
-                  <input class="form-control" name="email" type="email" required="" placeholder="Test@gmail.com">
-                </div>
-                <div class="form-group">
-                  <label class="col-form-label">Phone Number</label>
-                  <input class="form-control" name="phone" type="text" required="" placeholder="0822....">
-                </div>
-                <div class="form-group">
-                  <label class="col-form-label">Password</label>
-                  <div class="form-input position-relative">
-                    <input class="form-control" type="password" name="password" required="" placeholder="*********">
-                    <div class="show-hide"><span class="show"></span></div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-form-label"> Confirm Password</label>
-                  <div class="form-input position-relative">
-                    <input class="form-control" type="password" name="confirm_password" required="" placeholder="*********">
-                    <div class="show-hide"><span class="show"></span></div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-form-label">Your Address</label>
-                  <input class="form-control" name="address" type="text" required="" placeholder="Your Address">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="roleSelect">Role</label>
-                  <select class="form-select" id="roleSelect" name="role" required="">
-                    <option selected="" disabled="" value="">Choose Your Role...</option>
-                    <option value="2">Seller</option>
-                    <option value="3">Customer</option>
-                  </select>
-                </div>
-                <!-- Kolom tambahan khusus Seller -->
-                <div class="form-group" id="sellerFields" style="display: none;">
-                  <label class="form-label">Account Number</label>
-                  <input class="form-control" name="account_number" type="text" placeholder="Your Account Number">
 
-                  <label class="form-label mt-3">Qris's Photo</label>
-                  <input class="form-control" name="qris_photo" type="file" placeholder="Your Qris Photo">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label>Role</label>
+                      <select class="form-select" id="roleSelect" name="role" required>
+                        <option selected disabled value="">Choose Role...</option>
+                        <option value="2">Seller</option>
+                        <option value="3">Customer</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Seller Fields -->
+                  <div class="row mt-2" id="sellerFields" style="display: none;">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>Account Number</label>
+                        <input class="form-control" name="account_number" type="text" placeholder="Account Number">
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>QRIS Photo</label>
+                        <input class="form-control" name="qris_photo" type="file">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Your Name</label>
+                      <input class="form-control" name="name" type="text" required placeholder="Your Name">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>NIK</label>
+                      <input class="form-control" name="nik" type="text" required placeholder="3175...">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Email</label>
+                      <input class="form-control" name="email" type="email" required placeholder="example@gmail.com">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Phone</label>
+                      <input class="form-control" name="phone" type="text" required placeholder="0822...">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Password</label>
+                      <input class="form-control" type="password" name="password" required placeholder="********">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Confirm Password</label>
+                      <input class="form-control" type="password" name="confirm_password" required placeholder="********">
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label>Address</label>
+                      <input class="form-control" name="address" type="text" required placeholder="Your Address">
+                    </div>
+                  </div>
                 </div>
-                <div class="form-group mb-0">
-                  <button class="btn btn-primary btn-block w-100 mt-3" type="submit">Create</button>
+
+                <div class="form-group mt-3">
+                  <button class="btn btn-primary w-100" type="submit">Create Account</button>
                 </div>
-                <p class="mt-4 mb-0 text-center">Already have an account?<a class="ms-2" href="#" onclick="goLogin(event)">Sign in</a></p>
+
+                <p class="mt-3 text-center">
+                  Already have an account?
+                  <a href="#" onclick="goLogin(event)">Sign in</a>
+                </p>
+
               </form>
             </div>
           </div>
@@ -172,6 +211,22 @@
         </div>
       </div>
     </div>
+
+    <style>
+      .login-main {
+        max-width: 720px;
+        /* sebelumnya 600px */
+        margin: auto;
+        padding: 30px 35px;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      }
+
+      .form-group {
+        margin-bottom: 18px;
+      }
+    </style>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {

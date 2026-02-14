@@ -246,6 +246,10 @@ class AdminCustomerController extends BaseAdminController
                 throw new Exception('Customer not found');
             }
 
+            if ($this->customerModel->isOnline($id)) {
+                throw new Exception('Customer is currently online and cannot be deleted.');
+            }
+
             // Optional: hanya cek cart aktif
             if ($this->customerModel->hasActiveCart($id)) {
                 throw new Exception(

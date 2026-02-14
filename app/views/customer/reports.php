@@ -74,10 +74,6 @@
             <button type="submit" class="btn btn-primary me-2">
               <i data-feather="filter"></i> Filter
             </button>
-
-            <button type="button" class="btn btn-danger" onclick="exportPdfWithChart()">
-              <i data-feather="file-text"></i> Export PDF
-            </button>
           </div>
         </form>
 
@@ -244,18 +240,4 @@
     // simpan chart instance buat export
     window.salesChart = chart;
   });
-
-  function exportPdfWithChart() {
-    if (!window.salesChart) {
-      alert('Chart not ready');
-      return;
-    }
-
-    window.salesChart.dataURI().then(({
-      imgURI
-    }) => {
-      document.getElementById('chartImage').value = imgURI;
-      document.getElementById('exportPdfForm').submit();
-    });
-  }
 </script>
