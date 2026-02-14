@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 14, 2026 at 02:51 AM
+-- Generation Time: Feb 14, 2026 at 10:29 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.1.25
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -88,17 +88,21 @@ INSERT INTO `chat_messages` (`id`, `room_id`, `sender_id`, `message`, `product_i
 (4, 1, 14, 'okehhh', 0, 1, '2026-02-10 04:10:10'),
 (5, 1, 14, 'udah masukk brok', 0, 1, '2026-02-10 04:10:23'),
 (6, 1, 15, 'yess', 0, 1, '2026-02-10 04:10:53'),
-(7, 2, 16, 'bang', 0, 0, '2026-02-10 06:20:18'),
-(8, 2, 16, 'mauu dongg pesenan', 0, 0, '2026-02-10 06:20:23'),
+(7, 2, 16, 'bang', 0, 1, '2026-02-10 06:20:18'),
+(8, 2, 16, 'mauu dongg pesenan', 0, 1, '2026-02-10 06:20:23'),
 (9, 1, 15, 'test', 0, 1, '2026-02-12 00:14:12'),
-(10, 3, 15, 'bang', 0, 0, '2026-02-12 00:22:13'),
+(10, 3, 15, 'bang', 0, 1, '2026-02-12 00:22:13'),
 (11, 4, 16, 'banggg', 0, 1, '2026-02-12 01:16:27'),
 (12, 4, 16, 'mauuu', 0, 1, '2026-02-12 01:16:29'),
 (13, 4, 14, 'test', 0, 0, '2026-02-12 04:06:38'),
 (14, 1, 14, 'testt', 0, 1, '2026-02-12 04:07:01'),
 (15, 1, 15, 'test lagi', 0, 1, '2026-02-12 04:07:33'),
 (16, 5, 22, 'test', 0, 0, '2026-02-13 07:38:31'),
-(17, 6, 25, 'test', 0, 0, '2026-02-14 01:48:04');
+(17, 6, 25, 'test', 0, 1, '2026-02-14 01:48:04'),
+(18, 6, 25, 'test', 0, 1, '2026-02-14 08:53:02'),
+(19, 6, 25, 'oi', 0, 1, '2026-02-14 08:53:08'),
+(20, 6, 13, 'pesen apa', 0, 1, '2026-02-14 08:53:55'),
+(21, 6, 25, 'produk kamu', 0, 0, '2026-02-14 08:55:30');
 
 -- --------------------------------------------------------
 
@@ -125,7 +129,7 @@ INSERT INTO `chat_rooms` (`id`, `customer_id`, `seller_id`, `last_product_id`, `
 (3, 15, 13, 12, '2026-02-12 00:22:06', '2026-02-12 00:22:13'),
 (4, 16, 14, 10, '2026-02-12 01:16:23', '2026-02-12 04:06:38'),
 (5, 22, 14, 2, '2026-02-13 07:38:27', '2026-02-13 07:38:31'),
-(6, 25, 13, 12, '2026-02-14 01:38:58', '2026-02-14 01:48:04');
+(6, 25, 13, 12, '2026-02-14 01:38:58', '2026-02-14 08:55:30');
 
 -- --------------------------------------------------------
 
@@ -186,7 +190,11 @@ INSERT INTO `orders` (`id`, `customer_id`, `seller_id`, `total_amount`, `payment
 (42, 15, 13, 125000, 'transfer', '7896541222', 'https://tokopedia.com', 'shipped', 'approved', 'paid', 'payment_1770869532_698d531c76111.jpg', NULL, '2026-02-12 11:12:12', '2026-02-13 14:17:43'),
 (43, 22, 13, 125000, 'qris', '023155976', 'https://tokopedia.com', 'shipped', 'approved', 'paid', 'payment_1770966981_698ecfc5b205e.jpg', NULL, '2026-02-13 14:16:21', '2026-02-13 14:17:51'),
 (44, 22, 14, 20000, 'qris', '4563322899', 'https://tokopedia.com', 'shipped', 'approved', 'paid', 'payment_1770966997_698ecfd5e2353.jpg', NULL, '2026-02-13 14:16:37', '2026-02-13 14:19:18'),
-(45, 25, 13, 120000, 'transfer', '0976531212', 'https://tokopedia.com', 'shipped', 'approved', 'paid', 'payment_1771032902_698fd14648f62.png', NULL, '2026-02-14 08:35:02', '2026-02-14 08:42:20');
+(45, 25, 13, 120000, 'transfer', '0976531212', 'https://tokopedia.com', 'shipped', 'approved', 'paid', 'payment_1771032902_698fd14648f62.png', NULL, '2026-02-14 08:35:02', '2026-02-14 08:42:20'),
+(48, 25, 14, 120000, 'qris', '098777526712', 'https://jne.com', 'shipped', 'approved', 'paid', 'payment_1771060417_69903cc116923.png', NULL, '2026-02-14 16:13:37', '2026-02-14 16:14:55'),
+(49, 25, 13, 120000, 'transfer', NULL, NULL, 'pending', 'pending', 'paid', 'payment_1771060433_69903cd1629f9.png', NULL, '2026-02-14 16:13:53', NULL),
+(50, 27, 14, 12000, 'qris', '123324242342', 'https://jne.com', 'shipped', 'approved', 'paid', 'payment_1771060724_69903df417389.png', NULL, '2026-02-14 16:18:44', '2026-02-14 16:19:35'),
+(51, 27, 13, 120000, 'transfer', NULL, NULL, 'refund', 'refund', 'paid', 'payment_1771060739_69903e032ffc5.png', '2026-02-14 16:20:42', '2026-02-14 16:18:59', '2026-02-14 16:20:42');
 
 -- --------------------------------------------------------
 
@@ -246,7 +254,11 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `price`, `qty`, `subt
 (43, 42, 11, 125000.00, 1, 125000.00, '2026-02-12 11:12:12'),
 (44, 43, 11, 125000.00, 1, 125000.00, '2026-02-13 14:16:21'),
 (45, 44, 6, 20000.00, 1, 20000.00, '2026-02-13 14:16:37'),
-(46, 45, 12, 120000.00, 1, 120000.00, '2026-02-14 08:35:02');
+(46, 45, 12, 120000.00, 1, 120000.00, '2026-02-14 08:35:02'),
+(49, 48, 10, 120000.00, 1, 120000.00, '2026-02-14 16:13:37'),
+(50, 49, 12, 120000.00, 1, 120000.00, '2026-02-14 16:13:53'),
+(51, 50, 8, 12000.00, 1, 12000.00, '2026-02-14 16:18:44'),
+(52, 51, 12, 120000.00, 1, 120000.00, '2026-02-14 16:18:59');
 
 -- --------------------------------------------------------
 
@@ -277,11 +289,11 @@ INSERT INTO `products` (`id`, `name`, `price`, `cost_price`, `margin`, `stock`, 
 (2, 'Book of science', 10000, 9000, 1000, 11, 'prod_6976ef59c33d1.jpg', 'the best book', 14, 21, 1, NULL),
 (6, 'Book of Nature', 20000, 15000, 5000, 105, 'prod_6976f1bcc1e6d.jpg', 'About flores, nature, sea', 14, 12, 1, NULL),
 (7, 'Go Youn Jung Profile', 20900, 900, 20000, 112, 'prod_6976f2b257dc1.jpg', 'Most Beautifull person', 13, 2, 0, '2026-01-30 08:21:49'),
-(8, 'Sunflower', 12000, 10000, 2000, 121316, 'prod_697ad02cc95ad.png', 'This book about ...', 14, 24, 1, NULL),
+(8, 'Sunflower', 12000, 10000, 2000, 121315, 'prod_697ad02cc95ad.png', 'This book about ...', 14, 24, 1, NULL),
 (9, 'Go Youn Jung Profile', 110000, 80000, 30000, 123, 'prod_697c0a7c56c87.jpg', 'About Go Youn Jung aktrist from korea', 13, 23, 0, '2026-01-30 10:37:46'),
-(10, 'Many Things', 120000, 100000, 20000, 119, 'prod_698acd4ade394.jpeg', 'wenak', 14, 19, 1, NULL),
+(10, 'Many Things', 120000, 100000, 20000, 118, 'prod_698acd4ade394.jpeg', 'wenak', 14, 19, 1, NULL),
 (11, 'Many Things', 125000, 100000, 25000, 780, 'prod_698acdd4e3963.jpeg', 'wadawww', 13, 23, 1, NULL),
-(12, 'Book Of Life', 120000, 50000, 70000, 883, 'prod_698ace0023333.jpeg', 'I LOVE MATCHA', 13, 22, 1, NULL);
+(12, 'Book Of Life', 120000, 50000, 70000, 881, 'prod_698ace0023333.jpeg', 'I LOVE MATCHA', 13, 22, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -332,14 +344,16 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `nik`, `email`, `password`, `phone`, `reset_token`, `reset_expiry`, `last_activity`, `deleted_at`, `address`, `role`, `avatar`, `account_number`, `qris_photo`) VALUES
-(4, 'Rennard', '3175070508081001', 'rennardadit@gmail.com', '$2y$10$hyyzXlrqf/Zxqo0rizW5Y.rrwiwZgCMnL6PLFBawzx6bXCvfB2GBW', '', NULL, NULL, '2026-02-14 08:50:00', NULL, 'Jl. Kav Kuningan', 1, '4_ce857.jpg', '', ''),
-(13, 'muhee', '12432435', 'reganre23@gmail.com', '$2y$10$AYWgG/lwVYUWGZ.yDOWse..qZmt.D.o8rOsxG5DgbVTmcRkd6mhjq', '', NULL, NULL, '2026-02-14 08:46:43', NULL, 'Jl.Pulo Jahe', 2, 'avatar_1771030782_204.png', '1120365478', 'qris_1770987775_483.png'),
-(14, 'Cha', '15435484332', 'rennard95@gmail.com', '$2y$10$Ez3aIYoNyCV6tCAJC17tzOkiJPa77pQg7AqmN9ozYnVYEiGkk3PAm', '', '69e5562cb0698c6a848b5d8f85aa1ef32897efc2cad900324b532f46a5851c57', '2026-02-12 11:00:10', '2026-02-14 08:40:04', NULL, 'JL.Nusa Indah', 2, 'avatar_1771030773_765.png', '3545675643256', 'qris_1770987766_123.png'),
+(4, 'Rennard', '3175070508081001', 'rennardadit@gmail.com', '$2y$10$hyyzXlrqf/Zxqo0rizW5Y.rrwiwZgCMnL6PLFBawzx6bXCvfB2GBW', '', NULL, NULL, '2026-02-14 16:27:00', NULL, 'Jl. Kav Kuningan', 1, '4_ce857.jpg', '', ''),
+(13, 'muhee', '12432435', 'reganre23@gmail.com', '$2y$10$AYWgG/lwVYUWGZ.yDOWse..qZmt.D.o8rOsxG5DgbVTmcRkd6mhjq', '', NULL, NULL, '2026-02-14 16:20:54', NULL, 'Jl.Pulo Jahe', 2, 'avatar_1771030782_204.png', '1120365478', 'qris_1770987775_483.png'),
+(14, 'Cha', '15435484332', 'rennard95@gmail.com', '$2y$10$Ez3aIYoNyCV6tCAJC17tzOkiJPa77pQg7AqmN9ozYnVYEiGkk3PAm', '', '69e5562cb0698c6a848b5d8f85aa1ef32897efc2cad900324b532f46a5851c57', '2026-02-12 11:00:10', '2026-02-14 16:19:40', NULL, 'JL.Nusa Indah', 2, 'avatar_1771030773_765.png', '3545675643256', 'qris_1770987766_123.png'),
 (15, 'Customer A', '1231463242422', 'jungie@gmail.com', '$2y$10$1UFBuZSLlyPZFhTyrSN5u.4SxbaiLk6Kh2AsWkNe9mEfUBp4gpMC.', '082213521461', NULL, NULL, '2026-02-12 11:13:10', '2026-02-13 14:12:36', 'Jl.Kanada Jepang', 3, 'avatar_1769596866_600.jpg', '', NULL),
-(16, 'tama', '1687423942', 'tama@gmail.com', '$2y$10$IkDvU.p.BPof3V6woQo2Xe7kalXGZ63MDJaboGQ0qZKiPbJ78D1f6', '081384421151', NULL, NULL, '2026-02-12 08:18:05', NULL, 'Jl.Kanada Jepang', 3, 'avatar_1771033775_472.png', '', NULL),
+(16, 'tama', '1687423942', 'tama@gmail.com', '$2y$10$IkDvU.p.BPof3V6woQo2Xe7kalXGZ63MDJaboGQ0qZKiPbJ78D1f6', '081384421151', NULL, NULL, '2026-02-12 08:18:05', '2026-02-14 16:11:03', 'Jl.Kanada Jepang', 3, 'avatar_1771033775_472.png', '', NULL),
 (22, 'Gyj', '31750708091001', 'gyj@gmail.com', '$2y$10$vHv3LsPnRJoMyzMvqBuh.OntPZ/FsGAVr3E3DaeEl0IKf2r/QUZ7.', '0822135214611', NULL, NULL, '2026-02-13 20:00:24', '2026-02-13 20:03:17', 'Jl.Hiroshima', 3, '22_37230.jpg', '', NULL),
 (23, 'gyj', '12345678', 'goyun@gmail.com', '$2y$10$InP5FBqkAieOUYU8HkFtV.Y8vKulmgdBc06SVX23xZhro06pN0PZm', '082236987745', NULL, NULL, '2026-02-14 07:39:49', '2026-02-14 07:59:56', 'Jl.Kanada Jepang', 3, 'avatar_1771029624_708.jpg', '', NULL),
-(25, 'Edamb', '567888443', 'edamb@gmail.com', '$2y$10$e6Zgm5Y4mzwwoF8KVPA1O.ROg9vw/dfEPkYbPQ3KavFPx4i4vcOmC', '08221369885', NULL, NULL, '2026-02-14 08:48:38', NULL, 'Jl. Kav Kuningan', 3, '25_15bee.png', '', NULL);
+(25, 'Edamb', '567888443', 'tamago@gmail.com', '$2y$10$6OpWWeEF7ITxumVN365ovukyARmMenEwG4oP5kGZwQ.6AZdhHUgh.', '08221369885', NULL, NULL, '2026-02-14 16:27:13', NULL, 'Jl. Kav Kuningan', 3, '25_15bee.png', '', NULL),
+(26, 'Seller A', '12345678', 'seller@gmail.com', '$2y$10$kvPSSmv/WAXiv9BmytPBUeDhyKWg52Skry2oaA0cytz1V9EljDzkS', '', NULL, NULL, NULL, NULL, 'Jl.Pondok Kelapa', 2, 'avatar_1771060212_246.png', '098765443', 'qris_1771060212_354.png'),
+(27, 'customer', '0987678987', 'customer@gmail.com', '$2y$10$YRzWUhkBk36Kf28YEVHisexv.Dcd0X/HQckN3e39qhhVJZUxUX9ii', '0987654678', NULL, NULL, '2026-02-14 16:26:02', NULL, 'Jl.Cakung', 3, 'avatar_1771061182_626.png', '', NULL);
 
 --
 -- Indexes for dumped tables
@@ -422,19 +436,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `chat_messages`
 --
 ALTER TABLE `chat_messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `chat_rooms`
@@ -446,13 +460,13 @@ ALTER TABLE `chat_rooms`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -470,7 +484,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(12) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Constraints for dumped tables
