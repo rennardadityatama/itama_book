@@ -61,11 +61,11 @@
                     <td><?= $i + 1 ?></td>
                     <td class="cat-name"><?= htmlspecialchars($cat['name']) ?></td>
                     <td>
-                      <div class="d-flex gap-2">
+                      <div class="d-flex gap-3 align-items-center">
 
                         <!-- Edit -->
                         <button
-                          class="btn btn-sm btn-warning"
+                          class="icon-action text-warning"
                           data-bs-toggle="modal"
                           data-bs-target="#editModal"
                           data-id="<?= $cat['id'] ?>"
@@ -76,7 +76,7 @@
 
                         <!-- Delete -->
                         <button
-                          class="btn btn-sm btn-danger"
+                          class="icon-action text-danger"
                           data-bs-toggle="modal"
                           data-bs-target="#deleteModal"
                           data-id="<?= $cat['id'] ?>"
@@ -154,6 +154,21 @@
     </form>
   </div>
 </div>
+
+<style>
+  .icon-action {
+    background: transparent;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .icon-action:hover {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+</style>
 
 
 <script>

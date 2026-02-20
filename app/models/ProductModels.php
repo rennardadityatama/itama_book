@@ -179,6 +179,34 @@ class ProductModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function searchProducts($category_id = null, $keyword = null)
+    {
+        $sql = "SELECT p.*, c.name AS category_name, u.name AS seller_name
+            FROM products p
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN users u ON p.seller_id = u.id
+            WHERE p.stock > 0 AND p.is_active = 1";
+
+        $params = [];
+
+        // FILTER CATEGORY
+        if (!empty($category_id)) {
+            $sql .= " AND p.category_id = :category_id";
+            $params['category_id'] = $category_id;
+        }
+
+        // SEARCH KEYWORD
+        if (!empty($keyword)) {
+            $sql .= " AND LOWER(p.name) LIKE :keyword";
+            $params['keyword'] = '%' . strtolower($keyword) . '%';
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getBestSellingProductsBySeller($sellerId, $limit = 5)
     {
         $sql = "

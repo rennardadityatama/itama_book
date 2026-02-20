@@ -147,7 +147,7 @@
                         <?php foreach ($messages as $msg): ?>
                           <?php $isMe = $msg['sender_id'] == $_SESSION['user']['id']; ?>
 
-                          <li class="mb-3 clearfix">
+                          <li class="mb-3 clearfix" data-id="<?= $msg['id'] ?>">
                             <div class="message d-inline-block <?= $isMe ? 'my-message float-end text-end' : 'other-message float-start' ?>">
 
                               <div class="d-flex <?= $isMe ? 'flex-row-reverse' : 'flex-row' ?> align-items-start">
@@ -247,5 +247,8 @@
   const CHAT_BASE_URL = '<?= BASE_URL ?>/index.php?c=customerChat';
   const CURRENT_USER_ID = <?= $_SESSION['user']['id'] ?>;
   const CURRENT_ROOM_ID = <?= $activeRoom['id'] ?? 'null' ?>;
+  window.USER_AVATAR = "<?= !empty($_SESSION['user']['avatar'])
+    ? BASE_URL . '/uploads/avatars/' . $_SESSION['user']['avatar']
+    : BASE_URL . '/assets/images/default-avatar.png' ?>";
 </script>
 <script src="<?= BASE_URL ?>/assets/js/chat.js"></script>

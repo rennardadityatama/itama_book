@@ -22,14 +22,23 @@ class SellerApproveController extends BaseSellerController
         // Get seller ID dari session
         $sellerId = $_SESSION['user']['id'];
 
-        // Get all orders untuk seller ini
-        $orders = $this->orderModel->getOrdersBySeller($sellerId);
+        $perPage = 25;
+        $page = $_GET['page'] ?? 1;
+        $page = max(1, (int)$page);
+
+        $offset = ($page - 1) * $perPage;
+
+        $orders = $this->orderModel->getOrdersBySellerPaginated($sellerId, $perPage, $offset);
+        $totalOrders = $this->orderModel->countOrdersBySeller($sellerId);
+        $totalPages = ceil($totalOrders / $perPage);
 
         // Render view
         $this->render('approve', [
             'title' => 'Approve | iTama Book',
             'menu'  => 'approve',
-            'orders' => $orders
+            'orders' => $orders,
+            'currentPage' => $page,
+            'totalPages' => $totalPages
         ]);
     }
 

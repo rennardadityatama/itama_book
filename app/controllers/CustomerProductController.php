@@ -19,22 +19,26 @@ class CustomerProductController extends BaseCustomerController
     public function index()
     {
         // ambil filter category_id dari GET
-        $category_id = $_GET['category_id'] ?? null;
+        $category_id = isset($_GET['category_id']) && $_GET['category_id'] !== ''
+            ? (int) $_GET['category_id']
+            : null;
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+
+        if ($keyword === '') {
+            $keyword = null;
+        }
 
         // ambil semua kategori untuk filter
         $categories = $this->categoryModel->getAll();
 
         // ambil produk sesuai kategori
-        if ($category_id) {
-            $products = $this->productModel->getByCategory($category_id);
-        } else {
-            $products = $this->productModel->getAllProducts();
-        }
+        $products = $this->productModel->searchProducts($category_id, $keyword);
 
         $this->render('product', [
             'title'      => 'Products | iTama Book',
             'menu'       => 'products',
             'categories' => $categories,
+            'keyword'    => $keyword,
             'products'   => $products,
             'selected_category' => $category_id
         ]);

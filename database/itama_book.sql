@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
+<<<<<<< HEAD
 -- Generation Time: Feb 14, 2026 at 10:29 AM
+=======
+-- Generation Time: Feb 20, 2026 at 04:36 PM
+>>>>>>> 71f66fe (Fixed: All bug in us)
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -97,12 +101,24 @@ INSERT INTO `chat_messages` (`id`, `room_id`, `sender_id`, `message`, `product_i
 (13, 4, 14, 'test', 0, 0, '2026-02-12 04:06:38'),
 (14, 1, 14, 'testt', 0, 1, '2026-02-12 04:07:01'),
 (15, 1, 15, 'test lagi', 0, 1, '2026-02-12 04:07:33'),
+<<<<<<< HEAD
 (16, 5, 22, 'test', 0, 0, '2026-02-13 07:38:31'),
 (17, 6, 25, 'test', 0, 1, '2026-02-14 01:48:04'),
 (18, 6, 25, 'test', 0, 1, '2026-02-14 08:53:02'),
 (19, 6, 25, 'oi', 0, 1, '2026-02-14 08:53:08'),
 (20, 6, 13, 'pesen apa', 0, 1, '2026-02-14 08:53:55'),
 (21, 6, 25, 'produk kamu', 0, 0, '2026-02-14 08:55:30');
+=======
+(16, 5, 22, 'test', 0, 1, '2026-02-13 07:38:31'),
+(17, 6, 25, 'test', 0, 0, '2026-02-14 01:48:04'),
+(18, 6, 25, 'bang', 0, 0, '2026-02-20 15:04:32'),
+(19, 6, 25, 'jawab', 0, 0, '2026-02-20 15:04:34'),
+(20, 6, 25, 'test', 0, 0, '2026-02-20 15:07:35'),
+(21, 6, 25, 'sama aje', 0, 0, '2026-02-20 15:07:48'),
+(22, 6, 25, 'bang', 0, 0, '2026-02-20 15:12:52'),
+(23, 6, 25, 'sama aje ah', 0, 0, '2026-02-20 15:13:04'),
+(24, 6, 25, 'mane', 0, 0, '2026-02-20 15:15:27');
+>>>>>>> 71f66fe (Fixed: All bug in us)
 
 -- --------------------------------------------------------
 
@@ -129,7 +145,11 @@ INSERT INTO `chat_rooms` (`id`, `customer_id`, `seller_id`, `last_product_id`, `
 (3, 15, 13, 12, '2026-02-12 00:22:06', '2026-02-12 00:22:13'),
 (4, 16, 14, 10, '2026-02-12 01:16:23', '2026-02-12 04:06:38'),
 (5, 22, 14, 2, '2026-02-13 07:38:27', '2026-02-13 07:38:31'),
+<<<<<<< HEAD
 (6, 25, 13, 12, '2026-02-14 01:38:58', '2026-02-14 08:55:30');
+=======
+(6, 25, 13, 12, '2026-02-14 01:38:58', '2026-02-20 15:15:27');
+>>>>>>> 71f66fe (Fixed: All bug in us)
 
 -- --------------------------------------------------------
 
@@ -344,16 +364,26 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `nik`, `email`, `password`, `phone`, `reset_token`, `reset_expiry`, `last_activity`, `deleted_at`, `address`, `role`, `avatar`, `account_number`, `qris_photo`) VALUES
+<<<<<<< HEAD
 (4, 'Rennard', '3175070508081001', 'rennardadit@gmail.com', '$2y$10$hyyzXlrqf/Zxqo0rizW5Y.rrwiwZgCMnL6PLFBawzx6bXCvfB2GBW', '', NULL, NULL, '2026-02-14 16:27:00', NULL, 'Jl. Kav Kuningan', 1, '4_ce857.jpg', '', ''),
 (13, 'muhee', '12432435', 'reganre23@gmail.com', '$2y$10$AYWgG/lwVYUWGZ.yDOWse..qZmt.D.o8rOsxG5DgbVTmcRkd6mhjq', '', NULL, NULL, '2026-02-14 16:20:54', NULL, 'Jl.Pulo Jahe', 2, 'avatar_1771030782_204.png', '1120365478', 'qris_1770987775_483.png'),
 (14, 'Cha', '15435484332', 'rennard95@gmail.com', '$2y$10$Ez3aIYoNyCV6tCAJC17tzOkiJPa77pQg7AqmN9ozYnVYEiGkk3PAm', '', '69e5562cb0698c6a848b5d8f85aa1ef32897efc2cad900324b532f46a5851c57', '2026-02-12 11:00:10', '2026-02-14 16:19:40', NULL, 'JL.Nusa Indah', 2, 'avatar_1771030773_765.png', '3545675643256', 'qris_1770987766_123.png'),
+=======
+(4, 'Rennard', '3175070508081001', 'rennardadit@gmail.com', '$2y$10$hyyzXlrqf/Zxqo0rizW5Y.rrwiwZgCMnL6PLFBawzx6bXCvfB2GBW', '', NULL, NULL, '2026-02-20 22:34:24', NULL, 'Jl. Kav Kuningan', 1, '4_ce857.jpg', '', ''),
+(13, 'muhee', '12432435', 'reganre23@gmail.com', '$2y$10$AYWgG/lwVYUWGZ.yDOWse..qZmt.D.o8rOsxG5DgbVTmcRkd6mhjq', '', NULL, NULL, '2026-02-14 08:46:43', NULL, 'Jl.Pulo Jahe', 2, 'avatar_1771030782_204.png', '1120365478', 'qris_1770987775_483.png'),
+(14, 'Cha', '15435484332', 'rennard95@gmail.com', '$2y$10$Ez3aIYoNyCV6tCAJC17tzOkiJPa77pQg7AqmN9ozYnVYEiGkk3PAm', '', '69e5562cb0698c6a848b5d8f85aa1ef32897efc2cad900324b532f46a5851c57', '2026-02-12 11:00:10', '2026-02-20 22:30:05', NULL, 'JL.Nusa Indah', 2, 'avatar_1771030773_765.png', '3545675643256', 'qris_1770987766_123.png'),
+>>>>>>> 71f66fe (Fixed: All bug in us)
 (15, 'Customer A', '1231463242422', 'jungie@gmail.com', '$2y$10$1UFBuZSLlyPZFhTyrSN5u.4SxbaiLk6Kh2AsWkNe9mEfUBp4gpMC.', '082213521461', NULL, NULL, '2026-02-12 11:13:10', '2026-02-13 14:12:36', 'Jl.Kanada Jepang', 3, 'avatar_1769596866_600.jpg', '', NULL),
 (16, 'tama', '1687423942', 'tama@gmail.com', '$2y$10$IkDvU.p.BPof3V6woQo2Xe7kalXGZ63MDJaboGQ0qZKiPbJ78D1f6', '081384421151', NULL, NULL, '2026-02-12 08:18:05', '2026-02-14 16:11:03', 'Jl.Kanada Jepang', 3, 'avatar_1771033775_472.png', '', NULL),
 (22, 'Gyj', '31750708091001', 'gyj@gmail.com', '$2y$10$vHv3LsPnRJoMyzMvqBuh.OntPZ/FsGAVr3E3DaeEl0IKf2r/QUZ7.', '0822135214611', NULL, NULL, '2026-02-13 20:00:24', '2026-02-13 20:03:17', 'Jl.Hiroshima', 3, '22_37230.jpg', '', NULL),
 (23, 'gyj', '12345678', 'goyun@gmail.com', '$2y$10$InP5FBqkAieOUYU8HkFtV.Y8vKulmgdBc06SVX23xZhro06pN0PZm', '082236987745', NULL, NULL, '2026-02-14 07:39:49', '2026-02-14 07:59:56', 'Jl.Kanada Jepang', 3, 'avatar_1771029624_708.jpg', '', NULL),
+<<<<<<< HEAD
 (25, 'Edamb', '567888443', 'tamago@gmail.com', '$2y$10$6OpWWeEF7ITxumVN365ovukyARmMenEwG4oP5kGZwQ.6AZdhHUgh.', '08221369885', NULL, NULL, '2026-02-14 16:27:13', NULL, 'Jl. Kav Kuningan', 3, '25_15bee.png', '', NULL),
 (26, 'Seller A', '12345678', 'seller@gmail.com', '$2y$10$kvPSSmv/WAXiv9BmytPBUeDhyKWg52Skry2oaA0cytz1V9EljDzkS', '', NULL, NULL, NULL, NULL, 'Jl.Pondok Kelapa', 2, 'avatar_1771060212_246.png', '098765443', 'qris_1771060212_354.png'),
 (27, 'customer', '0987678987', 'customer@gmail.com', '$2y$10$YRzWUhkBk36Kf28YEVHisexv.Dcd0X/HQckN3e39qhhVJZUxUX9ii', '0987654678', NULL, NULL, '2026-02-14 16:26:02', NULL, 'Jl.Cakung', 3, 'avatar_1771061182_626.png', '', NULL);
+=======
+(25, 'Edamb', '567888443', 'edamb@gmail.com', '$2y$10$e6Zgm5Y4mzwwoF8KVPA1O.ROg9vw/dfEPkYbPQ3KavFPx4i4vcOmC', '08221369885', NULL, NULL, '2026-02-20 22:16:18', NULL, 'Jl. Kav Kuningan', 3, '25_15bee.png', '', NULL);
+>>>>>>> 71f66fe (Fixed: All bug in us)
 
 --
 -- Indexes for dumped tables
@@ -436,7 +466,11 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
+<<<<<<< HEAD
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+=======
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+>>>>>>> 71f66fe (Fixed: All bug in us)
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -448,7 +482,11 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `chat_messages`
 --
 ALTER TABLE `chat_messages`
+<<<<<<< HEAD
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+=======
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+>>>>>>> 71f66fe (Fixed: All bug in us)
 
 --
 -- AUTO_INCREMENT for table `chat_rooms`

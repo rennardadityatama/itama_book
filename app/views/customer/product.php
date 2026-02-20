@@ -46,10 +46,15 @@
                       <div class="card-body filter-cards-view animate-chk">
                         <div class="product-filter">
                           <h6 class="f-w-600">Category</h6>
+                          <label class="d-block">
+                            <input class="category-filter" type="radio" name="category_id" value=""
+                              <?= empty($selected_category) ? 'checked' : '' ?>>
+                            All
+                          </label>
                           <div class="checkbox-animated mt-0">
                             <?php foreach ($categories as $cat): ?>
                               <label class="d-block">
-                                <input class="checkbox_animated category-filter" type="checkbox"
+                                <input class="category-filter" type="radio" name="category_id"
                                   value="<?= $cat['id'] ?>"
                                   <?= ($selected_category == $cat['id']) ? 'checked' : '' ?>>
                                 <?= $cat['name'] ?>
@@ -63,11 +68,20 @@
                 </div>
               </div>
               <div class="product-search">
-                <form>
-                  <div class="form-group m-0">
-                    <input class="form-control" type="search" placeholder="Search.." data-original-title="" title=""><i
-                      class="fa fa-search"></i>
-                  </div>
+                <form method="GET" action="<?= BASE_URL ?>index.php">
+                  <input type="hidden" name="c" value="customerProduct">
+                  <input type="hidden" name="m" value="index">
+
+                  <?php if ($selected_category): ?>
+                    <input type="hidden" name="category_id" value="<?= $selected_category ?>">
+                  <?php endif; ?>
+
+                  <input
+                    class="form-control"
+                    type="search"
+                    name="keyword"
+                    value="<?= htmlspecialchars($_GET['keyword'] ?? '') ?>"
+                    placeholder="Search product...">
                 </form>
               </div>
             </div>
@@ -202,12 +216,21 @@
   })();
 
   // Category filter
-  document.querySelectorAll('.category-filter').forEach(el => {
-    el.addEventListener('change', () => {
-      let checked = document.querySelector('.category-filter:checked');
-      let url = '<?= BASE_URL ?>index.php?c=customerProduct&m=index';
-      if (checked) url += '&category_id=' + checked.value;
-      window.location.href = url;
+  document.addEventListener('DOMContentLoaded', function() {
+
+    document.querySelectorAll('.category-filter').forEach(el => {
+      el.addEventListener('change', function() {
+
+        const keyword = new URLSearchParams(window.location.search).get('keyword');
+
+        let url = '<?= BASE_URL ?>index.php?c=customerProduct&m=index';
+
+        if (this.value) url += '&category_id=' + this.value;
+        if (keyword) url += '&keyword=' + encodeURIComponent(keyword);
+
+        window.location.href = url;
+      });
     });
+
   });
 </script>

@@ -102,8 +102,7 @@
                               <button
                                 type="button"
                                 data-action="minus"
-                                class="btn btn-sm btn-outline-secondary"
-                                <?= $item['qty'] <= 1 ? 'disabled' : '' ?>>
+                                class="btn btn-sm btn-outline-secondary">
                                 −
                               </button>
 

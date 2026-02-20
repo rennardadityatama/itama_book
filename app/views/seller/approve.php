@@ -170,6 +170,29 @@
                       </tbody>
                     </table>
                   </div>
+                  <nav class="mt-3">
+                    <ul class="pagination justify-content-center">
+
+                      <!-- Prev -->
+                      <li class="page-item <?= $currentPage <= 1 ? 'disabled' : '' ?>">
+                        <a class="page-link" href="?c=sellerApprove&m=index&page=<?= $currentPage - 1 ?>">Prev</a>
+                      </li>
+
+                      <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
+                          <a class="page-link" href="?c=sellerApprove&m=index&page=<?= $i ?>">
+                            <?= $i ?>
+                          </a>
+                        </li>
+                      <?php endfor; ?>
+
+                      <!-- Next -->
+                      <li class="page-item <?= $currentPage >= $totalPages ? 'disabled' : '' ?>">
+                        <a class="page-link" href="?c=sellerApprove&m=index&page=<?= $currentPage + 1 ?>">Next</a>
+                      </li>
+
+                    </ul>
+                  </nav>
                 <?php endif; ?>
               </div>
             </div>

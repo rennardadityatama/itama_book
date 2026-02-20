@@ -96,7 +96,6 @@ class CustomerChatController extends BaseCustomerController
                 'room_id' => $roomId,
                 'redirect_url' => BASE_URL . '/index.php?c=customerChat&m=index&room=' . $roomId
             ]);
-            
         } catch (Exception $e) {
             $this->json('error', 'Failed to create message: ' . $e->getMessage());
         }
@@ -135,7 +134,6 @@ class CustomerChatController extends BaseCustomerController
                 'product_id' => $productId,
                 'created_at' => date('Y-m-d H:i:s')
             ]);
-            
         } catch (Exception $e) {
             $this->json('error', 'Failed to send message: ' . $e->getMessage());
         }
@@ -169,9 +167,31 @@ class CustomerChatController extends BaseCustomerController
                 'messages' => $messages,
                 'room' => $roomDetail
             ]);
-            
         } catch (Exception $e) {
             $this->json('error', 'Failed to load message: ' . $e->getMessage());
         }
+    }
+
+    public function fetchNewMessages()
+    {
+        if (!isset($_SESSION['user'])) {
+            $this->json('error', 'Unauthorized');
+        }
+
+        $userId = $_SESSION['user']['id'];
+        $roomId = $_GET['room_id'] ?? null;
+        $lastId = $_GET['last_id'] ?? 0;
+
+        if (!$roomId) {
+            $this->json('error', 'Room ID required');
+        }
+
+        if (!$this->chatModel->isRoomMember($roomId, $userId)) {
+            $this->json('error', 'Access denied');
+        }
+
+        $messages = $this->chatModel->getMessagesAfter($roomId, $lastId);
+
+        $this->json('success', 'New messages', $messages);
     }
 }

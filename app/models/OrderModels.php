@@ -643,4 +643,41 @@ class OrderModel
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getOrdersBySellerPaginated($sellerId, $limit, $offset)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            o.*,
+            c.name AS customer_name,
+            c.email AS customer_email,
+            c.phone AS customer_phone,
+            c.address AS customer_address
+        FROM orders o
+        JOIN users c ON c.id = o.customer_id
+        WHERE o.seller_id = :seller_id
+        ORDER BY o.created_at DESC
+        LIMIT :limit OFFSET :offset
+    ");
+
+        $stmt->bindValue(':seller_id', $sellerId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($orders as &$order) {
+            $order['items'] = $this->getOrderItems($order['id']);
+        }
+
+        return $orders;
+    }
+
+    public function countOrdersBySeller($sellerId)
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM orders WHERE seller_id = ?");
+        $stmt->execute([$sellerId]);
+        return $stmt->fetchColumn();
+    }
 }

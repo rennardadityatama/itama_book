@@ -187,4 +187,21 @@ class ChatModel
         $stmt->execute([$sellerId, $sellerId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getMessagesAfter($roomId, $lastId)
+    {
+        $stmt = $this->db->prepare("
+        SELECT 
+            cm.*,
+            u.avatar as sender_avatar
+        FROM chat_messages cm
+        JOIN users u ON cm.sender_id = u.id
+        WHERE cm.room_id = ?
+        AND cm.id > ?
+        ORDER BY cm.id ASC
+    ");
+
+        $stmt->execute([$roomId, $lastId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
