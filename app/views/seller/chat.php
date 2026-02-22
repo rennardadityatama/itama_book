@@ -234,6 +234,7 @@
 </style>
 
 <script>
+  const BASE_URL = '<?= BASE_URL ?>';
   const CHAT_BASE_URL = '<?= BASE_URL ?>/index.php?c=sellerChat';
   const CURRENT_USER_ID = <?= $_SESSION['user']['id'] ?>;
   const CURRENT_ROOM_ID = <?= $activeRoom['id'] ?? 'null' ?>;

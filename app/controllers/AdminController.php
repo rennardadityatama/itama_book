@@ -78,11 +78,23 @@ class AdminController extends BaseAdminController
         }
 
         if (!empty($_POST['email']) && $_POST['email'] !== $oldUser['email']) {
-            $data['email'] = trim($_POST['email']);
+            $email = trim($_POST['email']);
+
+            if ($this->user->findByEmailExceptId($email, $id)) {
+                $this->json(false, 'Email already used');
+            }
+
+            $data['email'] = $email;
         }
 
         if (!empty($_POST['nik']) && $_POST['nik'] !== $oldUser['nik']) {
-            $data['nik'] = trim($_POST['nik']);
+            $nik = trim($_POST['nik']);
+
+            if ($this->user->findByNikExceptId($nik, $id)) {
+                $this->json(false, 'NIK already registered');
+            }
+
+            $data['nik'] = $nik;
         }
 
         if (!empty($_POST['address']) && $_POST['address'] !== $oldUser['address']) {

@@ -1,15 +1,18 @@
 <?php
 require_once BASE_PATH . '/app/controllers/BaseAdminController.php';
 require_once BASE_PATH . '/app/models/CustomerModels.php';
+require_once BASE_PATH . '/app/models/UserModels.php';
 
 class AdminCustomerController extends BaseAdminController
 {
     private $customerModel;
+    private $userModel;
 
     public function __construct()
     {
         parent::__construct();
         $this->customerModel = new CustomerModel();
+        $this->userModel = new User();
     }
 
     /**
@@ -165,24 +168,23 @@ class AdminCustomerController extends BaseAdminController
                 throw new Exception('Customer not found');
             }
 
+            $email = strtolower(trim($_POST['email'] ?? ''));
+            $nik   = trim($_POST['nik'] ?? '');
+
             // =====================
             // DUPLICATE VALIDATION
             // =====================
 
-            if (
-                !empty($_POST['email']) &&
-                $this->customerModel->findByEmailExceptId($_POST['email'], $id)
-            ) {
-                $this->json(false, 'Email already used by another customer');
-                return;
+            if ($email && $email !== $customer['email']) {
+                if ($this->userModel->findByEmailExceptId($email, $id)) {
+                    $this->json(false, 'Email already used');
+                }
             }
 
-            if (
-                !empty($_POST['nik']) &&
-                $this->customerModel->findByNikExceptId($_POST['nik'], $id)
-            ) {
-                $this->json(false, 'NIK already used by another customer');
-                return;
+            if ($nik && $nik !== $customer['nik']) {
+                if ($this->userModel->findByNikExceptId($nik, $id)) {
+                    $this->json(false, 'NIK already used');
+                }
             }
 
             if (

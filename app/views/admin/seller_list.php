@@ -120,15 +120,15 @@
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="addSellerName" class="form-label">Name</label>
-            <input type="text" class="form-control" id="addSellerName" name="name" required>
+            <input type="text" class="form-control" id="addSellerName" name="name">
           </div>
           <div class="col-md-6 mb-3">
             <label for="addSellerNIK" class="form-label">NIK</label>
-            <input type="text" class="form-control" id="addSellerNIK" name="nik" required>
+            <input type="text" class="form-control" id="addSellerNIK" name="nik">
           </div>
           <div class="col-md-6 mb-3">
             <label for="addSellerEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="addSellerEmail" name="email" required>
+            <input type="email" class="form-control" id="addSellerEmail" name="email">
           </div>
           <div class="col-md-6 mb-3">
             <label for="addSellerPassword" class="form-label">Password</label>
@@ -173,15 +173,15 @@
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="editSellerName" class="form-label">Name</label>
-            <input type="text" class="form-control" id="editSellerName" name="name" required>
+            <input type="text" class="form-control" id="editSellerName" name="name">
           </div>
           <div class="col-md-6 mb-3">
             <label for="editSellerEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="editSellerEmail" name="email" required>
+            <input type="email" class="form-control" id="editSellerEmail" name="email">
           </div>
           <div class="col-md-6 mb-3">
             <label for="editSellerNik" class="form-label">NIK</label>
-            <input type="text" class="form-control" id="editSellerNik" name="nik" required>
+            <input type="text" class="form-control" id="editSellerNik" name="nik">
           </div>
           <div class="col-md-6 mb-3">
             <label for="editSellerPassword" class="form-label">New Password</label>

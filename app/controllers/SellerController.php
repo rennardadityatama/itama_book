@@ -140,7 +140,7 @@ class SellerController extends BaseSellerController
 
     if (!empty($_POST['email']) && $_POST['email'] !== $oldUser['email']) {
       if ($this->user->findByEmail($_POST['email'])) {
-        $this->json(false, 'Email already in use');
+        $this->json(false, 'Email already in used');
       }
       $data['email'] = trim($_POST['email']);
     }

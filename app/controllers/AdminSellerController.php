@@ -1,15 +1,18 @@
 <?php
 require_once BASE_PATH . '/app/controllers/BaseAdminController.php';
 require_once BASE_PATH . '/app/models/SellerModels.php';
+require_once BASE_PATH . '/app/models/UserModels.php';
 
 class AdminSellerController extends BaseAdminController
 {
     private $sellerModel;
+    private $userModel;
 
     public function __construct()
     {
         parent::__construct();
         $this->sellerModel = new SellerModel();
+        $this->userModel = new User();
     }
 
     /**
@@ -121,8 +124,8 @@ class AdminSellerController extends BaseAdminController
             }
 
             $name     = trim($_POST['name'] ?? '');
-            $nik      = trim($_POST['nik'] ?? '');
-            $email    = trim($_POST['email'] ?? '');
+            $email = strtolower(trim($_POST['email']));
+            $nik   = trim($_POST['nik']);
             $password = $_POST['password'] ?? '';
             $address  = trim($_POST['address'] ?? '');
             $account  = trim($_POST['account_number'] ?? '');
@@ -139,12 +142,12 @@ class AdminSellerController extends BaseAdminController
                 throw new Exception('Avatar is required');
             }
 
-            if ($this->sellerModel->findByEmail($email)) {
-                $this->json(false, 'Email already exists');
+            if ($this->userModel->findByEmail($email)) {
+                $this->json(false, 'Email already used');
             }
 
-            if ($this->sellerModel->findByNik($nik)) {
-                $this->json(false, 'NIK already exists');
+            if ($this->userModel->findByNik($nik)) {
+                $this->json(false, 'NIK already used');
             }
 
             if ($this->sellerModel->findByACNumber($account)) {
@@ -215,21 +218,25 @@ class AdminSellerController extends BaseAdminController
                 throw new Exception('Seller not found');
             }
 
-            if (!empty($_POST['email'])) {
-                if ($this->sellerModel->findByEmailExceptId($_POST['email'], $id)) {
-                    $this->json(false, 'Email already used by another seller');
+            $email = strtolower(trim($_POST['email'] ?? ''));
+            $nik   = trim($_POST['nik'] ?? '');
+            $acc   = trim($_POST['account_number'] ?? '');
+
+            if ($email && $email !== $seller['email']) {
+                if ($this->userModel->findByEmailExceptId($email, $id)) {
+                    $this->json(false, 'Email already used');
                 }
             }
 
-            if (!empty($_POST['nik'])) {
-                if ($this->sellerModel->findByNikExceptId($_POST['nik'], $id)) {
-                    $this->json(false, 'NIK already used by another seller');
+            if ($nik && $nik !== $seller['nik']) {
+                if ($this->userModel->findByNikExceptId($nik, $id)) {
+                    $this->json(false, 'NIK already used');
                 }
             }
 
-            if (!empty($_POST['account_number'])) {
-                if ($this->sellerModel->findByACNumberExceptId($_POST['account_number'], $id)) {
-                    $this->json(false, 'Account Number already used by another seller');
+            if ($acc && $acc !== $seller['account_number']) {
+                if ($this->sellerModel->findByACNumberExceptId($acc, $id)) {
+                    $this->json(false, 'Account Number already used');
                 }
             }
 
@@ -240,20 +247,20 @@ class AdminSellerController extends BaseAdminController
                 $data['name'] = trim($_POST['name']);
             }
 
-            if (isset($_POST['nik']) && $_POST['nik'] !== '') {
-                $data['nik'] = trim($_POST['nik']);
+            if ($nik) {
+                $data['nik'] = $nik;
             }
 
-            if (isset($_POST['email']) && $_POST['email'] !== '') {
-                $data['email'] = trim($_POST['email']);
+            if ($email) {
+                $data['email'] = $email;
             }
 
             if (isset($_POST['address'])) {
                 $data['address'] = trim($_POST['address']);
             }
 
-            if (isset($_POST['account_number'])) {
-                $data['account_number'] = trim($_POST['account_number']);
+            if ($acc) {
+                $data['account_number'] = $acc;
             }
 
             // Optional password
@@ -299,6 +306,10 @@ class AdminSellerController extends BaseAdminController
             $seller = $this->sellerModel->getById($id);
             if (!$seller) {
                 throw new Exception('Seller not found');
+            }
+
+            if (!empty($seller['last_activity']) && strtotime($seller['last_activity']) >= strtotime('-4 minutes')) {
+                throw new Exception('Seller is currently online and cannot be deleted');
             }
 
             if ($this->sellerModel->hasCart($id)) {

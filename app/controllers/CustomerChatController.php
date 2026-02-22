@@ -177,7 +177,7 @@ class CustomerChatController extends BaseCustomerController
         if (!isset($_SESSION['user'])) {
             $this->json('error', 'Unauthorized');
         }
-
+    
         $userId = $_SESSION['user']['id'];
         $roomId = $_GET['room_id'] ?? null;
         $lastId = $_GET['last_id'] ?? 0;

@@ -215,7 +215,7 @@ class SellerProductController extends BaseSellerController
             $result = $this->productModel->softDelete($id);
 
             if ($result) {
-                $this->json(true, 'Product deleted (soft delete)');
+                $this->json(true, 'Product deleted');
             } else {
                 throw new Exception('Failed deleting product');
             }

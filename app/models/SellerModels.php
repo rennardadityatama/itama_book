@@ -100,7 +100,6 @@ class SellerModel
         return $stmt->fetchColumn() > 0;
     }
 
-
     // READ ALL
     public function getAll()
     {
@@ -114,7 +113,7 @@ class SellerModel
                 ELSE 'offline'
             END AS online_status
         FROM users
-        WHERE role = 2
+        WHERE role = 2 AND deleted_at IS NULL
         ORDER BY id DESC
     ");
         $stmt->execute();
@@ -186,7 +185,7 @@ class SellerModel
     public function delete($id)
     {
         $stmt = $this->db->prepare(
-            "DELETE FROM users WHERE id = :id AND role = 2"
+            "UPDATE users SET deleted_at = NOW() WHERE id = :id AND role = 2"
         );
         return $stmt->execute([':id' => $id]);
     }

@@ -30,7 +30,8 @@ class User
   public function findByEmail($email)
   {
     $stmt = $this->db->prepare(
-      "SELECT * FROM users WHERE email = ? LIMIT 1"
+      "SELECT * FROM users WHERE email = ? AND deleted_at IS NULL 
+      LIMIT 1"
     );
     $stmt->execute([$email]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -39,7 +40,8 @@ class User
   public function findByNik($nik)
   {
     $stmt = $this->db->prepare(
-      "SELECT * FROM users WHERE nik = ? LIMIT 1"
+      "SELECT * FROM users WHERE nik = ? AND deleted_at IS NULL
+      LIMIT 1"
     );
     $stmt->execute([$nik]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -51,6 +53,32 @@ class User
       "SELECT * FROM users WHERE phone = ? LIMIT 1"
     );
     $stmt->execute([$phone]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function findByEmailExceptId($email, $id)
+  {
+    $stmt = $this->db->prepare("
+    SELECT id FROM users 
+    WHERE email = ? 
+      AND id != ?
+      AND deleted_at IS NULL
+    LIMIT 1
+  ");
+    $stmt->execute([$email, $id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function findByNikExceptId($nik, $id)
+  {
+    $stmt = $this->db->prepare("
+    SELECT id FROM users 
+    WHERE nik = ? 
+      AND id != ?
+      AND deleted_at IS NULL
+    LIMIT 1
+  ");
+    $stmt->execute([$nik, $id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
