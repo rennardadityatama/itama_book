@@ -79,7 +79,8 @@
                                 <!-- Badge -->
                                 <?php
                                 $paymentBadge = match ($order['payment_status']) {
-                                  'unpaid' => '<span class="badge bg-warning">Unpaid</span>',
+                                  'unpaid' => '<span class="badge bg-danger">Unpaid</span>',
+                                  'waiting_verification' => '<span class="badge bg-warning">Waiting Verification</span>',
                                   'paid' => '<span class="badge bg-success">Paid</span>',
                                   default => '<span class="badge bg-secondary">' . ucfirst($order['payment_status']) . '</span>'
                                 };
@@ -87,11 +88,11 @@
                                 ?>
                                 <!-- View Proof Button -->
                                 <?php if (!empty($order['payment_proof'])): ?>
-                                  <a href="<?= BASE_URL ?>index.php?c=sellerApprove&m=viewPaymentProof&order_id=<?= $order['id'] ?>"
-                                    target="_blank"
-                                    class="btn btn-outline-info btn-sm py-0 px-2">
+                                  <button
+                                    class="btn btn-outline-info btn-sm py-0 px-2"
+                                    onclick="previewPayment('<?= BASE_URL ?>uploads/payments/<?= $order['payment_proof'] ?>')">
                                     View Proof
-                                  </a>
+                                  </button>
                                 <?php endif; ?>
                                 <!-- Payment Method -->
                                 <small class="text-muted"><?= $order['payment_method'] === 'transfer' ? 'Bank Transfer' : 'QRIS' ?></small>
@@ -288,6 +289,21 @@
       </div>
     </div>
 
+    <!-- Modal Preview QRIS -->
+    <div class="modal fade" id="qrisModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header border-0">
+            <h5 class="modal-title">QRIS Preview</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body text-center">
+            <img id="qrisPreview" src="" class="img-fluid rounded" style="max-height:360px;">
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       function initRefundCountdown() {
         document.querySelectorAll('.countdown').forEach(el => {
@@ -379,6 +395,14 @@
         form.action = '<?= BASE_URL ?>index.php?c=sellerApprove&m=deleteRefundOrder';
 
         const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+      }
+
+      function previewPayment(imgUrl) {
+        const img = document.getElementById('qrisPreview');
+        img.src = imgUrl;
+
+        const modal = new bootstrap.Modal(document.getElementById('qrisModal'));
         modal.show();
       }
     </script>

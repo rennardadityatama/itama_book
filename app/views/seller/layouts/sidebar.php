@@ -1,7 +1,7 @@
       <!-- Page Sidebar Start-->
       <div class="sidebar-wrapper">
         <div>
-          <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="<?= BASE_URL ?>/assets/img/logo.png" alt=""></a>
+          <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="<?= BASE_URL ?>assets/img/logo.png" alt=""></a>
             <div class="back-btn"><i data-feather="grid"></i></div>
             <div class="toggle-sidebar icon-box-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
           </div>
@@ -21,43 +21,43 @@
                 <hr>
                 <li class="sidebar-list">
                     <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=seller&m=dashboard">
+                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=seller&m=dashboard">
                     <i data-feather="home"> </i>
                     <span>Dashboard</span></a>
                 </li>
                 <li class="sidebar-list">
                     <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=sellerProduct&m=index">
+                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=sellerProduct&m=index">
                     <i data-feather="archive"> </i>
                     <span>Product</span></a>
                 </li>
                 <li class="sidebar-list">
                     <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=sellerPublicList&m=index">
+                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=sellerPublicList&m=index">
                     <i data-feather="users"> </i>
                     <span>Seller List</span></a>
                     </li>
                 <li class="sidebar-list">
                     <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=sellerApprove&m=index">
+                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=sellerApprove&m=index">
                     <i data-feather="check"> </i>
                     <span>Approve</span></a>
                 </li>
                 <li class="sidebar-list">
                     <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=sellerReports&m=index">
+                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=sellerReports&m=index">
                     <i data-feather="printer"> </i>
                     <span>Reports</span></a>
                 </li>
                 <li class="sidebar-list">
                     <i class="fa fa-thumb-tack"></i>
-                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=sellerChat&m=index">
+                    <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=sellerChat&m=index">
                     <i data-feather="message-circle"> </i>
                     <span>Chat</span></a>
                 </li>
                 <li class="sidebar-list">
                   <i class="fa fa-thumb-tack"></i>
-                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=seller&m=faq">
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=seller&m=faq">
                     <i data-feather="help-circle"> </i>
                     <span>FAQ</span></a>
                 </li>

@@ -238,5 +238,8 @@
   const CHAT_BASE_URL = '<?= BASE_URL ?>/index.php?c=sellerChat';
   const CURRENT_USER_ID = <?= $_SESSION['user']['id'] ?>;
   const CURRENT_ROOM_ID = <?= $activeRoom['id'] ?? 'null' ?>;
+  window.USER_AVATAR = "<?= !empty($_SESSION['user']['avatar'])
+    ? BASE_URL . '/uploads/avatars/' . $_SESSION['user']['avatar']
+    : BASE_URL . '/assets/images/default-avatar.png' ?>";
 </script>
 <script src="<?= BASE_URL ?>/assets/js/chat.js"></script>

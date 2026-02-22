@@ -1,17 +1,19 @@
 <?php
-// File: app/controllers/SellerApproveController.php
 
 require_once BASE_PATH . '/app/controllers/BaseSellerController.php';
 require_once BASE_PATH . '/app/models/OrderModels.php';
+require_once BASE_PATH . '/app/models/ProductModels.php';
 
 class SellerApproveController extends BaseSellerController
 {
     private $orderModel;
+    private $productModel;
 
     public function __construct()
     {
         parent::__construct();
         $this->orderModel = new OrderModel();
+        $this->productModel = new ProductModel();
     }
 
     /**
@@ -47,13 +49,12 @@ class SellerApproveController extends BaseSellerController
      */
     public function approveOrder()
     {
-        // Validasi method POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
             exit;
         }
 
-        $orderId = $_POST['order_id'] ?? null;
+        $orderId  = $_POST['order_id'] ?? null;
         $sellerId = $_SESSION['user']['id'];
 
         if (!$orderId) {
@@ -62,7 +63,6 @@ class SellerApproveController extends BaseSellerController
             exit;
         }
 
-        // Validasi: apakah order ini milik seller yang login?
         $order = $this->orderModel->getOrderByIdForSeller($orderId, $sellerId);
 
         if (!$order) {
@@ -71,13 +71,50 @@ class SellerApproveController extends BaseSellerController
             exit;
         }
 
-        // Update status order jadi 'approved'
-        $this->orderModel->updateOrderStatus($orderId, 'approved');
+        if ($order['status'] !== 'pending') {
+            $_SESSION['toast'] = ['type' => 'warning', 'message' => 'Order already processed'];
+            header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
+            exit;
+        }
 
-        // Update payment status jadi 'completed'
-        $this->orderModel->updatePaymentStatus($orderId, 'paid');
+        $db = Database::getInstance();
 
-        $_SESSION['toast'] = ['type' => 'success', 'message' => 'Order approved successfully'];
+        try {
+            $db->beginTransaction();
+
+            $items = $this->orderModel->getOrderItemsOnly($orderId);
+
+            foreach ($items as $item) {
+
+                $product = $this->productModel->getById($item['product_id']);
+
+                if ($product['stock'] < $item['qty']) {
+                    throw new Exception("Stock not enough for {$product['name']}");
+                }
+
+                $updated = $this->productModel->updateStock($item['product_id'], $item['qty']);
+
+                if (!$updated) {
+                    throw new Exception("Failed reduce stock");
+                }
+            }
+
+            $this->orderModel->updateOrderStatus($orderId, 'approved');
+            $this->orderModel->updatePaymentStatus($orderId, 'paid');
+
+            $db->commit();
+
+            $_SESSION['toast'] = ['type' => 'success', 'message' => 'Order approved'];
+        } catch (Exception $e) {
+
+            $db->rollBack();
+
+            $_SESSION['toast'] = [
+                'type' => 'danger',
+                'message' => $e->getMessage()
+            ];
+        }
+
         header('Location: ' . BASE_URL . 'index.php?c=sellerApprove&m=index');
         exit;
     }

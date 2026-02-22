@@ -44,10 +44,14 @@ class CustomerOrderController extends BaseCustomerController
         foreach ($cartItems as $item) {
             // check stock
             $product = $this->productModel->getById($item['product_id']);
-            if ($product['stock'] < $item['qty']) {
+
+            $pendingQty = $this->orderModel->getPendingQtyByProduct($item['product_id']);
+
+            $availableStock = $product['stock'] - $pendingQty;
+            if ($availableStock < $item['qty']) {
                 $_SESSION['toast'] = [
                     'type' => 'danger',
-                    'message' => "Product {$product['name']} stock is not enough"
+                    'message' => "Product {$product['name']} stock is reserved by another order"
                 ];
                 header('Location: ' . BASE_URL . 'index.php?c=customerCart&m=index');
                 exit;
@@ -95,10 +99,14 @@ class CustomerOrderController extends BaseCustomerController
         foreach ($cartItems as $item) {
             // check stock again
             $product = $this->productModel->getById($item['product_id']);
-            if ($product['stock'] < $item['qty']) {
+
+            $pendingQty = $this->orderModel->getPendingQtyByProduct($item['product_id']);
+
+            $availableStock = $product['stock'] - $pendingQty;
+            if ($availableStock < $item['qty']) {
                 $_SESSION['toast'] = [
                     'type' => 'danger',
-                    'message' => "Product {$product['name']} stock is not enough"
+                    'message' => "Product {$product['name']} is reserved by another customer"
                 ];
                 header('Location: ' . BASE_URL . 'index.php?c=customerCart&m=index');
                 exit;
@@ -186,7 +194,7 @@ class CustomerOrderController extends BaseCustomerController
             'payment_proof'  => $paymentProof
         ]);
 
-        // create order items + reduce stock
+        // create order items
         foreach ($cartItems as $item) {
             $this->orderModel->createItem([
                 'order_id'   => $orderId,
@@ -195,9 +203,6 @@ class CustomerOrderController extends BaseCustomerController
                 'qty'        => $item['qty'],
                 'subtotal'   => $item['price'] * $item['qty']
             ]);
-
-            // reduce stock
-            $this->productModel->updateStock($item['product_id'], $item['qty']);
         }
 
         // remove cart items

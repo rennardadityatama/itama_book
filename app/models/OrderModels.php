@@ -17,7 +17,7 @@ class OrderModel
             INSERT INTO orders 
                 (customer_id, seller_id, total_amount, payment_method, payment_proof, shipping_resi, tracking_link, shipping_status, status, payment_status)
             VALUES
-                (:customer_id, :seller_id, :total_amount, :payment_method, :payment_proof, :shipping_resi, :tracking_link, 'pending', 'pending', 'paid')
+                (:customer_id, :seller_id, :total_amount, :payment_method, :payment_proof, :shipping_resi, :tracking_link, 'pending', 'pending', 'waiting_verification')
         ");
 
         $stmt->execute([
@@ -160,6 +160,19 @@ class OrderModel
         ]);
     }
 
+    public function getPendingQtyByProduct($productId)
+    {
+        $stmt = $this->db->prepare("
+        SELECT COALESCE(SUM(oi.qty),0) as total
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id
+        WHERE oi.product_id = :product_id
+        AND o.status = 'pending'
+    ");
+
+        $stmt->execute([':product_id' => $productId]);
+        return (int)$stmt->fetchColumn();
+    }
 
     public function updateShippingStatus($orderId, $status)
     {
@@ -259,6 +272,17 @@ class OrderModel
         }
 
         return $data;
+    }
+
+    public function getOrderItemsOnly($orderId)
+    {
+        $stmt = $this->db->prepare("
+        SELECT product_id, qty
+        FROM order_items
+        WHERE order_id = :id
+    ");
+        $stmt->execute([':id' => $orderId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getOrderByIdForSeller($orderId, $sellerId)

@@ -133,6 +133,7 @@ class SellerModel
             END AS online_status
         FROM users
         WHERE role = 2
+          AND deleted_at IS NULL
           AND id != :exclude_id
         ORDER BY id DESC
     ");

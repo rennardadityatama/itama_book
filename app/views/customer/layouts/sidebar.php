@@ -1,7 +1,7 @@
       <!-- Page Sidebar Start-->
       <div class="sidebar-wrapper">
         <div>
-          <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="<?= BASE_URL ?>/assets/img/logo.png" alt=""></a>
+          <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="<?= BASE_URL ?>assets/img/logo.png" alt=""></a>
             <div class="back-btn"><i data-feather="grid"></i></div>
             <div class="toggle-sidebar icon-box-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
           </div>
@@ -21,7 +21,7 @@
                 <hr>
                 <li class="sidebar-list">
                   <i class="fa fa-thumb-tack"></i>
-                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=customer&m=dashboard">
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=customer&m=dashboard">
                     <i data-feather="home"> </i>
                     <span>Dashboard</span></a>
                 </li>
@@ -39,7 +39,7 @@
                 </li>
                 <li class="sidebar-list">
                   <i class="fa fa-thumb-tack"></i>
-                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=customerStatus&m=index">
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=customerStatus&m=index">
                     <i data-feather="clock"> </i>
                     <span>Status</span></a>
                 </li>
@@ -51,13 +51,13 @@
                 </li>
                 <li class="sidebar-list">
                   <i class="fa fa-thumb-tack"></i>
-                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=customerChat&m=index">
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=customerChat&m=index">
                     <i data-feather="message-circle"> </i>
                     <span>Chat</span></a>
                 </li>
                 <li class="sidebar-list">
                   <i class="fa fa-thumb-tack"></i>
-                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>/index.php?c=customer&m=faq">
+                  <a class="sidebar-link sidebar-title link-nav" href="<?= BASE_URL ?>index.php?c=customer&m=faq">
                     <i data-feather="help-circle"> </i>
                     <span>FAQ</span></a>
                 </li>
