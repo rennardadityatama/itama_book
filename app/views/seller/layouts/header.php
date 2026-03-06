@@ -22,14 +22,6 @@
         </div>
         <div class="nav-right col-6 pull-right right-header p-0">
           <ul class="nav-menus">
-            <li>
-              <div class="right-header ps-0">
-                <div class="input-group">
-                  <div class="input-group-prepend"><span class="input-group-text mobile-search"><i class="fa fa-search"></i></span></div>
-                  <input class="form-control" type="text" placeholder="Search Here........">
-                </div>
-              </div>
-            </li>
             <li class="serchinput">
               <div class="serchbox"><i data-feather="search"></i></div>
               <div class="form-group search-form">
@@ -87,7 +79,7 @@
 
           <div class="modal-body text-center">
             <i data-feather="log-out" class="txt-warning mb-2"></i>
-            <p class="mb-0">Apakah kamu yakin ingin logout?</p>
+            <p class="mb-0">Are you sure you want to log out?</p>
           </div>
 
           <div class="modal-footer justify-content-center">

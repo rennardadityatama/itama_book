@@ -13,13 +13,26 @@
 <div class="page-body">
   <div class="container-fluid">
     <div class="page-title">
-      <div class="row">
-        <div class="col-sm-6">
-          <h3>List Customer</h3>
+      <div class="row align-items-center mb-3">
+        <div class="col-md-6">
+          <h3 class="mb-0">List Customer</h3>
         </div>
         <!-- <div class="col-sm-6 text-end">
           <button class="btn btn-primary" id="btnAddCustomer">Add Customer</button>
         </div> -->
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="fa fa-search"></i>
+            </span>
+            <input id="searchCustomer"
+              class="form-control"
+              type="text"
+              placeholder="Search Name, Email, or NIK...">
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -43,7 +56,7 @@
                     style="width:64px;height:64px;object-fit:cover;">
 
                   <div>
-                    <h6 class="mb-0 fw-semibold"><?= htmlspecialchars($customer['name']) ?></h6>
+                    <h6 class="mb-0 fw-semibold customer-name"><?= htmlspecialchars($customer['name']) ?></h6>
                     <small class="text-muted">Customer</small>
                   </div>
                 </div>
@@ -63,8 +76,8 @@
               </div>
 
               <ul class="list-unstyled mb-0 small">
-                <li class="mb-2">Email: <?= htmlspecialchars($customer['email']) ?></li>
-                <li class="mb-2">NIK: <?= htmlspecialchars($customer['nik']) ?></li>
+                <li class="mb-2 customer-email">Email: <?= htmlspecialchars($customer['email']) ?></li>
+                <li class="mb-2 customer-nik">NIK: <?= htmlspecialchars($customer['nik']) ?></li>
                 <?php if ($customer['address']): ?>
                   <li class="mb-2">Address: <?= htmlspecialchars($customer['address']) ?></li>
                 <?php endif; ?>
@@ -210,3 +223,31 @@
   const CUSTOMER_BASE_URL = '<?= BASE_URL ?>/index.php?c=adminCustomer';
 </script>
 <script src="<?= BASE_URL ?>/assets/js/customer.js"></script>
+<script>
+  const searchInput = document.getElementById("searchCustomer");
+
+  searchInput.addEventListener("keyup", function() {
+
+    const keyword = this.value.toLowerCase();
+    const cards = document.querySelectorAll("#customerCards .col-xl-4");
+
+    cards.forEach(card => {
+
+      const name = card.querySelector(".customer-name")?.textContent.toLowerCase() || "";
+      const email = card.querySelector(".customer-email")?.textContent.toLowerCase() || "";
+      const nik = card.querySelector(".customer-nik")?.textContent.toLowerCase() || "";
+
+      if (
+        name.includes(keyword) ||
+        email.includes(keyword) ||
+        nik.includes(keyword)
+      ) {
+        card.style.display = "";
+      } else {
+        card.style.display = "none";
+      }
+
+    });
+
+  });
+</script>

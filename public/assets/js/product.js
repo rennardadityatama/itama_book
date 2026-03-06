@@ -55,7 +55,8 @@ function openEditProduct(id) {
             document.getElementById('editProductCategoryId').value = d.category_id ?? '';
             document.getElementById('editProductCost').value = d.cost_price ?? '';
             document.getElementById('editProductMargin').value = d.margin ?? '';
-            document.getElementById('editProductStock').value = d.stock ?? '';
+            document.getElementById('currentStock').textContent = d.stock ?? 0;
+            document.getElementById('editProductStock').value = 0;
             document.getElementById('editProductDescription').value = d.description ?? '';
             document.getElementById('editProductImage').value = ''; // leave blank for new upload
 

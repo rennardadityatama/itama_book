@@ -143,9 +143,13 @@ class SellerProductController extends BaseSellerController
             $price       = trim($_POST['price'] ?? '0'); // string
             $cost_price  = trim($_POST['cost_price'] ?? '0');
             $margin      = trim($_POST['margin'] ?? '0');
-            $stock       = trim($_POST['stock'] ?? '0');
             $category_id = trim($_POST['category_id'] ?? '');
             $description = trim($_POST['description'] ?? '');
+
+            $add_stock = (int) ($_POST['stock'] ?? 0);
+            $current_stock = (int) $product['stock'];
+
+            $new_stock = $current_stock + $add_stock;
 
             if (empty($name) || empty($price)) {
                 throw new Exception('Name and Price are required');
@@ -175,7 +179,7 @@ class SellerProductController extends BaseSellerController
                 'price'       => $price,
                 'cost_price'  => $cost_price,
                 'margin'      => $margin,
-                'stock'       => $stock,
+                'stock'       => $new_stock,
                 'category_id' => $category_id,
                 'image'       => $image,
                 'description'  => $description

@@ -91,6 +91,15 @@ class SellerModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function hasProducts($sellerId)
+    {
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) FROM products WHERE seller_id = :id"
+        );
+        $stmt->execute([':id' => $sellerId]);
+        return $stmt->fetchColumn() > 0;
+    }
+
     public function hasCart($sellerId)
     {
         $stmt = $this->db->prepare(

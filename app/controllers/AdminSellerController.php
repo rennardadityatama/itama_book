@@ -312,6 +312,12 @@ class AdminSellerController extends BaseAdminController
                 throw new Exception('Seller is currently online and cannot be deleted');
             }
 
+            if ($this->sellerModel->hasProducts($id)) {
+                throw new Exception(
+                    'Seller cannot be deleted because they still have products.'
+                );
+            }
+
             if ($this->sellerModel->hasCart($id)) {
                 throw new Exception(
                     'Seller cannot be removed because the product is still in the shopping cart.'

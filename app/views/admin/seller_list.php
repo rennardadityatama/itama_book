@@ -13,12 +13,27 @@
 <div class="page-body">
   <div class="container-fluid">
     <div class="page-title">
-      <div class="row">
-        <div class="col-sm-6">
-          <h3>List Seller</h3>
+      <div class="row align-items-center mb-3">
+        <div class="col-md-6">
+          <h3 class="mb-0">List Seller</h3>
         </div>
-        <div class="col-sm-6 text-end">
-          <button class="btn btn-primary" id="btnAddSeller">Add Seller</button>
+        <div class="col-md-6 text-md-end">
+          <button class="btn btn-primary" id="btnAddSeller">
+            Add Seller
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="fa fa-search"></i>
+            </span>
+            <input id="searchSeller"
+              class="form-control"
+              type="text"
+              placeholder="Search Name, Email, or NIK...">
+          </div>
         </div>
       </div>
     </div>
@@ -29,12 +44,9 @@
     <div class="row g-4" id="sellerCards">
       <?php foreach ($sellers as $seller): ?>
         <div class="col-xl-4 col-lg-6">
-
           <div class="card shadow-sm h-100 border-0">
-
             <!-- BODY -->
             <div class="card-body">
-
               <div class="d-flex align-items-start justify-content-between mb-3">
                 <div class="d-flex align-items-center">
                   <img
@@ -43,7 +55,7 @@
                     style="width:64px;height:64px;object-fit:cover;">
 
                   <div>
-                    <h6 class="mb-0 fw-semibold"><?= htmlspecialchars($seller['name']) ?></h6>
+                    <h6 class="mb-0 fw-semibold seller-name"><?= htmlspecialchars($seller['name']) ?></h6>
                     <small class="text-muted">Seller</small>
                   </div>
                 </div>
@@ -63,8 +75,8 @@
               </div>
 
               <ul class="list-unstyled mb-0 small">
-                <li class="mb-2">Email: <?= htmlspecialchars($seller['email']) ?></li>
-                <li class="mb-2">NIK: <?= htmlspecialchars($seller['nik']) ?></li>
+                <li class="mb-2 seller-email">Email: <?= htmlspecialchars($seller['email']) ?></li>
+                <li class="mb-2 seller-nik">NIK: <?= htmlspecialchars($seller['nik']) ?></li>
                 <?php if ($seller['address']): ?>
                   <li class="mb-2">Address: <?= htmlspecialchars($seller['address']) ?></li>
                 <?php endif; ?>
@@ -251,3 +263,31 @@
   const SELLER_BASE_URL = '<?= BASE_URL ?>/index.php?c=adminSeller';
 </script>
 <script src="<?= BASE_URL ?>/assets/js/seller.js"></script>
+<script>
+  const searchInput = document.getElementById("searchSeller");
+
+  searchInput.addEventListener("keyup", function() {
+
+    const keyword = this.value.toLowerCase();
+    const cards = document.querySelectorAll("#sellerCards .col-xl-4");
+
+    cards.forEach(card => {
+
+      const name = card.querySelector(".seller-name")?.textContent.toLowerCase() || "";
+      const email = card.querySelector(".seller-email")?.textContent.toLowerCase() || "";
+      const nik = card.querySelector(".seller-nik")?.textContent.toLowerCase() || "";
+
+      if (
+        name.includes(keyword) ||
+        email.includes(keyword) ||
+        nik.includes(keyword)
+      ) {
+        card.style.display = "";
+      } else {
+        card.style.display = "none";
+      }
+
+    });
+
+  });
+</script>

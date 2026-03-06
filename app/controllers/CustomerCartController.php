@@ -136,31 +136,10 @@ class CustomerCartController extends BaseCustomerController
     {
         $userId = $_SESSION['user']['id'];
 
-        $rows = $this->cartModel->getCartByUserGroupedSeller($userId);
-
-        $grouped = [];
-
-        foreach ($rows as $row) {
-            $sellerId = $row['seller_id'];
-
-            if (!isset($grouped[$sellerId])) {
-                $grouped[$sellerId] = [
-                    'seller_id' => $sellerId,
-                    'seller_name' => $row['seller_name'],
-                    'items' => [],
-                    'subtotal' => 0
-                ];
-            }
-
-            $total = $row['price'] * $row['qty'];
-            $row['total'] = $total;
-
-            $grouped[$sellerId]['items'][] = $row;
-            $grouped[$sellerId]['subtotal'] += $total;
-        }
+        $items = $this->cartModel->getCartByUser($userId);
 
         $this->render('cart', [
-            'groupedCart' => $grouped
+            'cartItems' => $items
         ]);
     }
 }

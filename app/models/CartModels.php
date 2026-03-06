@@ -78,7 +78,7 @@ class CartModel
         return $stmt->execute(['id' => $id]);
     }
 
-    public function getCartByUserGroupedSeller($userId)
+    public function getCartByUser($userId)
     {
         $sql = "
         SELECT 
@@ -95,7 +95,7 @@ class CartModel
         JOIN products p ON p.id = c.product_id
         JOIN users u ON u.id = p.seller_id
         WHERE c.customer_id = :user_id
-        ORDER BY p.seller_id
+        ORDER BY c.id DESC
     ";
 
         $stmt = $this->db->prepare($sql);

@@ -43,22 +43,19 @@ class AdminCategoriesController extends BaseAdminController
             $name = trim($_POST['name']);
 
             if (empty($name)) {
-                $_SESSION['error'] = 'Category name is required.';
-                header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
-                exit;
+                $this->json(false, 'Category name is required.');
             }
 
             if ($this->categoryModel->findByName($name)) {
-                $_SESSION['error'] = 'Category already exists.';
-                header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
-                exit;
+                $this->json(false, 'Category already exists.');
             }
 
-            $this->categoryModel->create($name);
+            $id = $this->categoryModel->create($name);
 
-            $_SESSION['success'] = 'Category has been successfully added.';
-            header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
-            exit;
+            $this->json(true, 'Category added successfully', [
+                'id' => $id,
+                'name' => $name
+            ]);
         }
     }
 
@@ -93,31 +90,22 @@ class AdminCategoriesController extends BaseAdminController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            if (!is_numeric($id)) {
-                $_SESSION['error'] = 'Invalid category ID.';
-                header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
-                exit;
-            }
-
             $name = trim($_POST['name']);
 
             if (empty($name)) {
-                $_SESSION['error'] = 'Category name is required.';
-                header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
-                exit;
+                $this->json(false, 'Category name is required.');
             }
 
             if ($this->categoryModel->findByName($name, $id)) {
-                $_SESSION['error'] = 'Category already exists.';
-                header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
-                exit;
+                $this->json(false, 'Category already exists.');
             }
 
             $this->categoryModel->update($id, $name);
 
-            $_SESSION['success'] = 'Category has been successfully updated.';
-            header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
-            exit;
+            $this->json(true, 'Category updated successfully', [
+                'id' => $id,
+                'name' => $name
+            ]);
         }
     }
 
@@ -126,29 +114,19 @@ class AdminCategoriesController extends BaseAdminController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            if (!is_numeric($id)) {
-                $_SESSION['error'] = 'Invalid category ID.';
-                header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
-                exit;
-            }
-
             try {
 
                 $this->categoryModel->delete($id);
 
-                $_SESSION['success'] = 'Category has been successfully deleted.';
-
+                $this->json(true, 'Category deleted successfully');
             } catch (PDOException $e) {
 
                 if ($e->getCode() == 23000) {
-                    $_SESSION['error'] = 'This category cannot be deleted because it is still associated with products or orders.';
-                } else {
-                    $_SESSION['error'] = 'An error occurred while deleting the category.';
+                    $this->json(false, 'Category is still used by products.');
                 }
-            }
 
-            header('Location: ' . BASE_URL . '?c=adminCategories&m=index');
-            exit;
+                $this->json(false, 'Failed to delete category.');
+            }
         }
     }
 }

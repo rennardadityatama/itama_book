@@ -33,15 +33,37 @@
     <div class="row">
       <div class="col-12">
         <div class="card">
-          <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">Product List</h4>
-            <button class="btn btn-primary" id="btnAddProduct">
-              Add Product
-            </button>
+
+          <!-- CARD HEADER -->
+          <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+              <!-- SEARCH -->
+              <div style="max-width:350px; width:100%;">
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="fa fa-search"></i>
+                  </span>
+                  <input id="searchProduct"
+                    class="form-control"
+                    type="text"
+                    placeholder="Search Product Name...">
+                </div>
+              </div>
+
+              <!-- BUTTON -->
+              <button class="btn btn-primary" id="btnAddProduct">
+                Add Product
+              </button>
+
+            </div>
           </div>
-          <div class="card-body">
+
+          <!-- CARD BODY -->
+          <div class="card-body pt-3">
             <div class="table-responsive">
               <table class="table table-bordered table-striped table-hover align-middle" id="productTable">
+
                 <thead class="table-light">
                   <tr>
                     <th>Product Name</th>
@@ -52,45 +74,70 @@
                     <th>Stock</th>
                     <th>Description</th>
                     <th>Category</th>
-                    <th>Action</th>
+                    <th width="120">Action</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   <?php if (!empty($products)): ?>
                     <?php foreach ($products as $p): ?>
                       <tr>
-                        <td><?= htmlspecialchars($p['name']) ?></td>
-                        <td>
-                          <img src="<?= $p['image']
-                                      ? BASE_URL . '/uploads/products/' . $p['image']
-                                      : BASE_URL . '/assets/images/ecommerce/no-image.png' ?>"
-                            alt="<?= htmlspecialchars($p['name']) ?>"
-                            class="img-fluid" style="max-width:80px;">
+
+                        <td class="product-name">
+                          <?= htmlspecialchars($p['name']) ?>
                         </td>
-                        <td>Rp.<?= number_format($p['price'], 2) ?></td>
-                        <td>Rp.<?= number_format($p['cost_price'], 2) ?></td>
-                        <td>Rp.<?= $p['margin'] ?></td>
-                        <td class="<?= ($p['stock'] > 0) ? 'text-success' : 'text-danger' ?>">
+
+                        <td>
+                          <img
+                            src="<?= $p['image']
+                                    ? BASE_URL . '/uploads/products/' . $p['image']
+                                    : BASE_URL . '/assets/images/ecommerce/no-image.png' ?>"
+                            alt="<?= htmlspecialchars($p['name']) ?>"
+                            class="img-fluid rounded"
+                            style="max-width:70px;">
+                        </td>
+
+                        <td>Rp <?= number_format($p['price'], 0, ',', '.') ?></td>
+                        <td>Rp <?= number_format($p['cost_price'], 0, ',', '.') ?></td>
+                        <td>Rp <?= number_format($p['margin'], 0, ',', '.') ?></td>
+
+                        <td class="<?= ($p['stock'] > 0) ? 'text-success fw-semibold' : 'text-danger fw-semibold' ?>">
                           <?= $p['stock'] ?>
                         </td>
-                        <td><?= htmlspecialchars($p['description'] ?? '-') ?></td>
-                        <td><?= htmlspecialchars($p['category_name'] ?? '-') ?></td>
-                        <td class="d-flex gap-1">
-                          <!-- Edit Button -->
-                          <button class="btn btn-warning btn-sm text-white btnEdit position-relative" style="z-index:2;" data-id="<?= $p['id'] ?>" title="Edit">
-                            Edit
-                          </button>
 
-                          <!-- Delete Button -->
-                          <button class="btn btn-danger btn-sm text-white btnDelete position-relative" style="z-index:2;" data-id="<?= $p['id'] ?>" data-name="<?= htmlspecialchars($p['name']) ?>" title="Delete">
-                            Delete
-                          </button>
+                        <td><?= htmlspecialchars($p['description'] ?? '-') ?></td>
+
+                        <td>
+                          <span class="badge bg-light text-dark border">
+                            <?= htmlspecialchars($p['category_name'] ?? '-') ?>
+                          </span>
+                        </td>
+
+                        <td>
+                          <div class="d-flex gap-2">
+                            <button
+                              class="btn btn-warning btn-sm text-white btnEdit"
+                              data-id="<?= $p['id'] ?>"
+                              title="Edit">
+                              Edit
+                            </button>
+
+                            <button
+                              class="btn btn-danger btn-sm btnDelete"
+                              data-id="<?= $p['id'] ?>"
+                              data-name="<?= htmlspecialchars($p['name']) ?>"
+                              title="Delete">
+                              Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     <?php endforeach; ?>
                   <?php else: ?>
                     <tr>
-                      <td colspan="9" class="text-center">No products found</td>
+                      <td colspan="9" class="text-center text-muted py-4">
+                        No products found
+                      </td>
                     </tr>
                   <?php endif; ?>
                 </tbody>
@@ -201,8 +248,13 @@
           <input type="number" class="form-control" id="editProductMargin" name="margin" readonly>
         </div>
         <div class="mb-3">
+          <small class="text-muted">
+            Current stock: <span id="currentStock"></span>
+          </small>
+        </div>
+        <div class="mb-3">
           <label for="editProductStock" class="form-label">Stock</label>
-          <input type="text" class="form-control" id="editProductStock" name="stock">
+          <input type="number" class="form-control" id="editProductStock" name="stock" value="0">
         </div>
         <div class="mb-3">
           <label for="editProductImage" class="form-label">Product Image</label>
@@ -278,4 +330,29 @@
       }
     });
   })();
+
+  document.addEventListener("DOMContentLoaded", function() {
+
+    const searchInput = document.getElementById("searchProduct");
+    const rows = document.querySelectorAll("#productTable tbody tr");
+
+    searchInput.addEventListener("keyup", function() {
+
+      const keyword = this.value.toLowerCase();
+
+      rows.forEach(function(row) {
+
+        const name = row.querySelector(".product-name").textContent.toLowerCase();
+
+        if (name.includes(keyword)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+
+      });
+
+    });
+
+  });
 </script>

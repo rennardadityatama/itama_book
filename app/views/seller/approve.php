@@ -294,7 +294,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
           <div class="modal-header border-0">
-            <h5 class="modal-title">QRIS Preview</h5>
+            <h5 class="modal-title">Payment Proof Preview</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body text-center">
