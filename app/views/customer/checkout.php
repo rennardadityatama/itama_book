@@ -37,87 +37,122 @@
       <div class="card-body">
         <div class="row">
           <div class="col-lg-8 col-sm-12">
-            <?php foreach ($sellers as $sellerId => $seller): ?>
-              <div class="card border mb-4">
-                <div class="card-header bg-success">
-                  <h5 class="mb-0"><i data-feather="shopping-bag"></i> Seller: <?= htmlspecialchars($seller['seller_name']) ?></h5>
-                </div>
-                <div class="card-body">
-                  <form action="<?= BASE_URL ?>index.php?c=customerOrder&m=placeOrderAll" method="POST" enctype="multipart/form-data" class="checkout-seller-form" id="checkoutForm">
-                    <input type="hidden" name="seller_id" value="<?= $sellerId ?>">
+            <form action="<?= BASE_URL ?>index.php?c=customerOrder&m=placeOrderAll"
+              method="POST" enctype="multipart/form-data">
 
-                    <div class="table-responsive mb-3">
-                      <table class="table table-borderless">
-                        <thead>
+              <?php foreach ($sellers as $sellerId => $seller): ?>
+
+                <div class="card border mb-4">
+                  <div class="card-header bg-success">
+                    Seller: <?= $seller['seller_name'] ?>
+                  </div>
+
+                  <div class="card-body">
+                    <input type="hidden" name="seller_ids[]" value="<?= $sellerId ?>">
+                    <table class="table table-borderless">
+                      <thead class="table-light">
+                        <tr>
+                          <th width="5%">No</th>
+                          <th>Product Name</th>
+                          <th>Price</th>
+                          <th class="text-center">QTY</th>
+                          <th class="text-end">SubTotal</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <?php $no = 1; ?>
+                        <?php foreach ($seller['items'] as $item): ?>
                           <tr>
-                            <th>Product</th>
-                            <th class="text-center">Qty</th>
-                            <th class="text-end">Subtotal</th>
+                            <td><?= $no++ ?></td>
+                            <td>
+                              <div class="d-flex align-items-center">
+                                <?php if (!empty($item['image'])): ?>
+                                  <img src="<?= BASE_URL ?>uploads/products/<?= $item['image'] ?>"
+                                    class="img-fluid img-30 me-2">
+                                <?php endif; ?>
+                                <span><?= $item['name'] ?></span>
+                              </div>
+                            </td>
+                            <td>Rp <?= number_format($item['price'],0,',','.') ?></td>
+                            <td class="text-center"><?= $item['qty'] ?></td>
+                            <td class="text-end">Rp <?= number_format($item['price'] * $item['qty'], 0, ',', '.') ?></td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          <?php foreach ($seller['items'] as $item): ?>
-                            <tr>
-                              <td>
-                                <div class="d-flex align-items-center">
-                                  <?php if (!empty($item['image'])): ?>
-                                    <img src="<?= BASE_URL ?>/uploads/products/<?= $item['image'] ?>" class="img-fluid img-30 me-2" alt="">
-                                  <?php endif; ?>
-                                  <span><?= htmlspecialchars($item['name']) ?></span>
-                                </div>
-                              </td>
-                              <td class="text-center"><?= $item['qty'] ?></td>
-                              <td class="text-end">Rp <?= number_format($item['price'] * $item['qty'], 0, ',', '.') ?></td>
-                            </tr>
-                          <?php endforeach; ?>
-                        </tbody>
-                        <tfoot>
-                          <tr class="border-top">
-                            <td colspan="2" class="text-end"><strong>Total untuk Seller ini:</strong></td>
-                            <td class="text-end"><strong class="text-primary">Rp <?= number_format($seller['total'], 0, ',', '.') ?></strong></td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
+                        <?php endforeach; ?>
+                      </tbody>
+
+                      <tfoot>
+                        <tr class="border-top">
+                          <td colspan="3" class="text-end">
+                            <strong>Total</strong>
+                          </td>
+                          <td class="text-end">
+                            <strong class="text-primary">
+                              Rp <?= number_format($seller['total'], 0, ',', '.') ?>
+                            </strong>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
 
                     <hr>
+                    <h6>Payment Method</h6>
+                    <label>
+                      <input type="radio"
+                        class="payment-radio"
+                        data-seller="<?= $sellerId ?>"
+                        name="payment_method[<?= $sellerId ?>]"
+                        value="transfer" required>
+                      Transfer
+                    </label>
 
-                    <div class="row">
-                      <div class="col-md-6">
-                        <h6 class="mb-3">Payment Method</h6>
-                        <div class="animate-chk">
-                          <label class="d-block mb-2">
-                            <input class="radio_animated payment-radio" type="radio" name="payment_method" value="transfer" required data-seller="<?= $sellerId ?>"> Bank Transfer
-                          </label>
-                          <label class="d-block mb-2">
-                            <input class="radio_animated payment-radio" type="radio" name="payment_method" value="qris" required data-seller="<?= $sellerId ?>"> QRIS
-                          </label>
-                        </div>
-
-                        <div id="info-transfer-<?= $sellerId ?>" class="alert alert-info mt-2 p-2" style="display:none;">
-                          <small>Bank Account: <strong><?= htmlspecialchars($seller['account_number']) ?></strong></small>
-                        </div>
-                        <div id="info-qris-<?= $sellerId ?>" class="alert alert-info mt-2 p-2" style="display:none;">
-                          <small>Scan QRIS Seller ini di Riwayat setelah order atau hubungi seller.</small>
-                        </div>
-                      </div>
-
-                      <div class="col-md-6">
-                        <h6 class="mb-3">Upload Proof <span class="text-danger">*</span></h6>
-                        <input type="file" name="payment_proof" class="form-control form-control-sm mb-2 proof-input" required accept="image/*" data-seller="<?= $sellerId ?>">
-                        <div id="preview-container-<?= $sellerId ?>" style="display:none;">
-                          <img id="preview-img-<?= $sellerId ?>" src="#" class="img-fluid rounded" style="max-height: 100px;">
-                        </div>
-                      </div>
+                    <label>
+                      <input type="radio"
+                        class="payment-radio"
+                        data-seller="<?= $sellerId ?>"
+                        name="payment_method[<?= $sellerId ?>]"
+                        value="qris" required>
+                      QRIS
+                    </label>
+                    <div id="info-transfer-<?= $sellerId ?>"
+                      class="alert alert-info mt-2 p-2" style="display:none;">
+                      <small>
+                        Bank Account: <strong><?= $seller['account_number'] ?></strong>
+                      </small>
                     </div>
 
-                    <div class="text-end mt-3">
-                      <button type="submit" class="btn btn-primary btn-sm">Place Order for <?= htmlspecialchars($seller['seller_name']) ?></button>
+                    <div id="info-qris-<?= $sellerId ?>"
+                      class="alert alert-info mt-2 p-2 text-center" style="display:none;">
+
+                      <?php if (!empty($seller['qris_photo'])): ?>
+                        <img src="<?= BASE_URL ?>uploads/qris/<?= $seller['qris_photo'] ?>"
+                          class="img-fluid mb-2"
+                          style="max-height:120px;">
+                      <?php endif; ?>
                     </div>
-                  </form>
+                    <br><br>
+
+                    <h6>Upload Payment Proof *</h6>
+                    <input
+                      type="file"
+                      name="payment_proof[<?= $sellerId ?>]"
+                      required
+                      accept="image/*"
+                      class="form-control proof-input"
+                      data-seller="<?= $sellerId ?>">
+
+                    <div id="preview-container-<?= $sellerId ?>" style="display:none">
+                      <img id="preview-img-<?= $sellerId ?>"
+                        class="img-fluid mt-2 rounded"
+                        style="max-height: 120px;">
+                    </div>
+                  </div>
                 </div>
-              </div>
-            <?php endforeach; ?>
+              <?php endforeach; ?>
+              <button type="submit" class="btn btn-primary w-100">
+                Checkout
+              </button>
+            </form>
           </div>
 
           <div class="col-lg-4 col-sm-12">
@@ -245,37 +280,6 @@
           };
           reader.readAsDataURL(file);
         }
-      });
-    });
-
-    // 3. HANDLE TOMBOL "PLACE ORDER" (Klik per Seller)
-    document.querySelectorAll('.btn-place-order').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        const form = this.closest('form');
-        const sellerName = this.dataset.sellerName;
-        const totalAmount = this.dataset.total;
-
-        // Validasi: Metode pembayaran dipilih?
-        const paymentMethod = form.querySelector('input[name="payment_method"]:checked');
-        if (!paymentMethod) {
-          alert(`Silakan pilih metode pembayaran untuk seller ${sellerName}`);
-          return;
-        }
-
-        // Validasi: Bukti transfer diisi?
-        const proofInput = form.querySelector('input[name="payment_proof"]');
-        if (!proofInput.files || proofInput.files.length === 0) {
-          alert(`Silakan upload bukti pembayaran untuk seller ${sellerName}`);
-          return;
-        }
-
-        // Isi data ke Modal Konfirmasi
-        currentActiveForm = form; // Simpan form ini ke variable global
-        modalPayment.textContent = paymentMethod.value.toUpperCase();
-        modalProof.textContent = proofInput.files[0].name;
-        modalTotal.textContent = totalAmount;
-
-        confirmOrderModal.show();
       });
     });
 

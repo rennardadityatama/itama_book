@@ -58,22 +58,9 @@
                   <li>Address: <?= htmlspecialchars($seller['address']) ?></li>
                 <?php endif; ?>
                 <?php if ($seller['account_number']): ?>
-                  <li>Account: <?= htmlspecialchars($seller['account_number']) ?></li>
+                  <li>Account Number: <?= htmlspecialchars($seller['account_number']) ?></li>
                 <?php endif; ?>
               </ul>
-
-              <?php if (!empty($seller['qris_photo'])): ?>
-                <div class="mt-3">
-                  <img
-                    src="<?= BASE_URL ?>/uploads/qris/<?= $seller['qris_photo'] ?>"
-                    class="rounded border"
-                    style="width:48px;height:48px;object-fit:cover"
-                    data-bs-toggle="modal"
-                    data-bs-target="#qrisModal"
-                    data-img="<?= BASE_URL ?>/uploads/qris/<?= $seller['qris_photo'] ?>">
-                </div>
-              <?php endif; ?>
-
             </div>
 
           </div>

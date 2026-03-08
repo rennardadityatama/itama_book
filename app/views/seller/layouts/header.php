@@ -31,6 +31,60 @@
             <li>
               <div class="mode"><i class="fa fa-moon-o"></i></div>
             </li>
+            <li class="onhover-dropdown">
+              <div class="message position-relative">
+                <i data-feather="bell"></i>
+                <?php if (!empty($notifCount)): ?>
+                  <span class="badge rounded-pill badge-danger position-absolute top-0 start-100 translate-middle">
+                    <?= $notifCount ?>
+                  </span>
+                <?php endif; ?>
+              </div>
+              <ul class="message-dropdown onhover-show-div">
+                <li>
+                  <i data-feather="bell"></i>
+                  <h6 class="f-18 mb-0">Notifications</h6>
+                </li>
+                <?php if (empty($notifications)): ?>
+                  <li class="text-center p-3">
+                    <small>No notifications</small>
+                  </li>
+                <?php endif; ?>
+                <?php foreach ($notifications as $notif): ?>
+                  <?php
+                  $url = '#';
+                  if ($notif['type'] == 'new_order' || $notif['type'] == 'shipping') {
+                    $url = BASE_URL . 'index.php?c=sellerApprove&m=index';
+                  }
+                  if ($notif['type'] == 'chat') {
+                    $url = BASE_URL . 'index.php?c=sellerChat&m=index&room=' . $notif['room_id'];
+                  }
+                  ?>
+                  <li>
+                    <a href="<?= BASE_URL ?>index.php?c=notification&m=read&id=<?= $notif['id'] ?>&redirect=<?= urlencode($url) ?>">
+                      <div class="d-flex align-items-start">
+                        <div class="message-img bg-light-primary">
+                          <?php if ($notif['type'] == 'new_order'): ?>
+                            <i data-feather="shopping-bag"></i>
+                          <?php elseif ($notif['type'] == 'shipping'): ?>
+                            <i data-feather="truck"></i>
+                          <?php elseif ($notif['type'] == 'chat'): ?>
+                            <i data-feather="message-circle"></i>
+                          <?php endif; ?>
+                        </div>
+                        <div class="flex-grow-1">
+                          <h6 class="mb-1"><?= htmlspecialchars($notif['title']) ?></h6>
+                          <p class="mb-0"><?= htmlspecialchars($notif['message']) ?></p>
+                          <small class="text-muted">
+                            <?= date('d M H:i', strtotime($notif['created_at'])) ?>
+                          </small>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                <?php endforeach; ?>
+              </ul>
+            </li>
             <li class="maximize"><a href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize-2"></i></a></li>
             <?php
 

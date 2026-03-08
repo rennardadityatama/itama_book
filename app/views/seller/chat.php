@@ -200,7 +200,7 @@
                     </div>
                   </div>
                 <?php else: ?>
-                  <div class="d-flex align-items-center justify-content-center h-100">
+                  <div class="chat-empty d-flex align-items-center justify-content-center h-100">
                     <div class="text-center">
                       <i class="fa fa-comments fa-5x text-muted mb-3"></i>
                       <p class="text-muted">Select a seller to start a conversation</p>
@@ -231,6 +231,22 @@
   .chat-room-link:hover {
     background-color: #f8f9fa;
   }
+
+  .call-chat-body .card {
+    height: calc(100vh - 180px);
+  }
+
+  .chat-history {
+    height: calc(100vh - 350px);
+  }
+
+  .chat-right-aside {
+    min-height: 600px;
+  }
+
+  .chat-empty {
+    height: 600px;
+  }
 </style>
 
 <script>
@@ -239,7 +255,7 @@
   const CURRENT_USER_ID = <?= $_SESSION['user']['id'] ?>;
   const CURRENT_ROOM_ID = <?= $activeRoom['id'] ?? 'null' ?>;
   window.USER_AVATAR = "<?= !empty($_SESSION['user']['avatar'])
-    ? BASE_URL . '/uploads/avatars/' . $_SESSION['user']['avatar']
-    : BASE_URL . '/assets/images/default-avatar.png' ?>";
+                          ? BASE_URL . '/uploads/avatars/' . $_SESSION['user']['avatar']
+                          : BASE_URL . '/assets/images/default-avatar.png' ?>";
 </script>
 <script src="<?= BASE_URL ?>/assets/js/chat.js"></script>

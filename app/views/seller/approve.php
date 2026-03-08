@@ -158,9 +158,13 @@
                                       Delete Order
                                     </button>
                                   <?php else: ?>
-                                    <small class="text-danger countdown"
-                                      data-refunded="<?= $refundedAt ?>">
-                                    </small>
+                                    <div class="action-box">
+                                      <div class="countdown-box">
+                                        <small class="text-danger countdown"
+                                          data-refunded="<?= $refundedAt ?>">
+                                        </small>
+                                      </div>
+                                    </div>
                                   <?php endif; ?>
 
                                 <?php endif; ?>
@@ -303,6 +307,29 @@
         </div>
       </div>
     </div>
+
+    <style>
+      #order-table td:last-child {
+        width: 150px;
+      }
+
+      .action-box {
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .countdown-box {
+        width: 100%;
+        border: 1px dashed #dc3545;
+        border-radius: 6px;
+        padding: 6px;
+        text-align: center;
+        font-size: 13px;
+        background: #fff5f5;
+      }
+    </style>
 
     <script>
       function initRefundCountdown() {

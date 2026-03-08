@@ -110,6 +110,47 @@ class OrderModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getOrdersByIds($ids)
+    {
+        $in = implode(',', array_fill(0, count($ids), '?'));
+
+        $stmt = $this->db->prepare("
+        SELECT 
+            o.*,
+            c.name AS customer_name,
+            c.email AS customer_email,
+            c.phone AS customer_phone,
+            c.address AS customer_address,
+            s.name AS seller_name,
+            s.email AS seller_email,
+            s.phone AS seller_phone
+        FROM orders o
+        JOIN users c ON c.id = o.customer_id
+        JOIN users s ON s.id = o.seller_id
+        WHERE o.id IN ($in)
+    ");
+
+        $stmt->execute($ids);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getItemsByOrderIds($ids)
+    {
+        $in = implode(',', array_fill(0, count($ids), '?'));
+
+        $stmt = $this->db->prepare("
+        SELECT 
+            oi.*, 
+            p.name AS product_name
+        FROM order_items oi
+        JOIN products p ON p.id = oi.product_id
+        WHERE oi.order_id IN ($in)
+    ");
+
+        $stmt->execute($ids);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getOrdersBySeller($sellerId)
     {
         $stmt = $this->db->prepare("

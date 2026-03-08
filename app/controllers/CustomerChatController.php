@@ -1,17 +1,20 @@
 <?php
 require_once BASE_PATH . '/app/controllers/BaseCustomerController.php';
 require_once BASE_PATH . '/app/models/ChatModels.php';
+require_once BASE_PATH . '/app/models/NotificationModels.php';
 require_once BASE_PATH . '/app/helpers/chat.php';
 
 
 class CustomerChatController extends BaseCustomerController
 {
     private $chatModel;
+    private $notificationModel;
 
     public function __construct()
     {
         parent::__construct();
         $this->chatModel = new ChatModel();
+        $this->notificationModel = new NotificationModel();
     }
 
     private function json($status, $message, $data = [])
@@ -53,18 +56,16 @@ class CustomerChatController extends BaseCustomerController
         ];
 
         // Jika ada room yang aktif
-        if ($roomId) {
-            if ($this->chatModel->isRoomMember($roomId, $userId)) {
-                $data['activeRoom'] = $this->chatModel->getRoomDetail($roomId);
-                $data['messages'] = $this->chatModel->getRoomMessages($roomId, $userId);
-                $data['discussedProducts'] = $this->chatModel->getRoomProducts($roomId); // TAMBAHAN
-            }
-        } elseif (!empty($chatList)) {
-            // Default ke chat pertama
-            $firstRoom = $chatList[0]['room_id'];
-            $data['activeRoom'] = $this->chatModel->getRoomDetail($firstRoom);
-            $data['messages'] = $this->chatModel->getRoomMessages($firstRoom, $userId);
-            $data['discussedProducts'] = $this->chatModel->getRoomProducts($firstRoom); // TAMBAHAN
+        if ($roomId && $this->chatModel->isRoomMember($roomId, $userId)) {
+            $this->chatModel->markRoomAsRead($roomId, $userId);
+
+            $this->notificationModel->markChatRoomAsRead($roomId, $userId);
+
+            $data['activeRoom'] = $this->chatModel->getRoomDetail($roomId);
+
+            $data['messages'] = $this->chatModel->getRoomMessages($roomId, $userId);
+
+            $data['discussedProducts'] = $this->chatModel->getRoomProducts($roomId);
         }
 
         $this->render('chat', $data);
@@ -113,6 +114,7 @@ class CustomerChatController extends BaseCustomerController
 
         $userId = $_SESSION['user']['id'];
         $roomId = $_POST['room_id'] ?? null;
+        $room = $this->chatModel->getRoomDetail($roomId);
         $message = trim($_POST['message'] ?? '');
         $productId = $_POST['product_id'] ?? null; // OPSIONAL
 
@@ -126,6 +128,14 @@ class CustomerChatController extends BaseCustomerController
 
         try {
             $messageId = $this->chatModel->sendMessage($roomId, $userId, $message, $productId);
+
+            $this->notificationModel->create([
+                'user_id' => $room['seller_id'],
+                'room_id' => $roomId,
+                'type' => 'chat',
+                'title' => 'New Message',
+                'message' => $_SESSION['user']['name'] . ' sent you a message'
+            ]);
 
             $this->json('success', 'Message sent', [
                 'message_id' => $messageId,
@@ -177,7 +187,7 @@ class CustomerChatController extends BaseCustomerController
         if (!isset($_SESSION['user'])) {
             $this->json('error', 'Unauthorized');
         }
-    
+
         $userId = $_SESSION['user']['id'];
         $roomId = $_GET['room_id'] ?? null;
         $lastId = $_GET['last_id'] ?? 0;

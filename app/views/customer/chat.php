@@ -36,17 +36,6 @@
             <div class="chat-box">
               <div class="chat-left-aside">
                 <div class="people-list" id="people-list">
-                  <div class="search">
-                    <form class="theme-form">
-                      <div class="form-group">
-                        <div class="input-group">
-                          <input class="form-control" type="text" id="search-chat" placeholder="Search seller...">
-                          <span class="input-group-text"><i class="fa fa-search"></i></span>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-
                   <ul class="list custom-scrollbar" id="chat-list">
                     <?php if (empty($chatList)): ?>
                       <li class="text-center p-3">
@@ -210,7 +199,7 @@
                     </div>
                   </div>
                 <?php else: ?>
-                  <div class="d-flex align-items-center justify-content-center h-100">
+                  <div class="chat-empty d-flex align-items-center justify-content-center h-100">
                     <div class="text-center">
                       <i class="fa fa-comments fa-5x text-muted mb-3"></i>
                       <p class="text-muted">Select a seller to start a conversation</p>
@@ -241,6 +230,22 @@
   .chat-room-link:hover {
     background-color: #f8f9fa;
   }
+
+  .call-chat-body .card {
+    height: calc(100vh - 180px);
+  }
+
+  .chat-history {
+    height: calc(100vh - 350px);
+  }
+
+  .chat-right-aside {
+    min-height: 600px;
+  }
+
+  .chat-empty {
+    height: 600px;
+  }
 </style>
 
 <script>
@@ -249,7 +254,7 @@
   const CURRENT_USER_ID = <?= $_SESSION['user']['id'] ?>;
   const CURRENT_ROOM_ID = <?= $activeRoom['id'] ?? 'null' ?>;
   window.USER_AVATAR = "<?= !empty($_SESSION['user']['avatar'])
-    ? BASE_URL . '/uploads/avatars/' . $_SESSION['user']['avatar']
-    : BASE_URL . '/assets/images/default-avatar.png' ?>";
+                          ? BASE_URL . '/uploads/avatars/' . $_SESSION['user']['avatar']
+                          : BASE_URL . '/assets/images/default-avatar.png' ?>";
 </script>
 <script src="<?= BASE_URL ?>/assets/js/chat.js"></script>

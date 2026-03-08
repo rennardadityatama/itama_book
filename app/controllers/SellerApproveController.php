@@ -3,17 +3,20 @@
 require_once BASE_PATH . '/app/controllers/BaseSellerController.php';
 require_once BASE_PATH . '/app/models/OrderModels.php';
 require_once BASE_PATH . '/app/models/ProductModels.php';
+require_once BASE_PATH . '/app/models/NotificationModels.php';
 
 class SellerApproveController extends BaseSellerController
 {
     private $orderModel;
     private $productModel;
+    private $notificationModel;
 
     public function __construct()
     {
         parent::__construct();
         $this->orderModel = new OrderModel();
         $this->productModel = new ProductModel();
+        $this->notificationModel = new NotificationModel();
     }
 
     /**
@@ -101,6 +104,22 @@ class SellerApproveController extends BaseSellerController
 
             $this->orderModel->updateOrderStatus($orderId, 'approved');
             $this->orderModel->updatePaymentStatus($orderId, 'paid');
+
+            $this->notificationModel->deleteByOrder($orderId, 'new_order');
+            $this->notificationModel->create([
+                'user_id' => $sellerId,
+                'order_id' => $orderId,
+                'type' => 'shipping',
+                'title' => 'Input Tracking Number',
+                'message' => "Order #" . str_pad($orderId, 6, '0', STR_PAD_LEFT) . " approved. Please input tracking number."
+            ]);
+            $this->notificationModel->create([
+                'user_id' => $order['customer_id'],
+                'order_id' => $orderId,
+                'type' => 'order_approved',
+                'title' => 'Order Approved',
+                'message' => "Your order #" . str_pad($orderId, 6, '0', STR_PAD_LEFT) . " has been approved"
+            ]);
 
             $db->commit();
 
@@ -194,6 +213,13 @@ class SellerApproveController extends BaseSellerController
 
         // Update shipping status jadi 'shipped'
         $this->orderModel->updateShippingStatus($orderId, 'shipped');
+        $this->notificationModel->create([
+            'user_id' => $order['customer_id'],
+            'order_id' => $orderId,
+            'type' => 'shipping',
+            'title' => 'Order Shipped',
+            'message' => "Your order #" . str_pad($orderId, 6, '0', STR_PAD_LEFT) . " has been shipped"
+        ]);
 
         // Set toast sukses
         $_SESSION['toast'] = ['type' => 'success', 'message' => 'Tracking number and link updated successfully'];

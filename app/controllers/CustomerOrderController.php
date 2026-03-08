@@ -4,12 +4,14 @@ require_once BASE_PATH . '/app/controllers/BaseCustomerController.php';
 require_once BASE_PATH . '/app/models/CartModels.php';
 require_once BASE_PATH . '/app/models/ProductModels.php';
 require_once BASE_PATH . '/app/models/OrderModels.php';
+require_once BASE_PATH . '/app/models/NotificationModels.php';
 
 class CustomerOrderController extends BaseCustomerController
 {
     private $orderModel;
     private $cartModel;
     private $productModel;
+    private $notificationModel;
 
     public function __construct()
     {
@@ -17,6 +19,7 @@ class CustomerOrderController extends BaseCustomerController
         $this->orderModel   = new OrderModel();
         $this->cartModel    = new CartModel();
         $this->productModel = new ProductModel();
+        $this->notificationModel = new NotificationModel();
     }
 
     public function checkoutAll()
@@ -66,12 +69,13 @@ class CustomerOrderController extends BaseCustomerController
 
             if (!isset($sellers[$sellerId])) {
 
-                $paymentInfo = $this->cartModel->getSellerPaymentInfo($sellerId);
+                $paymentInfo = $this->cartModel->getSellerPaymentInfo($sellerId) ?? [];
 
                 $sellers[$sellerId] = [
                     'id' => $sellerId,
                     'seller_name' => $item['seller_name'],
                     'account_number' => $paymentInfo['account_number'] ?? '-',
+                    'qris_photo' => $paymentInfo['qris_photo'] ?? null,
                     'items' => [],
                     'total' => 0
                 ];
@@ -108,48 +112,8 @@ class CustomerOrderController extends BaseCustomerController
             exit;
         }
 
-        $paymentMethod = $_POST['payment_method'] ?? null;
-
-        if (!in_array($paymentMethod, ['transfer', 'qris'])) {
-
-            $_SESSION['toast'] = [
-                'type' => 'danger',
-                'message' => 'Invalid payment method'
-            ];
-
-            header('Location: ' . BASE_URL . 'index.php?c=customerOrder&m=checkoutAll');
-            exit;
-        }
-
-        /* ======================
-       UPLOAD PAYMENT PROOF
-    ====================== */
-
-        if (!isset($_FILES['payment_proof']) || $_FILES['payment_proof']['error'] !== UPLOAD_ERR_OK) {
-
-            $_SESSION['toast'] = [
-                'type' => 'danger',
-                'message' => 'Payment proof required'
-            ];
-
-            header('Location: ' . BASE_URL . 'index.php?c=customerOrder&m=checkoutAll');
-            exit;
-        }
-
-        $file = $_FILES['payment_proof'];
-
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-
-        $paymentProof = 'payment_' . time() . '_' . uniqid() . '.' . $extension;
-
-        $uploadDir = rtrim(UPLOAD_PATH, '/') . '/payments/';
-
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
-        move_uploaded_file($file['tmp_name'], $uploadDir . $paymentProof);
-
+        $paymentMethods = $_POST['payment_method'] ?? [];
+        $paymentProofs  = $_FILES['payment_proof'] ?? null;
 
         /* ======================
        GROUP CART BY SELLER
@@ -166,23 +130,70 @@ class CustomerOrderController extends BaseCustomerController
 
         foreach ($grouped as $sellerId => $items) {
 
+            if (!isset($paymentMethods[$sellerId])) {
+                $_SESSION['toast'] = [
+                    'type' => 'danger',
+                    'message' => 'Payment method missing'
+                ];
+                header('Location: ' . BASE_URL . 'index.php?c=customerOrder&m=checkoutAll');
+                exit;
+            }
+
+            $method = $paymentMethods[$sellerId];
+
+            if (!in_array($method, ['transfer', 'qris'])) {
+                continue;
+            }
+
+            if (!isset($paymentProofs['name'][$sellerId])) {
+                $_SESSION['toast'] = [
+                    'type' => 'danger',
+                    'message' => 'Payment proof required'
+                ];
+                header('Location: ' . BASE_URL . 'index.php?c=customerOrder&m=checkoutAll');
+                exit;
+            }
+
+            $fileName = $paymentProofs['name'][$sellerId];
+            $tmpName  = $paymentProofs['tmp_name'][$sellerId];
+
+            $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+
+            $paymentProof = 'payment_' . time() . '_' . $sellerId . '.' . $ext;
+
+            $uploadDir = rtrim(UPLOAD_PATH, '/') . '/payments/';
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            move_uploaded_file($tmpName, $uploadDir . $paymentProof);
+
+            // HITUNG TOTAL
             $totalOrder = 0;
 
             foreach ($items as $item) {
                 $totalOrder += $item['price'] * $item['qty'];
             }
 
-            /* CREATE ORDER */
-
+            // CREATE ORDER
             $orderId = $this->orderModel->create([
                 'customer_id' => $customerId,
                 'seller_id' => $sellerId,
                 'total_amount' => $totalOrder,
-                'payment_method' => $paymentMethod,
+                'payment_method' => $method,
                 'payment_proof' => $paymentProof
             ]);
 
-            /* CREATE ORDER ITEMS */
+            $this->notificationModel->create([
+                'user_id' => $sellerId,
+                'order_id' => $orderId,
+                'type' => 'new_order',
+                'title' => 'New Order',
+                'message' => "Order #" . str_pad($orderId, 6, '0', STR_PAD_LEFT) . " needs approval"
+            ]);
+
+            $createdOrders[] = $orderId;
 
             foreach ($items as $item) {
 
@@ -194,8 +205,6 @@ class CustomerOrderController extends BaseCustomerController
                     'subtotal' => $item['price'] * $item['qty']
                 ]);
             }
-
-            $createdOrders[] = $orderId;
         }
 
         /* REMOVE CART */
@@ -209,41 +218,28 @@ class CustomerOrderController extends BaseCustomerController
             'message' => 'Order successfully placed'
         ];
 
-        header('Location: ' . BASE_URL . 'index.php?c=customerOrder&m=history');
+        $orderIds = implode(',', $createdOrders);
+
+        header('Location: ' . BASE_URL . 'index.php?c=customerOrder&m=invoice&orders=' . $orderIds);
         exit;
     }
 
     public function invoice()
     {
-        $orderId = $_GET['order_id'] ?? null;
+        $orderIds = $_GET['orders'] ?? '';
 
-        if (!$orderId) {
-            $_SESSION['toast'] = ['type' => 'danger', 'message' => 'Order not found'];
+        if (!$orderIds) {
             header('Location: ' . BASE_URL . 'index.php?c=customerOrder&m=history');
             exit;
         }
 
-        // Get order detail
-        $order = $this->orderModel->getOrderById($orderId);
+        $ids = explode(',', $orderIds);
 
-        if (!$order) {
-            $_SESSION['toast'] = ['type' => 'danger', 'message' => 'Order not found'];
-            header('Location: ' . BASE_URL . 'index.php?c=customerOrder&m=history');
-            exit;
-        }
-
-        // Validasi: hanya customer yang buat order yang bisa akses
-        if ($order['customer_id'] != $_SESSION['user']['id']) {
-            $_SESSION['toast'] = ['type' => 'danger', 'message' => 'Access denied'];
-            header('Location: ' . BASE_URL . 'index.php?c=customerOrder&m=history');
-            exit;
-        }
-
-        // Get order items
-        $orderItems = $this->orderModel->getOrderItems($orderId);
+        $orders = $this->orderModel->getOrdersByIds($ids);
+        $orderItems = $this->orderModel->getItemsByOrderIds($ids);
 
         $this->render('invoice', [
-            'order' => $order,
+            'orders' => $orders,
             'orderItems' => $orderItems
         ]);
     }

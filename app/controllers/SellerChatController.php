@@ -1,16 +1,19 @@
 <?php
 require_once BASE_PATH . '/app/controllers/BaseSellerController.php';
 require_once BASE_PATH . '/app/models/ChatModels.php';
+require_once BASE_PATH . '/app/models/NotificationModels.php';
 require_once BASE_PATH . '/app/helpers/chat.php';
 
 class SellerChatController extends BaseSellerController
 {
     private $chatModel;
+    private $notificationModel;
 
     public function __construct()
     {
         parent::__construct();
         $this->chatModel = new ChatModel();
+        $this->notificationModel = new NotificationModel();
     }
 
     private function json($status, $message, $data = [])
@@ -44,14 +47,15 @@ class SellerChatController extends BaseSellerController
         ];
 
         if ($roomId && $this->chatModel->isRoomMember($roomId, $sellerId)) {
-            $data['activeRoom']        = $this->chatModel->getRoomDetail($roomId);
-            $data['messages']          = $this->chatModel->getRoomMessages($roomId, $sellerId);
+            $this->chatModel->markRoomAsRead($roomId, $sellerId);
+
+            $this->notificationModel->markChatRoomAsRead($roomId, $sellerId);
+        
+            $data['activeRoom'] = $this->chatModel->getRoomDetail($roomId);
+
+            $data['messages'] = $this->chatModel->getRoomMessages($roomId, $sellerId);
+
             $data['discussedProducts'] = $this->chatModel->getRoomProducts($roomId);
-        } elseif (!empty($chatList)) {
-            $firstRoom                 = $chatList[0]['room_id'];
-            $data['activeRoom']        = $this->chatModel->getRoomDetail($firstRoom);
-            $data['messages']          = $this->chatModel->getRoomMessages($firstRoom, $sellerId);
-            $data['discussedProducts'] = $this->chatModel->getRoomProducts($firstRoom);
         }
 
         $this->render('chat', $data);
@@ -68,6 +72,7 @@ class SellerChatController extends BaseSellerController
 
         $sellerId  = $_SESSION['user']['id'];
         $roomId    = $_POST['room_id'] ?? null;
+        $room = $this->chatModel->getRoomDetail($roomId);
         $message   = trim($_POST['message'] ?? '');
         $productId = $_POST['product_id'] ?? null;
 
@@ -79,13 +84,25 @@ class SellerChatController extends BaseSellerController
             $this->json('error', 'Access denied');
         }
 
+        if (!$room) {
+            $this->json('error', 'Room not found');
+        }
+
         try {
             $messageId = $this->chatModel->sendMessage(
                 $roomId,
-                $sellerId,   
+                $sellerId,
                 $message,
                 $productId
             );
+
+            $this->notificationModel->create([
+                'user_id' => $room['customer_id'],
+                'room_id' => $roomId,
+                'type' => 'chat',
+                'title' => 'New Message',
+                'message' => $_SESSION['user']['name'] . ' sent you a message'
+            ]);
 
             $this->json('success', 'Message sent', [
                 'message_id' => $messageId,

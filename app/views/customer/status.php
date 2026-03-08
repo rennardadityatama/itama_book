@@ -79,7 +79,8 @@
                         <td>
                           <?php
                           $paymentClass = match ($order['payment_status']) {
-                            'unpaid' => 'bg-warning',
+                            'unpaid' => 'bg-danger',
+                            'waiting_verification' => 'bg-warning',
                             'paid' => 'bg-success',
                             default => 'bg-secondary'
                           };

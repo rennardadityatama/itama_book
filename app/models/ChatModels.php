@@ -204,4 +204,17 @@ class ChatModel
         $stmt->execute([$roomId, $lastId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function markRoomAsRead($roomId, $userId)
+    {
+        $stmt = $this->db->prepare("
+        UPDATE chat_messages
+        SET is_read = 1
+        WHERE room_id = ?
+        AND sender_id != ?
+        AND is_read = 0
+    ");
+
+        return $stmt->execute([$roomId, $userId]);
+    }
 }

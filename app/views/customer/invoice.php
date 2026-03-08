@@ -53,14 +53,14 @@
               <div class="row mb-4">
                 <div class="col-sm-6">
                   <h2 class="text-primary mb-0">INVOICE</h2>
-                  <p class="text-muted mb-0">Order #<?= str_pad($order['id'], 6, '0', STR_PAD_LEFT) ?></p>
+                  <p class="text-muted mb-0">Order # #<?= str_pad($orders[0]['id'], 6, '0', STR_PAD_LEFT) ?></p>
                 </div>
                 <div class="col-sm-6 text-end">
                   <div class="invoice-status">
                     <?php
                     $statusClass = '';
                     $statusText = '';
-                    switch ($order['status']) {
+                    switch ($orders[0]['status']) {
                       case 'pending':
                         $statusClass = 'warning';
                         $statusText = 'Pending';
@@ -75,7 +75,7 @@
                         break;
                       default:
                         $statusClass = 'secondary';
-                        $statusText = ucfirst($order['status']);
+                        $statusText = ucfirst($orders[0]['status']);
                     }
                     ?>
                     <span class="badge bg-<?= $statusClass ?> fs-6 px-3 py-2">
@@ -95,37 +95,18 @@
                       <h6 class="text-primary mb-3">
                         <i data-feather="user" class="me-2"></i>Customer Information
                       </h6>
-                      <p class="mb-1"><strong><?= htmlspecialchars($order['customer_name']) ?></strong></p>
+                      <p class="mb-1"><strong><?= htmlspecialchars($orders[0]['customer_name']) ?></strong></p>
                       <p class="mb-1 text-muted">
                         <i data-feather="mail" width="14"></i>
-                        <?= htmlspecialchars($order['customer_email']) ?>
+                        <?= htmlspecialchars($orders[0]['customer_email']) ?>
                       </p>
                       <p class="mb-1 text-muted">
                         <i data-feather="phone" width="14"></i>
-                        <?= htmlspecialchars($order['customer_phone'] ?? '-') ?>
+                        <?= htmlspecialchars($orders[0]['customer_phone'] ?? '-') ?>
                       </p>
                       <p class="mb-0 text-muted">
                         <i data-feather="map-pin" width="14"></i>
-                        <?= htmlspecialchars($order['customer_address'] ?? 'No address') ?>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="card border-0 bg-light">
-                    <div class="card-body">
-                      <h6 class="text-primary mb-3">
-                        <i data-feather="shopping-bag" class="me-2"></i>Seller Information
-                      </h6>
-                      <p class="mb-1"><strong><?= htmlspecialchars($order['seller_name']) ?></strong></p>
-                      <p class="mb-1 text-muted">
-                        <i data-feather="mail" width="14"></i>
-                        <?= htmlspecialchars($order['seller_email']) ?>
-                      </p>
-                      <p class="mb-0 text-muted">
-                        <i data-feather="phone" width="14"></i>
-                        <?= htmlspecialchars($order['seller_phone'] ?? '-') ?>
+                        <?= htmlspecialchars($orders[0]['customer_address'] ?? 'No address') ?>
                       </p>
                     </div>
                   </div>
@@ -144,7 +125,7 @@
                         <div class="col-6">
                           <p class="text-muted mb-1">Payment Method:</p>
                           <p class="mb-0 fw-bold">
-                            <?= $order['payment_method'] === 'transfer' ? 'Bank Transfer' : 'QRIS' ?>
+                            <?= $orders[0]['payment_method'] === 'transfer' ? 'Bank Transfer' : 'QRIS' ?>
                           </p>
                         </div>
                         <div class="col-6">
@@ -153,7 +134,7 @@
                             <?php
                             $paymentStatusClass = '';
                             $paymentStatusText = '';
-                            switch ($order['payment_status']) {
+                            switch ($orders[0]['payment_status']) {
                               case 'failed':
                                 $paymentStatusClass = 'warning';
                                 $paymentStatusText = 'Failed';
@@ -164,7 +145,7 @@
                                 break;
                               default:
                                 $paymentStatusClass = 'secondary';
-                                $paymentStatusText = ucfirst($order['payment_status']);
+                                $paymentStatusText = ucfirst($orders[0]['payment_status']);
                             }
                             ?>
                             <span class="badge bg-<?= $paymentStatusClass ?>">
@@ -174,10 +155,10 @@
                         </div>
                       </div>
 
-                      <?php if (!empty($order['payment_proof'])): ?>
+                      <?php if (!empty($orders[0]['payment_proof'])): ?>
                         <div class="mt-3">
                           <p class="text-muted mb-2">Payment Proof:</p>
-                          <a href="<?= BASE_URL ?>uploads/payments/<?= $order['payment_proof'] ?>"
+                          <a href="<?= BASE_URL ?>uploads/payments/<?= $orders[0]['payment_proof'] ?>"
                             target="_blank"
                             class="btn btn-sm btn-outline-primary me-2 d-inline-flex align-items-center">
                             <i data-feather="image" width="14"></i> View Payment Proof
@@ -201,7 +182,7 @@
                             <?php
                             $shippingStatusClass = '';
                             $shippingStatusText = '';
-                            switch ($order['shipping_status']) {
+                            switch ($orders[0]['shipping_status']) {
                               case 'pending':
                                 $shippingStatusClass = 'warning';
                                 $shippingStatusText = 'Pending';
@@ -212,7 +193,7 @@
                                 break;
                               default:
                                 $shippingStatusClass = 'secondary';
-                                $shippingStatusText = ucfirst($order['shipping_status']);
+                                $shippingStatusText = ucfirst($orders[0]['shipping_status']);
                             }
                             ?>
                             <span class="badge bg-<?= $shippingStatusClass ?>">
@@ -258,8 +239,13 @@
                     <tr class="table-light">
                       <td colspan="4" class="text-end fw-bold">TOTAL:</td>
                       <td class="text-end fw-bold text-primary fs-5">
-                        Rp <?= number_format($order['total_amount'], 0, ',', '.') ?>
-                      </td>
+                        <?php
+                        $total = 0;
+                        foreach ($orderItems as $item) {
+                          $total += $item['subtotal'];
+                        }
+                        ?>
+                        Rp <?= number_format($total, 0, ',', '.') ?> </td>
                     </tr>
                   </tfoot>
                 </table>
@@ -271,7 +257,7 @@
             <!-- ACTION BUTTONS -->
             <div class="row mt-4">
               <div class="col-12 text-center">
-                <a href="<?= BASE_URL ?>index.php?c=customerStatus&m=downloadInvoice&order_id=<?= $order['id'] ?>"
+                <a href="<?= BASE_URL ?>index.php?c=customerStatus&m=downloadInvoice&orders=<?= implode(',', array_column($orders, 'id')) ?>"
                   class="btn btn-primary me-2 d-inline-flex align-items-center">
                   <i data-feather="printer" class="me-2"></i>
                   <span>Download Invoice</span>
